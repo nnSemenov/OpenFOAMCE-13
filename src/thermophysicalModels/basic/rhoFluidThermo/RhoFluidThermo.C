@@ -33,7 +33,7 @@ void Foam::RhoFluidThermo<BaseThermo>::calculate()
     const scalarField& hCells = this->he();
     const scalarField& pCells = this->p_;
 
-    const dimensionedScalar & p_offset = this->pressure_offset();
+    const scalar p_offset = this->pressure_offset().value();
 
     scalarField& TCells = this->T_.primitiveFieldRef();
     scalarField& CpCells = this->Cp_.primitiveFieldRef();
