@@ -33,6 +33,8 @@ void Foam::RhoFluidThermo<BaseThermo>::calculate()
     const scalarField& hCells = this->he();
     const scalarField& pCells = this->p_;
 
+    const dimensionedScalar & p_offset = this->pressure_offset();
+
     scalarField& TCells = this->T_.primitiveFieldRef();
     scalarField& CpCells = this->Cp_.primitiveFieldRef();
     scalarField& CvCells = this->Cv_.primitiveFieldRef();
@@ -57,18 +59,18 @@ void Foam::RhoFluidThermo<BaseThermo>::calculate()
         TCells[celli] = thermoMixture.The
         (
             hCells[celli],
-            pCells[celli],
+            pCells[celli]+p_offset,
             TCells[celli]
         );
 
-        CpCells[celli] = thermoMixture.Cp(pCells[celli], TCells[celli]);
-        CvCells[celli] = thermoMixture.Cv(pCells[celli], TCells[celli]);
-        psiCells[celli] = thermoMixture.psi(pCells[celli], TCells[celli]);
-        rhoCells[celli] = thermoMixture.rho(pCells[celli], TCells[celli]);
+        CpCells[celli] = thermoMixture.Cp(pCells[celli]+p_offset, TCells[celli]);
+        CvCells[celli] = thermoMixture.Cv(pCells[celli]+p_offset, TCells[celli]);
+        psiCells[celli] = thermoMixture.psi(pCells[celli]+p_offset, TCells[celli]);
+        rhoCells[celli] = thermoMixture.rho(pCells[celli]+p_offset, TCells[celli]);
 
-        muCells[celli] = transportMixture.mu(pCells[celli], TCells[celli]);
+        muCells[celli] = transportMixture.mu(pCells[celli]+p_offset, TCells[celli]);
         kappaCells[celli] =
-            transportMixture.kappa(pCells[celli], TCells[celli]);
+            transportMixture.kappa(pCells[celli]+p_offset, TCells[celli]);
     }
 
     volScalarField::Boundary& pBf =

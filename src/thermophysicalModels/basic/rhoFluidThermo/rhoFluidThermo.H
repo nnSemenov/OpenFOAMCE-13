@@ -55,6 +55,7 @@ namespace Foam
 class rhoFluidThermo
 :
     virtual public rhoThermo,
+    virtual public rhoThermo,
     virtual public fluidThermo
 {
 public:
