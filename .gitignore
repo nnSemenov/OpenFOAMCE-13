@@ -87,3 +87,6 @@ doc/Doxygen/DTAGS
 
 # Ignore the tutorialsTest directory
 /tutorialsTest
+
+# IDE config files
+.idea
