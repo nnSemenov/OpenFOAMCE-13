@@ -18,7 +18,7 @@ License
     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
     for more details.
 
-    You should have received a copy of the GNU General Public License
+    You should have received a copy of the GNU General Public Licensedisclose
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 \*---------------------------------------------------------------------------*/
@@ -48,9 +48,15 @@ Foam::rhoThermo::implementation::implementation
         dimDensity
     ),
     pOffset_(
-        dict.lookupOrDefault<dimensionedScalar>("pOffset",dimensionedScalar{"pOffset",dimPressure,0.0})
+        dict.lookupOrDefault<dimensionedScalar>
+        (
+            "pOffset",
+            dimensionedScalar{"pOffset",dimPressure,0.0}
+        )
     )
-{}
+{
+    Info<<"Pressure offset is "<<this->pOffset.value()<<" Pa\n".
+}
 
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
