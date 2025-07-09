@@ -32,8 +32,8 @@ void Foam::RhoFluidThermo<BaseThermo>::calculate()
 {
     const scalarField& hCells = this->he();
     const scalarField& pCells = this->p_;
-    // Add p_offset to p, allowing gauge pressure
-    const scalar p_offset = this->pOffset().value();
+    // Add pressureOffset to p, allowing gauge pressure
+    const scalar pressureOffset = this->pOffset().value();
 
     scalarField& TCells = this->T_.primitiveFieldRef();
     scalarField& CpCells = this->Cp_.primitiveFieldRef();
@@ -59,18 +59,18 @@ void Foam::RhoFluidThermo<BaseThermo>::calculate()
         TCells[celli] = thermoMixture.The
         (
             hCells[celli],
-            pCells[celli]+p_offset,
+            pCells[celli]+pressureOffset,
             TCells[celli]
         );
 
-        CpCells[celli] = thermoMixture.Cp(pCells[celli]+p_offset, TCells[celli]);
-        CvCells[celli] = thermoMixture.Cv(pCells[celli]+p_offset, TCells[celli]);
-        psiCells[celli] = thermoMixture.psi(pCells[celli]+p_offset, TCells[celli]);
-        rhoCells[celli] = thermoMixture.rho(pCells[celli]+p_offset, TCells[celli]);
+        CpCells[celli] = thermoMixture.Cp(pCells[celli]+pressureOffset, TCells[celli]);
+        CvCells[celli] = thermoMixture.Cv(pCells[celli]+pressureOffset, TCells[celli]);
+        psiCells[celli] = thermoMixture.psi(pCells[celli]+pressureOffset, TCells[celli]);
+        rhoCells[celli] = thermoMixture.rho(pCells[celli]+pressureOffset, TCells[celli]);
 
-        muCells[celli] = transportMixture.mu(pCells[celli]+p_offset, TCells[celli]);
+        muCells[celli] = transportMixture.mu(pCells[celli]+pressureOffset, TCells[celli]);
         kappaCells[celli] =
-            transportMixture.kappa(pCells[celli]+p_offset, TCells[celli]);
+            transportMixture.kappa(pCells[celli]+pressureOffset, TCells[celli]);
     }
 
     volScalarField::Boundary& pBf =
@@ -126,15 +126,15 @@ void Foam::RhoFluidThermo<BaseThermo>::calculate()
                     transportMixture =
                     this->transportMixture(composition, thermoMixture);
 
-                phe[facei] = thermoMixture.he(pp[facei]+p_offset, pT[facei]);
+                phe[facei] = thermoMixture.he(pp[facei]+pressureOffset, pT[facei]);
 
-                pCp[facei] = thermoMixture.Cp(pp[facei]+p_offset, pT[facei]);
-                pCv[facei] = thermoMixture.Cv(pp[facei]+p_offset, pT[facei]);
-                ppsi[facei] = thermoMixture.psi(pp[facei]+p_offset, pT[facei]);
-                prho[facei] = thermoMixture.rho(pp[facei]+p_offset, pT[facei]);
+                pCp[facei] = thermoMixture.Cp(pp[facei]+pressureOffset, pT[facei]);
+                pCv[facei] = thermoMixture.Cv(pp[facei]+pressureOffset, pT[facei]);
+                ppsi[facei] = thermoMixture.psi(pp[facei]+pressureOffset, pT[facei]);
+                prho[facei] = thermoMixture.rho(pp[facei]+pressureOffset, pT[facei]);
 
-                pmu[facei] = transportMixture.mu(pp[facei]+p_offset, pT[facei]);
-                pkappa[facei] = transportMixture.kappa(pp[facei]+p_offset, pT[facei]);
+                pmu[facei] = transportMixture.mu(pp[facei]+pressureOffset, pT[facei]);
+                pkappa[facei] = transportMixture.kappa(pp[facei]+pressureOffset, pT[facei]);
             }
         }
         else
@@ -151,15 +151,15 @@ void Foam::RhoFluidThermo<BaseThermo>::calculate()
                     transportMixture =
                     this->transportMixture(composition, thermoMixture);
 
-                pT[facei] = thermoMixture.The(phe[facei], pp[facei]+p_offset, pT[facei]);
+                pT[facei] = thermoMixture.The(phe[facei], pp[facei]+pressureOffset, pT[facei]);
 
-                pCp[facei] = thermoMixture.Cp(pp[facei]+p_offset, pT[facei]);
-                pCv[facei] = thermoMixture.Cv(pp[facei]+p_offset, pT[facei]);
-                ppsi[facei] = thermoMixture.psi(pp[facei]+p_offset, pT[facei]);
-                prho[facei] = thermoMixture.rho(pp[facei]+p_offset, pT[facei]);
+                pCp[facei] = thermoMixture.Cp(pp[facei]+pressureOffset, pT[facei]);
+                pCv[facei] = thermoMixture.Cv(pp[facei]+pressureOffset, pT[facei]);
+                ppsi[facei] = thermoMixture.psi(pp[facei]+pressureOffset, pT[facei]);
+                prho[facei] = thermoMixture.rho(pp[facei]+pressureOffset, pT[facei]);
 
-                pmu[facei] = transportMixture.mu(pp[facei]+p_offset, pT[facei]);
-                pkappa[facei] = transportMixture.kappa(pp[facei]+p_offset, pT[facei]);
+                pmu[facei] = transportMixture.mu(pp[facei]+pressureOffset, pT[facei]);
+                pkappa[facei] = transportMixture.kappa(pp[facei]+pressureOffset, pT[facei]);
             }
         }
     }
