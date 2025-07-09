@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Version:  13
+    \\  /    A nd           | Version:  dev
      \\/     M anipulation  |
 \*---------------------------------------------------------------------------*/
 FoamFile
@@ -24,7 +24,6 @@ zones
     cells
     {
         type        box;
-        zoneType    cell;
 
         box (-1e300 -1e300 -1e300) (1e300 0 1e300);
 
@@ -33,25 +32,11 @@ zones
             alpha.water 1;
         }
     }
+}
 
-    patchFaces
-    {
-        type        box;
-        zoneType    face;
-
-        box (-1e300 -1e300 -1e300) (1e300 0 1e300);
-
-        zone
-        {
-            type        patch;
-            patches     (inlet outlet);
-        }
-
-        values
-        {
-            alpha.water 1;
-        }
-    }
+extrapolatePatches
+{
+    "inlet|outlet"   (alpha.water);
 }
 
 // ************************************************************************* //
