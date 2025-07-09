@@ -77,6 +77,12 @@ public:
 
             //- Return non-const access to the local density field [kg/m^3]
             virtual volScalarField& rho() = 0;
+
+            //- Pressure offset when correcting physical properties [Pa]
+            virtual const dimensionedScalar &pOffset() const = 0;
+
+            //- Return non-const access to pressure offset [Pa]
+            virtual dimensionedScalar& pOffset() = 0;
 };
 
 
@@ -127,6 +133,7 @@ public:
 
             //- Pressure offset when correcting physical properties [Pa]
             virtual const dimensionedScalar &pOffset() const;
+
             //- Return non-const access to pressure offset [Pa]
             virtual dimensionedScalar& pOffset();
 
