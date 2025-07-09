@@ -55,7 +55,7 @@ Foam::rhoThermo::implementation::implementation
         )
     )
 {
-    Info<<"Pressure offset is "<<this->pOffset.value()<<" Pa\n".
+    Info<<"Pressure offset is "<<this->pOffset().value()<<" Pa\n".
 }
 
 
