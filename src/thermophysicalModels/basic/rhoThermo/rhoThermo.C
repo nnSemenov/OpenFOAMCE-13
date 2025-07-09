@@ -48,7 +48,7 @@ Foam::rhoThermo::implementation::implementation
         dimDensity
     ),
     pressure_offset_(
-        dict.lookup<dimensionedScalar>("pressure_offset")
+        dict.lookupOrDefault<dimensionedScalar>("pOffset",dimensionedScalar{"pOffset",dimPressure,0.0})
     )
 {}
 
@@ -86,12 +86,12 @@ Foam::volScalarField& Foam::rhoThermo::implementation::rho()
     return rho_;
 }
 
-const Foam::dimensionedScalar & Foam::rhoThermo::implementation::pressure_offset() const {
-    return this->pressure_offset_;
+const Foam::dimensionedScalar & Foam::rhoThermo::implementation::pOffset() const {
+    return this->pOffset_;
 }
 
-Foam::dimensionedScalar & Foam::rhoThermo::implementation::pressure_offset() {
-    return this->pressure_offset_;
+Foam::dimensionedScalar & Foam::rhoThermo::implementation::pOffset() {
+    return this->pOffset_;
 }
 
 // ************************************************************************* //

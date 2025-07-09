@@ -95,7 +95,7 @@ protected:
         //- Density field [kg/m^3]
         volScalarField rho_;
 
-        dimensionedScalar pressure_offset_;
+        dimensionedScalar pOffset_;
 
 public:
 
@@ -126,8 +126,8 @@ public:
             virtual volScalarField& rho();
 
 
-            virtual const dimensionedScalar &pressure_offset() const;
-            virtual dimensionedScalar& pressure_offset();
+            virtual const dimensionedScalar &pOffset() const;
+            virtual dimensionedScalar& pOffset();
 
     // Member Operators
 
