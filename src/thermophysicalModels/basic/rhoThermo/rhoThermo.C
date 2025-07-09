@@ -47,7 +47,7 @@ Foam::rhoThermo::implementation::implementation
         mesh,
         dimDensity
     ),
-    pressure_offset_(
+    pOffset_(
         dict.lookupOrDefault<dimensionedScalar>("pOffset",dimensionedScalar{"pOffset",dimPressure,0.0})
     )
 {}
