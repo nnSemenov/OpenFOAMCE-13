@@ -54,7 +54,9 @@ Foam::rhoThermo::implementation::implementation
             dimensionedScalar{"pOffset",dimPressure,0.0}
         )
     )
-{}
+{
+    Info<<"Pressure offset is "<<this->pOffset.value()<<" Pa\n".
+}
 
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
