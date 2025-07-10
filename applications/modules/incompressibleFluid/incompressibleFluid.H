@@ -146,13 +146,19 @@ public:
     // Public Data
 
         //- Reference to the pressure field
-        const volScalarField& p;
+        const volScalarField& p() const {
+            return this->p_;
+        }
 
         //- Reference to the velocity field
-        const volVectorField& U;
+        const volVectorField& U() const {
+            return this->U_;
+        }
 
         //- Reference to the volumetric-flux field
-        const surfaceScalarField& phi;
+        const surfaceScalarField& phi() const {
+            return this->phi_;
+        }
 
 
     //- Runtime type information

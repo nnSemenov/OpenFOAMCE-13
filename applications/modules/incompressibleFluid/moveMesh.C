@@ -58,8 +58,8 @@ void Foam::solvers::incompressibleFluid::motionCorrector()
                 fv::correctPhi
                 (
                     phi_,
-                    U,
-                    p,
+                    U(),
+                    p(),
                     autoPtr<volScalarField>(),
                     autoPtr<volScalarField>(),
                     pressureReference,
@@ -68,7 +68,7 @@ void Foam::solvers::incompressibleFluid::motionCorrector()
 
                 // Make the flux relative to the mesh motion
                 MRF.makeRelative(phi_);
-                fvc::makeRelative(phi_, U);
+                fvc::makeRelative(phi_, U());
             }
 
             meshCourantNo();

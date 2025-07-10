@@ -35,11 +35,11 @@ void Foam::solvers::incompressibleFluid::momentumPredictor()
 
     tUEqn =
     (
-        fvm::ddt(U) + fvm::div(phi, U)
-      + MRF.DDt(U)
-      + momentumTransport->divDevSigma(U)
+        fvm::ddt(U_) + fvm::div(phi(), U_)
+      + MRF.DDt(U_)
+      + momentumTransport->divDevSigma(U_)
      ==
-        fvModels().source(U)
+        fvModels().source(U_)
     );
     fvVectorMatrix& UEqn = tUEqn.ref();
 
@@ -49,9 +49,9 @@ void Foam::solvers::incompressibleFluid::momentumPredictor()
 
     if (pimple.momentumPredictor())
     {
-        solve(UEqn == -fvc::grad(p));
+        solve(UEqn == -fvc::grad(p()));
 
-        fvConstraints().constrain(U);
+        fvConstraints().constrain(U_);
     }
 }
 
