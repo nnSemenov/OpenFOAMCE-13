@@ -49,14 +49,10 @@ Foam::solvers::XiFluid::XiFluid(fvMesh& mesh)
         autoPtr<fluidThermo>(psiuMulticomponentThermo::New(mesh).ptr())
     ),
 
-    thermo_(refCast<psiuMulticomponentThermo>(isothermalFluid::thermo_)),
-
-    b_(thermo_.Y("b")),
-
     thermophysicalTransport
     (
         momentumTransport(),
-        thermo_,
+        thermo_(),
         true
     ),
 
@@ -77,7 +73,7 @@ Foam::solvers::XiFluid::XiFluid(fvMesh& mesh)
         SuModel::New
         (
             combustionProperties,
-            thermo_,
+            thermo_(),
             thermophysicalTransport
         )
     ),
@@ -87,37 +83,32 @@ Foam::solvers::XiFluid::XiFluid(fvMesh& mesh)
         XiModel::New
         (
             combustionProperties,
-            thermo_,
+            thermo_(),
             thermophysicalTransport,
             SuModel_->Su()
         )
-    ),
-
-    thermo(thermo_),
-    b(b_),
-    Su(SuModel_->Su()),
-    Xi(XiModel_->Xi())
+    )
 {
-    thermo.validate(type(), "ha", "ea");
+    thermo().validate(type(), "ha", "ea");
 
-    if (thermo_.containsSpecie("ft"))
+    if (thermo_().containsSpecie("ft"))
     {
-        fields.add(thermo_.Y("ft"));
+        fields.add(thermo_().Y("ft"));
     }
 
-    if (thermo_.containsSpecie("fu"))
+    if (thermo_().containsSpecie("fu"))
     {
-        fields.add(thermo_.Y("fu"));
+        fields.add(thermo_().Y("fu"));
     }
 
-    if (thermo_.containsSpecie("egr"))
+    if (thermo_().containsSpecie("egr"))
     {
-        fields.add(thermo_.Y("egr"));
+        fields.add(thermo_().Y("egr"));
     }
 
-    fields.add(b);
-    fields.add(thermo.he());
-    fields.add(thermo.heu());
+    fields.add(b());
+    fields.add(thermo().he());
+    fields.add(thermo().heu());
 }
 
 
@@ -143,7 +134,7 @@ void Foam::solvers::XiFluid::thermophysicalTransportCorrector()
 
 void Foam::solvers::XiFluid::reset()
 {
-    thermo_.reset();
+    thermo_().reset();
     SuModel_->reset();
     XiModel_->reset();
 }
