@@ -35,11 +35,11 @@ void Foam::solvers::isothermalFluid::momentumPredictor()
 
     tUEqn =
     (
-        fvm::ddt(rho, U) + fvm::div(phi, U)
-      + MRF.DDt(rho, U)
+        fvm::ddt(rho_, U) + fvm::div(phi_, U)
+      + MRF.DDt(rho_, U)
       + momentumTransport->divDevTau(U)
      ==
-        fvModels().source(rho, U)
+        fvModels().source(rho_, U)
     );
     fvVectorMatrix& UEqn = tUEqn.ref();
 
@@ -60,7 +60,7 @@ void Foam::solvers::isothermalFluid::momentumPredictor()
         }
         else
         {
-            solve(UEqn == -fvc::grad(p));
+            solve(UEqn == -fvc::grad(p_()));
         }
 
         fvConstraints().constrain(U);

@@ -34,7 +34,7 @@ void Foam::solvers::isothermalFluid::correctDensity()
 
     fvScalarMatrix rhoEqn
     (
-        fvm::ddt(rho) + fvc::div(phi)
+        fvm::ddt(rho) + fvc::div(phi_)
       ==
         fvModels().source(rho)
     );

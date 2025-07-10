@@ -42,12 +42,12 @@ License
 void Foam::solvers::isothermalFluid::correctPressure()
 {
     volScalarField& rho(rho_);
-    volScalarField& p(p_);
+    volScalarField& p(p_());
     volVectorField& U(U_);
     surfaceScalarField& phi(phi_);
 
-    const volScalarField& psi = thermo.psi();
-    rho = thermo.rho();
+    const volScalarField& psi = thermo().psi();
+    rho = thermo().rho();
     rho.relax();
 
     fvVectorMatrix& UEqn = tUEqn.ref();
@@ -208,11 +208,11 @@ void Foam::solvers::isothermalFluid::correctPressure()
         const bool constrained = fvConstraints().constrain(p);
 
         // Thermodynamic density update
-        thermo_.correctRho(psi*p - psip0);
+        thermoPtr_().correctRho(psi*p - psip0);
 
         if (constrained)
         {
-            rho = thermo.rho();
+            rho = thermo().rho();
         }
 
         correctDensity();
@@ -235,16 +235,16 @@ void Foam::solvers::isothermalFluid::correctPressure()
 
     // For steady compressible closed-volume cases adjust the pressure level
     // to obey overall mass continuity
-    if (adjustMass && !thermo.incompressible())
+    if (adjustMass && !thermo().incompressible())
     {
-        p += (initialMass - fvc::domainIntegrate(thermo.rho()))
+        p += (initialMass - fvc::domainIntegrate(thermo().rho()))
             /fvc::domainIntegrate(psi);
         p.correctBoundaryConditions();
     }
 
     if (mesh.schemes().steady() || pimple.simpleRho() || adjustMass)
     {
-        rho = thermo.rho();
+        rho = thermo().rho();
     }
 
     if (mesh.schemes().steady() || pimple.simpleRho())
@@ -255,7 +255,7 @@ void Foam::solvers::isothermalFluid::correctPressure()
     // Correct rhoUf if the mesh is moving
     fvc::correctRhoUf(rhoUf, rho, U, phi, MRF);
 
-    if (thermo.dpdt())
+    if (thermo().dpdt())
     {
         dpdt = fvc::ddt(p);
     }

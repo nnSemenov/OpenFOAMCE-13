@@ -61,13 +61,13 @@ void Foam::solvers::isothermalFluid::motionCorrector()
                 // from the mapped surface velocity
                 phi_ = mesh.Sf() & rhoUf();
 
-                correctUphiBCs(rho, U_, phi_, true);
+                correctUphiBCs(rho_, U_, phi_, true);
 
                 fv::correctPhi
                 (
                     phi_,
-                    buoyancy.valid() ? p_rgh : p,
-                    thermo.psi(),
+                    buoyancy.valid() ? p_rgh_() : p_(),
+                    thermo().psi(),
                     autoPtr<volScalarField>(),
                     divrhoU(),
                     pimple
@@ -75,7 +75,7 @@ void Foam::solvers::isothermalFluid::motionCorrector()
 
                 // Make the fluxes relative to the mesh-motion
                 MRF.makeRelative(phi_);
-                fvc::makeRelative(phi_, rho, U);
+                fvc::makeRelative(phi_, rho_, U_);
             }
 
             meshCourantNo();
