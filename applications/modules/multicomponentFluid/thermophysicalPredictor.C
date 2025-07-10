@@ -36,27 +36,27 @@ void Foam::solvers::multicomponentFluid::thermophysicalPredictor()
         (
             mesh,
             fields,
-            phi,
+            phi_,
             mesh.schemes().div("div(phi,Yi_h)")
         )
     );
 
     reaction->correct();
 
-    forAll(Y, i)
+    forAll(Y(), i)
     {
-        volScalarField& Yi = Y_[i];
+        volScalarField& Yi = Y_()[i];
 
-        if (thermo_.solveSpecie(i))
+        if (thermo_().solveSpecie(i))
         {
             fvScalarMatrix YiEqn
             (
-                fvm::ddt(rho, Yi)
-              + mvConvection->fvmDiv(phi, Yi)
+                fvm::ddt(rho_, Yi)
+              + mvConvection->fvmDiv(phi_, Yi)
               + thermophysicalTransport->divj(Yi)
              ==
                 reaction->R(Yi)
-              + fvModels().source(rho, Yi)
+              + fvModels().source(rho_, Yi)
             );
 
             YiEqn.relax();
@@ -73,19 +73,19 @@ void Foam::solvers::multicomponentFluid::thermophysicalPredictor()
         }
     }
 
-    thermo_.normaliseY();
+    thermo_().normaliseY();
 
 
-    volScalarField& he = thermo_.he();
+    volScalarField& he = thermo_().he();
 
     fvScalarMatrix EEqn
     (
-        fvm::ddt(rho, he) + mvConvection->fvmDiv(phi, he)
-      + fvc::ddt(rho, K) + fvc::div(phi, K)
+        fvm::ddt(rho_, he) + mvConvection->fvmDiv(phi_, he)
+      + fvc::ddt(rho_, K) + fvc::div(phi_, K)
       + pressureWork
         (
             he.name() == "e"
-          ? mvConvection->fvcDiv(phi, p/rho)()
+          ? mvConvection->fvcDiv(phi_, p()/rho_)()
           : -dpdt
         )
       + thermophysicalTransport->divq(he)
@@ -93,8 +93,8 @@ void Foam::solvers::multicomponentFluid::thermophysicalPredictor()
         reaction->Qdot()
       + (
             buoyancy.valid()
-          ? fvModels().source(rho, he) + rho*(U & buoyancy->g)
-          : fvModels().source(rho, he)
+          ? fvModels().source(rho_, he) + rho_*(U_ & buoyancy->g)
+          : fvModels().source(rho_, he)
         )
     );
 
@@ -106,7 +106,7 @@ void Foam::solvers::multicomponentFluid::thermophysicalPredictor()
 
     fvConstraints().constrain(he);
 
-    thermo_.correct();
+    thermo_().correct();
 }
 
 

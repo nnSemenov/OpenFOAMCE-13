@@ -81,12 +81,16 @@ protected:
 
     // Thermophysical properties
 
-        fluidMulticomponentThermo& thermo_;
+        fluidMulticomponentThermo& thermo_() {
+            return refCast<fluidMulticomponentThermo>(this->thermoPtr_());
+        }
 
 
     // Composition
 
-        PtrList<volScalarField>& Y_;
+        PtrList<volScalarField>& Y_() {
+            return thermo_().Y();
+        }
 
 
     // Reactions
@@ -114,10 +118,14 @@ public:
     // Public Data
 
         //- Reference to the fluid thermophysical properties
-        const fluidMulticomponentThermo& thermo;
+        const fluidMulticomponentThermo& thermo() const {
+            return refCast<const fluidMulticomponentThermo>(isothermalFluid::thermo());
+        }
 
         //- Reference to the composition
-        const PtrList<volScalarField>& Y;
+        const PtrList<volScalarField>& Y() const {
+            return this->thermo().Y();
+        }
 
 
     //- Runtime type information
