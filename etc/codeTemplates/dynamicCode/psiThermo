@@ -60,6 +60,7 @@ thermo
 equationOfState
 (
     PengRobinsonGas
+    RedlichKwongGas
     perfectGas
 );
 
