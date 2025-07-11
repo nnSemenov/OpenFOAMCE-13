@@ -124,6 +124,20 @@ public:
     inline scalar alphav(const scalar p, const scalar T) const;
 
 
+    // helping method
+
+    //- Return residual h and e
+    inline Foam::residualEnergy residualHE(const scalar p, const scalar T) const;
+
+    //- Return residual Cp and Cv
+    inline Foam::residualSpecificHeat residualSpecificHeat(const scalar p, const scalar T) const;
+    // partial properties
+    // (∂A/∂T)_p
+//    inline scalar partialA_partialT_const_p(const scalar p, const scalar T, Foam::cubicEOSCoefficient&coeff) const;
+//
+//    // (∂z/∂T)_p
+//    inline scalar partialZ_partialT_const_p(const scalar p, const scalar T, const scalar Z, Foam::cubicEOSCoefficient&coeff) const;
+
     // IO
 
     //- Write to Ostream

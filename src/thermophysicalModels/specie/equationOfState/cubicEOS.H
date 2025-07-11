@@ -7,6 +7,7 @@
 
 #include "autoPtr.H"
 #include "mathematicalConstants.H"
+#include <cassert>
 
 namespace Foam {
 
@@ -61,9 +62,23 @@ namespace Foam {
 
             root = S + Tl - a2/3.0;
         }
+        assert(root>0);
 
         return root;
     }
+
+    struct residualEnergy {
+        scalar h_R;//[J/kg]
+        scalar e_R;//[J/kg]
+        scalar Z;
+    };
+
+    struct residualSpecificHeat {
+        scalar Cp_R;//[J/kg/K]
+        scalar Cv_R;//[J/kg/K]
+        scalar Cp_R_minus_Cv_R;//[J/kg/K]
+        scalar Z;
+    };
 
 }
 
