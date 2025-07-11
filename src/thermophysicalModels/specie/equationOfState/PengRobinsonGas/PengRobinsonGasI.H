@@ -49,6 +49,21 @@ inline Foam::PengRobinsonGas<Specie>::PengRobinsonGas
 
 
 template<class Specie>
+inline Foam::cubicEOSCoefficient Foam::PengRobinsonGas<Specie>::coeff_AB(scalar p, scalar T) const {
+
+    const scalar Tr = T/Tc_;
+    const scalar Pr = p/Pc_;
+    const scalar a = 0.45724*sqr(RR*Tc_)/Pc_;
+    const scalar b = 0.07780*RR*Tc_/Pc_;
+    const scalar kappa = 0.37464 + 1.54226*omega_ - 0.26992*sqr(omega_);
+    const scalar alpha = sqr(1 + kappa*(1 - sqrt(Tr)));
+
+    const scalar A = a*alpha*p/sqr(RR*T);
+    const scalar B = b*p/(RR*T);
+    return Foam::cubicEOSCoefficient{a,b,A,B,Tr,Pr,kappa,alpha};
+}
+
+template<class Specie>
 inline Foam::PengRobinsonGas<Specie>::PengRobinsonGas
 (
     const word& name,
@@ -92,11 +107,12 @@ inline Foam::scalar Foam::PengRobinsonGas<Specie>::rho
 template<class Specie>
 inline Foam::scalar Foam::PengRobinsonGas<Specie>::h(scalar p, scalar T) const
 {
-    const scalar Pr = p/Pc_;
-    const scalar Tr = T/Tc_;
-    const scalar B = 0.07780*Pr/Tr;
-    const scalar kappa = 0.37464 + 1.54226*omega_ - 0.26992*sqr(omega_);
-    const scalar alpha = sqr(1 + kappa*(1 - sqrt(Tr)));
+    const auto coeff = this->coeff_AB(p,T);
+//    const scalar A=coeff.A;
+    const scalar B=coeff.B;
+    const scalar Tr=coeff.Tr;
+    const scalar kappa = coeff.kappa;
+    const scalar alpha = coeff.alpha;
 
     const scalar Z = this->Z(p, T);
 
@@ -114,17 +130,17 @@ inline Foam::scalar Foam::PengRobinsonGas<Specie>::h(scalar p, scalar T) const
 template<class Specie>
 inline Foam::scalar Foam::PengRobinsonGas<Specie>::Cp(scalar p, scalar T) const
 {
-    const scalar Tr = T/Tc_;
-    const scalar a = 0.45724*sqr(RR*Tc_)/Pc_;
-    const scalar b = 0.07780*RR*Tc_/Pc_;
-    const scalar kappa = 0.37464 + 1.54226*omega_ - 0.26992*sqr(omega_);
-    const scalar alpha = sqr(1 + kappa*(1 - sqrt(Tr)));
-
-    const scalar A = a*alpha*p/sqr(RR*T);
-    const scalar B = b*p/(RR*T);
+    const auto coeff = this->coeff_AB(p,T);
+    const scalar a=coeff.a;
+    const scalar b=coeff.b;
+    const scalar A=coeff.A;
+    const scalar B=coeff.B;
+    const scalar Tr=coeff.Tr;
 
     const scalar Z = this->Z(p, T);
 
+    const scalar kappa = coeff.kappa;
+    const scalar alpha = coeff.alpha;
     const scalar ap = kappa*a*(kappa/Tc_ - (1 + kappa)/sqrt(T*Tc_));
     const scalar app = kappa*a*(1 + kappa)/(2*sqrt(pow3(T)*Tc_));
 
@@ -145,11 +161,12 @@ inline Foam::scalar Foam::PengRobinsonGas<Specie>::Cp(scalar p, scalar T) const
 template<class Specie>
 inline Foam::scalar Foam::PengRobinsonGas<Specie>::e(scalar p, scalar T) const
 {
-    const scalar Pr = p/Pc_;
-    const scalar Tr = T/Tc_;
-    const scalar B = 0.07780*Pr/Tr;
-    const scalar kappa = 0.37464 + 1.54226*omega_ - 0.26992*sqr(omega_);
-    const scalar alpha = sqr(1 + kappa*(1 - sqrt(Tr)));
+    const auto coeff = this->coeff_AB(p,T);
+    const scalar A=coeff.A;
+    const scalar B=coeff.B;
+    const scalar Tr=coeff.Tr;
+    const scalar kappa = coeff.kappa;
+    const scalar alpha = coeff.alpha;
 
     const scalar Z = this->Z(p, T);
 
@@ -166,12 +183,12 @@ inline Foam::scalar Foam::PengRobinsonGas<Specie>::e(scalar p, scalar T) const
 template<class Specie>
 inline Foam::scalar Foam::PengRobinsonGas<Specie>::Cv(scalar p, scalar T) const
 {
-    const scalar a = 0.45724*sqr(RR*Tc_)/Pc_;
-    const scalar b = 0.07780*RR*Tc_/Pc_;
-    const scalar kappa = 0.37464 + 1.54226*omega_ - 0.26992*sqr(omega_);
-
-    const scalar B = b*p/(RR*T);
-
+    const auto coeff = this->coeff_AB(p,T);
+    const scalar a=coeff.a;
+    const scalar b=coeff.b;
+    const scalar A=coeff.A;
+    const scalar B=coeff.B;
+    const scalar kappa = coeff.kappa;
     const scalar Z = this->Z(p, T);
 
     const scalar app = kappa*a*(1 + kappa)/(2*sqrt(pow3(T)*Tc_));
@@ -193,10 +210,12 @@ inline Foam::scalar Foam::PengRobinsonGas<Specie>::sp
     scalar T
 ) const
 {
-    const scalar Pr = p/Pc_;
-    const scalar Tr = T/Tc_;
-    const scalar B = 0.07780*Pr/Tr;
-    const scalar kappa = 0.37464 + 1.54226*omega_ - 0.26992*sqr(omega_);
+    const auto coeff = this->coeff_AB(p,T);
+    const scalar Pr = coeff.Pr;
+    const scalar Tr = coeff.Tr;
+    const scalar B = coeff.B;
+    const scalar kappa = coeff.kappa;
+    const scalar alpha = coeff.alpha;
 
     const scalar Z = this->Z(p, T);
 
@@ -245,58 +264,15 @@ inline Foam::scalar Foam::PengRobinsonGas<Specie>::Z
     scalar T
 ) const
 {
-    const scalar Tr = T/Tc_;
-    const scalar a = 0.45724*sqr(RR*Tc_)/Pc_;
-    const scalar b = 0.07780*RR*Tc_/Pc_;
-    const scalar kappa = 0.37464 + 1.54226*omega_ - 0.26992*sqr(omega_);
-    const scalar alpha = sqr(1 + kappa*(1 - sqrt(Tr)));
-
-    const scalar A = a*alpha*p/sqr(RR*T);
-    const scalar B = b*p/(RR*T);
+    const auto coeff = this->coeff_AB(p,T);
+    const scalar A=coeff.A;
+    const scalar B=coeff.B;
 
     const scalar a2 = B - 1;
     const scalar a1 = A - 2*B - 3*sqr(B);
     const scalar a0 = -A*B + sqr(B) + pow3(B);
 
-    const scalar Q = (3*a1 - a2*a2)/9.0;
-    const scalar Rl = (9*a2*a1 - 27*a0 - 2*a2*a2*a2)/54.0;
-
-    const scalar Q3 = Q*Q*Q;
-    const scalar D = Q3 + Rl*Rl;
-
-    scalar root = -1;
-
-    if (D <= 0)
-    {
-        const scalar th = ::acos(Rl/sqrt(-Q3));
-        const scalar qm = 2*sqrt(-Q);
-        const scalar r1 = qm*cos(th/3.0) - a2/3.0;
-        const scalar r2 =
-            qm*cos((th + 2*constant::mathematical::pi)/3.0) - a2/3.0;
-        const scalar r3 =
-            qm*cos((th + 4*constant::mathematical::pi)/3.0) - a2/3.0;
-
-        root = max(r1, max(r2, r3));
-    }
-    else
-    {
-        // One root is real
-        const scalar D05 = sqrt(D);
-        const scalar S = pow(Rl + D05, 1.0/3.0);
-        scalar Tl = 0;
-        if (D05 > Rl)
-        {
-            Tl = -pow(mag(Rl - D05), 1.0/3.0);
-        }
-        else
-        {
-            Tl = pow(Rl - D05, 1.0/3.0);
-        }
-
-        root = S + Tl - a2/3.0;
-    }
-
-    return root;
+    return solveCubicEquation(a2, a1, a0);
 }
 
 
@@ -307,14 +283,12 @@ inline Foam::scalar Foam::PengRobinsonGas<Specie>::CpMCv
     scalar T
 ) const
 {
-    const scalar Tr = T/Tc_;
-    const scalar a = 0.45724*sqr(RR*Tc_)/Pc_;
-    const scalar b = 0.07780*RR*Tc_/Pc_;
-    const scalar kappa = 0.37464 + 1.54226*omega_ - 0.26992*sqr(omega_);
-    const scalar alpha = sqr(1 + kappa*(1 - sqrt(Tr)));
-
-    const scalar A = alpha*a*p/sqr(RR*T);
-    const scalar B = b*p/(RR*T);
+    const auto coeff = this->coeff_AB(p,T);
+    const scalar A=coeff.A;
+    const scalar B=coeff.B;
+    const scalar kappa = coeff.kappa;
+    const scalar a=coeff.a;
+    const scalar b=coeff.b;
 
     const scalar Z = this->Z(p, T);
 
