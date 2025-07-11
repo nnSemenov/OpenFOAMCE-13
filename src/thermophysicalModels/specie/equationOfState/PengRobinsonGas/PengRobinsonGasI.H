@@ -135,12 +135,10 @@ inline Foam::scalar Foam::PengRobinsonGas<Specie>::Cp(scalar p, scalar T) const
     const scalar b=coeff.b;
     const scalar A=coeff.A;
     const scalar B=coeff.B;
-    const scalar Tr=coeff.Tr;
 
     const scalar Z = this->Z(p, T);
 
     const scalar kappa = coeff.kappa;
-    const scalar alpha = coeff.alpha;
     const scalar ap = kappa*a*(kappa/Tc_ - (1 + kappa)/sqrt(T*Tc_));
     const scalar app = kappa*a*(1 + kappa)/(2*sqrt(pow3(T)*Tc_));
 
@@ -162,9 +160,7 @@ template<class Specie>
 inline Foam::scalar Foam::PengRobinsonGas<Specie>::e(scalar p, scalar T) const
 {
     const auto coeff = this->coeff_AB(p,T);
-    const scalar A=coeff.A;
     const scalar B=coeff.B;
-    const scalar Tr=coeff.Tr;
     const scalar kappa = coeff.kappa;
     const scalar alpha = coeff.alpha;
 
@@ -186,7 +182,6 @@ inline Foam::scalar Foam::PengRobinsonGas<Specie>::Cv(scalar p, scalar T) const
     const auto coeff = this->coeff_AB(p,T);
     const scalar a=coeff.a;
     const scalar b=coeff.b;
-    const scalar A=coeff.A;
     const scalar B=coeff.B;
     const scalar kappa = coeff.kappa;
     const scalar Z = this->Z(p, T);
@@ -211,11 +206,9 @@ inline Foam::scalar Foam::PengRobinsonGas<Specie>::sp
 ) const
 {
     const auto coeff = this->coeff_AB(p,T);
-    const scalar Pr = coeff.Pr;
     const scalar Tr = coeff.Tr;
     const scalar B = coeff.B;
     const scalar kappa = coeff.kappa;
-    const scalar alpha = coeff.alpha;
 
     const scalar Z = this->Z(p, T);
 
