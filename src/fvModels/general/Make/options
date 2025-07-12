@@ -21,6 +21,5 @@ LIB_LIBS = \
     -lfluidThermoThermophysicalTransportModels \
     -lphysicalProperties \
     -lsolidThermo \
-    -lmulticomponentFluid \
     -lmulticomponentThermophysicalModels \
     -lfluidMulticomponentThermophysicalTransportModels
