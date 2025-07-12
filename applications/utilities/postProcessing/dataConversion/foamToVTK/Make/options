@@ -11,5 +11,9 @@ EXE_LIBS = \
     -lfoamToVTK \
     -lpolyTopoChange \
     -llagrangian \
+    -lgenericFields \
     -lgenericFvFields \
+    -lfiniteVolume \
+    -lmeshTools \
+    -lPstream \
     -lfileFormats

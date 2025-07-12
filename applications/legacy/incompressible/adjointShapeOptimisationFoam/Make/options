@@ -15,4 +15,5 @@ EXE_LIBS = \
     -lfiniteVolume \
     -lmeshTools \
     -lfvModels \
-    -lfvConstraints
+    -lfvConstraints \
+    -lPstream

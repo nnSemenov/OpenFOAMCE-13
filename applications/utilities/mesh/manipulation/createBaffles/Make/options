@@ -8,4 +8,5 @@ EXE_LIBS = \
     -lpolyTopoChange \
     -lmeshTools \
     -lfiniteVolume \
-    -lgenericFvFields
+    -lgenericFvFields \
+    -lPstream

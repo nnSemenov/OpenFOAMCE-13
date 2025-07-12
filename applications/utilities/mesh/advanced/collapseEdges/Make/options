@@ -7,4 +7,5 @@ EXE_LIBS = \
     -lpolyTopoChange \
     -lmeshTools \
     -lgenericPatches \
-    -lfiniteVolume
+    -lfiniteVolume \
+    -lPstream

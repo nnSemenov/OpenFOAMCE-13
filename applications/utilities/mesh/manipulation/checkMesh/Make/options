@@ -9,4 +9,5 @@ EXE_LIBS = \
     -lmeshCheck \
     -lfiniteVolume \
     -lsampling \
-    -lgenericPatches
+    -lgenericPatches \
+    -lPstream

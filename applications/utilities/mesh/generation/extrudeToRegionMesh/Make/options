@@ -11,4 +11,5 @@ EXE_LIBS = \
     -lgenericFvFields \
     -lmeshTools \
     -lpolyTopoChange \
-    -lextrudeModel
+    -lextrudeModel \
+    -lPstream

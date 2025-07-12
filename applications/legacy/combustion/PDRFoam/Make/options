@@ -43,4 +43,11 @@ EXE_LIBS = \
     -llaminarFlameSpeedModels \
     -lfiniteVolume \
     -lfvModels \
-    -lfvConstraints
+    -lfvConstraints \
+    -lPstream \
+    -lcoupledThermophysicalTransportModels \
+    -lfluidMulticomponentThermophysicalTransportModels \
+    -lfluidThermoThermophysicalTransportModels \
+    -lthermophysicalTransportModel \
+    -lphysicalProperties \
+    -lfluidThermophysicalTransportModel

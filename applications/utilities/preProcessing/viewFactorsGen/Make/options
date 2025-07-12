@@ -11,4 +11,5 @@ EXE_LIBS = \
     -ldistributed \
     -lfiniteVolume \
     -lmeshTools \
-    -lradiationModels
+    -lradiationModels \
+    -lPstream

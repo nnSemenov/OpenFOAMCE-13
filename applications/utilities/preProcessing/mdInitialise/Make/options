@@ -11,4 +11,5 @@ EXE_LIBS = \
     -lpolyTopoChange \
     -lfiniteVolume \
     -llagrangian \
-    -lmolecularDynamics
+    -lmolecularDynamics \
+    -lPstream

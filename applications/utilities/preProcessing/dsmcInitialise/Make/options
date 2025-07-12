@@ -9,4 +9,5 @@ EXE_LIBS = \
     -lmeshTools \
     -lfiniteVolume \
     -llagrangian \
-    -lDSMC
+    -lDSMC \
+    -lPstream

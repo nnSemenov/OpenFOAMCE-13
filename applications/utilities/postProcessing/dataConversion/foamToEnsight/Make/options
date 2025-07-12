@@ -9,5 +9,9 @@ EXE_INC = \
 EXE_LIBS = \
     -lpolyTopoChange \
     -lsampling \
+    -lgenericFields \
     -lgenericFvFields \
-    -llagrangian
+    -llagrangian \
+    -lfiniteVolume \
+    -lmeshTools \
+    -lPstream

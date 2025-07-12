@@ -13,4 +13,5 @@ EXE_LIBS = \
     -llagrangian \
     -lLagrangian \
     -lgenericFvFields \
-    -lgenericLagrangianFields
+    -lgenericLagrangianFields \
+    -lPstream

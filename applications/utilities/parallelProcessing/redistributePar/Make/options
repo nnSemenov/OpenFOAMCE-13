@@ -10,4 +10,5 @@ EXE_LIBS = \
     -ldecompositionMethods \
     -L$(FOAM_LIBBIN)/dummy -lscotchDecomp -lptscotchDecomp \
     -lmeshTools \
-    -lpolyTopoChange
+    -lpolyTopoChange \
+    -lPstream

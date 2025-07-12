@@ -11,4 +11,8 @@ EXE_INC = \
 EXE_LIBS = \
     -lchemistryModel \
     -lfiniteVolume \
-    -lmeshTools
+    -lmeshTools \
+    -lPstream \
+    -lfluidThermophysicalModels \
+    -lchemistryModel\
+    -lmulticomponentThermophysicalModels

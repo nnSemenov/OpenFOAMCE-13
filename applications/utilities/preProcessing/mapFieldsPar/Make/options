@@ -8,4 +8,5 @@ EXE_LIBS = \
     -lmeshTools \
     -llagrangian \
     -lfiniteVolume \
-    -lgenericFvFields
+    -lgenericFvFields \
+    -lPstream

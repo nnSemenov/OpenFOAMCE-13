@@ -19,4 +19,5 @@ EXE_LIBS = \
     -lsurfMesh \
     -lfileFormats \
     -lpolyTopoChange \
-    -lsnappyHexMesh
+    -lsnappyHexMesh \
+    -lPstream

@@ -7,4 +7,5 @@ EXE_INC = \
 EXE_LIBS = \
     -llagrangian \
     -lmeshTools \
-    -lfiniteVolume
+    -lfiniteVolume \
+    -lPstream

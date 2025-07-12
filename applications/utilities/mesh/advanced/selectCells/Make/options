@@ -10,4 +10,5 @@ EXE_LIBS = \
     -lmeshTools \
     -lgenericPatches \
     -ltriSurface \
-    -llagrangian
+    -llagrangian \
+    -lPstream

@@ -23,4 +23,10 @@ EXE_LIBS = \
     -lsampling \
     -lmeshTools \
     -lfvModels \
-    -lfvConstraints
+    -lfvConstraints \
+    -lPstream \
+    -lthermophysicalTransportModel \
+    -lfluidThermophysicalTransportModel \
+    -lfluidThermoThermophysicalTransportModels
+
+

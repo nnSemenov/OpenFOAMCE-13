@@ -9,4 +9,5 @@ EXE_LIBS = \
     -lmeshTools \
     -lgenericPatches \
     -lfileFormats \
-    -lpolyTopoChange
+    -lpolyTopoChange \
+    -lPstream

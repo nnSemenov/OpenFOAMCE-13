@@ -7,4 +7,5 @@ EXE_LIBS = \
     -lgenericPatches \
     -lmeshTools \
     -ltopoSetSources \
-    -lfvTopoSetSources
+    -lfvTopoSetSources \
+    -lPstream

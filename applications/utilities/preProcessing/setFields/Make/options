@@ -7,4 +7,5 @@ EXE_LIBS = \
     -lfiniteVolume \
     -lgenericFvFields \
     -lmeshTools \
-    -ltopoSetSources
+    -ltopoSetSources \
+    -lPstream
