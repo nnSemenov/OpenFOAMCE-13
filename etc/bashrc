@@ -70,7 +70,7 @@ unset bashrcFile
 export WM_COMPILER_TYPE=system
 
 #- Compiler:
-#    WM_COMPILER = Gcc | Gcc55 ... Gcc121 | Clang | Icx
+#    WM_COMPILER = Gcc | Gcc55 ... Gcc121 | Clang | Icx | AOCC
 export WM_COMPILER=Clang
 unset WM_COMPILER_ARCH WM_COMPILER_LIB_ARCH
 
