@@ -471,6 +471,13 @@ public:
 
             //- Thermal conductivity of mixture [W/m/K]
             virtual const volScalarField& kappa() const = 0;
+
+
+            //- Pressure offset when correcting physical properties [Pa]
+            virtual const dimensionedScalar &pOffset() const = 0;
+
+            //- Return non-const access to pressure offset [Pa]
+            virtual dimensionedScalar& pOffset() = 0;
 };
 
 
@@ -507,6 +514,9 @@ protected:
 
         //- Should the dpdt term be included in the enthalpy equation
         Switch dpdt_;
+
+        //- Pressure offset when correcting physical properties [Pa]. 0 [Pa] by default.
+        dimensionedScalar pOffset_;
 
 
 public:
@@ -561,6 +571,13 @@ public:
             //- Thermal conductivity of mixture [W/m/K]
             virtual const volScalarField& kappa() const;
 
+
+
+        //- Pressure offset when correcting physical properties [Pa]
+        virtual const dimensionedScalar &pOffset() const;
+
+        //- Return non-const access to pressure offset [Pa]
+        virtual dimensionedScalar& pOffset();
 
         //- Read thermophysical properties dictionary
         virtual void read(const dictionary&);
