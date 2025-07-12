@@ -574,10 +574,10 @@ public:
 
 
         //- Pressure offset when correcting physical properties [Pa]
-        virtual const dimensionedScalar &pOffset() const;
+        const dimensionedScalar &pOffset() const final;
 
         //- Return non-const access to pressure offset [Pa]
-        virtual dimensionedScalar& pOffset();
+        dimensionedScalar& pOffset() final;
 
         //- Read thermophysical properties dictionary
         virtual void read(const dictionary&);
