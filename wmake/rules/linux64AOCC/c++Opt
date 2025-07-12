@@ -1,2 +1,2 @@
 c++DBUG     =
-c++OPT      = -O3
+c++OPT      = -O3 -march=native -mllvm -enable-strided-vectorization
