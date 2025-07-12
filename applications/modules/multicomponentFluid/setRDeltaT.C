@@ -46,7 +46,7 @@ void Foam::solvers::multicomponentFluid::setRDeltaT()
 
         // Set the reciprocal time-step from the local Courant number
         rDeltaT.internalFieldRef() =
-            fvc::surfaceSum(mag(phi))/((2*maxCo)*mesh.V()*rho());
+            fvc::surfaceSum(mag(phi_))/((2*maxCo)*mesh.V()*rho());
 
         // Clip to user-defined maximum and minimum time-steps
         scalar minRDeltaT = gMin(rDeltaT.primitiveField());
@@ -76,7 +76,7 @@ void Foam::solvers::multicomponentFluid::setRDeltaT()
     {
         volScalarField::Internal rDeltaTT
         (
-            mag(reaction->Qdot())/(alphaTemp*rho*thermo.Cp()*thermo.T())
+            mag(reaction->Qdot())/(alphaTemp*rho_*thermo().Cp()*thermo().T())
         );
 
         Info<< "    Temperature = "
@@ -108,12 +108,11 @@ void Foam::solvers::multicomponentFluid::setRDeltaT()
         );
 
         bool foundY = false;
-
-        forAll(Y, i)
+        forAll(Y_(), i)
         {
-            if (thermo_.solveSpecie(i))
+            if (thermo_().solveSpecie(i))
             {
-                volScalarField& Yi = Y_[i];
+                volScalarField& Yi = Y_()[i];
 
                 if (Yref.found(Yi.name()))
                 {
@@ -125,7 +124,7 @@ void Foam::solvers::multicomponentFluid::setRDeltaT()
                         mag
                         (
                             reaction->R(Yi)().source()
-                           /((Yrefi*alphaY)*(rho*mesh.V()))
+                           /((Yrefi*alphaY)*(rho_*mesh.V()))
                         ),
                         rDeltaTY
                     );

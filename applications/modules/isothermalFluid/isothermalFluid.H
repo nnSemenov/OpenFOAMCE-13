@@ -84,11 +84,10 @@ protected:
         //- Pointer to the fluid thermophysical properties
         autoPtr<fluidThermo> thermoPtr_;
 
-        //- Reference to the fluid thermophysical properties
-        fluidThermo& thermo_;
-
         //- Reference to the pressure field
-        volScalarField& p_;
+        volScalarField& p_() {
+            return this->thermoPtr_().p();
+        }
 
         //- The continuity density field
         volScalarField rho_;
@@ -106,7 +105,9 @@ protected:
 
         //- Reference to the buoyant pressure for buoyant cases
         //  otherwise to the pressure
-        volScalarField& p_rgh_;
+        volScalarField& p_rgh_() {
+            return (buoyancy.valid() ? buoyancy->p_rgh : this->p_());
+        }
 
 
     // Pressure reference
@@ -212,23 +213,36 @@ public:
     // Public Data
 
         //- Reference to the fluid thermophysical properties
-        const fluidThermo& thermo;
+        const fluidThermo& thermo() const {
+            return this->thermoPtr_();
+        }
 
         //- Reference to the pressure field
-        const volScalarField& p;
+        const volScalarField& p() const {
+            return this->thermoPtr_().p();
+        }
+
 
         //- Reference to the buoyant pressure for buoyant cases
         //  otherwise to the pressure
-        const volScalarField& p_rgh;
+        const volScalarField& p_rgh() const {
+            return (buoyancy.valid() ? buoyancy->p_rgh : this->p());
+        }
 
         //- Reference to the continuity density field
-        const volScalarField& rho;
+        const volScalarField& rho() const {
+            return this->rho_;
+        }
 
         //- Velocity field
-        const volVectorField& U;
+        const volVectorField& U() const {
+            return this->U_;
+        }
 
         //- Mass-flux field
-        const surfaceScalarField& phi;
+        const surfaceScalarField& phi() const {
+            return this->phi_;
+        }
 
 
     //- Runtime type information

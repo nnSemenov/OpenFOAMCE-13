@@ -49,11 +49,11 @@ Foam::solvers::fluid::fluid(fvMesh& mesh)
         fluidThermoThermophysicalTransportModel::New
         (
             momentumTransport(),
-            thermo
+            thermo()
         )
     )
 {
-    thermo.validate(type(), "h", "e");
+    thermo().validate(type(), "h", "e");
 }
 
 

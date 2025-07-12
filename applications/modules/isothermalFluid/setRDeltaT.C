@@ -32,7 +32,7 @@ License
 
 void Foam::solvers::isothermalFluid::setRDeltaT()
 {
-    const volScalarField& psi = thermo.psi();
+    const volScalarField& psi = thermo().psi();
 
     volScalarField& rDeltaT = trDeltaT.ref();
 
@@ -52,12 +52,12 @@ void Foam::solvers::isothermalFluid::setRDeltaT()
 
     // Set the reciprocal time-step from the local Courant number
     rDeltaT.internalFieldRef() =
-        fvc::surfaceSum(mag(phi))/((2*maxCo)*mesh.V()*rho());
+        fvc::surfaceSum(mag(phi_))/((2*maxCo)*mesh.V()*rho_);
 
     // Set the reciprocal time-step from the local acoustic Courant number
     if (pimple.transonic())
     {
-        surfaceScalarField phid("phid", fvc::interpolate(psi)*fvc::flux(U));
+        surfaceScalarField phid("phid", fvc::interpolate(psi)*fvc::flux(U_));
 
         rDeltaT.internalFieldRef() =
             max

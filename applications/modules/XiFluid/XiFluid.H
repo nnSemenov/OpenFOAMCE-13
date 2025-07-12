@@ -147,13 +147,17 @@ protected:
 
     // Thermophysical properties
 
-        psiuMulticomponentThermo& thermo_;
+        psiuMulticomponentThermo& thermo_() {
+            return refCast<psiuMulticomponentThermo>(this->thermoPtr_());
+        }
 
 
     // Composition
 
         //- Reference to the combustion regress variable
-        volScalarField& b_;
+        volScalarField& b_() {
+            return this->thermo_().Y("b");
+        }
 
         //- Set of fields used for the multivariate convection scheme
         multivariateSurfaceInterpolationScheme<scalar>::fieldTable fields;
@@ -247,17 +251,25 @@ protected:
 public:
 
         //- Reference to the fluid thermophysical properties
-        const psiuMulticomponentThermo& thermo;
+        const psiuMulticomponentThermo& thermo() const {
+            return refCast<const psiuMulticomponentThermo>(isothermalFluid::thermo());
+        }
 
         //- Reference to the combustion regress variable
         //  obtained from the combustion mixture
-        const volScalarField& b;
+        const volScalarField& b() const {
+            return this->thermo().Y("b");
+        }
 
         //- Laminar flame speed
-        const volScalarField& Su;
+        const volScalarField& Su() const {
+            return this->SuModel_->Su();
+        }
 
         //- Flame wrinkling
-        const volScalarField& Xi;
+        const volScalarField& Xi() const {
+            return this->XiModel_->Xi();
+        }
 
 
     //- Runtime type information

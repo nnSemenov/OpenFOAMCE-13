@@ -74,6 +74,7 @@ equationOfState
     incompressiblePerfectGas
     linear
     PengRobinsonGas
+    RedlichKwongGas
     perfectFluid
     perfectGas
     rhoConst

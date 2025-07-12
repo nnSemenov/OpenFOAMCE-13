@@ -44,13 +44,13 @@ namespace solvers
 
 void Foam::solvers::incompressibleFluid::correctCoNum()
 {
-    fluidSolver::correctCoNum(phi);
+    fluidSolver::correctCoNum(phi());
 }
 
 
 void Foam::solvers::incompressibleFluid::continuityErrors()
 {
-    fluidSolver::continuityErrors(phi);
+    fluidSolver::continuityErrors(phi());
 }
 
 
@@ -113,13 +113,9 @@ Foam::solvers::incompressibleFluid::incompressibleFluid(fvMesh& mesh)
         )
     ),
 
-    MRF(mesh),
-
-    p(p_),
-    U(U_),
-    phi(phi_)
+    MRF(mesh)
 {
-    mesh.schemes().setFluxRequired(p.name());
+    mesh.schemes().setFluxRequired(p().name());
 
     momentumTransport->validate();
 
@@ -179,7 +175,7 @@ void Foam::solvers::incompressibleFluid::preSolve()
                 IOobject::READ_IF_PRESENT,
                 IOobject::AUTO_WRITE
             ),
-            fvc::interpolate(U)
+            fvc::interpolate(U())
         );
     }
 

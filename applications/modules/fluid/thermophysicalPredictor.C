@@ -31,24 +31,24 @@ License
 
 void Foam::solvers::fluid::thermophysicalPredictor()
 {
-    volScalarField& he = thermo_.he();
+    volScalarField& he = this->thermoPtr_().he();
 
     fvScalarMatrix EEqn
     (
-        fvm::ddt(rho, he) + fvm::div(phi, he)
-      + fvc::ddt(rho, K) + fvc::div(phi, K)
+        fvm::ddt(rho_, he) + fvm::div(phi_, he)
+      + fvc::ddt(rho_, K) + fvc::div(phi_, K)
       + pressureWork
         (
             he.name() == "e"
-          ? fvc::div(phi, p/rho)()
+          ? fvc::div(phi_, p_()/rho_)()
           : -dpdt
         )
       + thermophysicalTransport->divq(he)
      ==
         (
             buoyancy.valid()
-          ? fvModels().source(rho, he) + rho*(U & buoyancy->g)
-          : fvModels().source(rho, he)
+          ? fvModels().source(rho_, he) + rho_*(U_ & buoyancy->g)
+          : fvModels().source(rho_, he)
         )
     );
 
@@ -60,7 +60,7 @@ void Foam::solvers::fluid::thermophysicalPredictor()
 
     fvConstraints().constrain(he);
 
-    thermo_.correct();
+    this->thermoPtr_().correct();
 }
 
 

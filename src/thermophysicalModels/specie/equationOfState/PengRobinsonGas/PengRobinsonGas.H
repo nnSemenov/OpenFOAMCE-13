@@ -62,6 +62,7 @@ SourceFiles
 #define PengRobinsonGas_H
 
 #include "autoPtr.H"
+#include "../equationOfState/cubicEOS.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -164,6 +165,7 @@ public:
 
         // Fundamental properties
 
+            inline Foam::cubicEOSCoefficient coeff_AB(scalar p, scalar T) const;
 
             //- Is the equation of state is incompressible i.e. rho != f(p)
             static const bool incompressible = false;

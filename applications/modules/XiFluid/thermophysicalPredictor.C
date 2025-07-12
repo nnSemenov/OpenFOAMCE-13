@@ -37,15 +37,15 @@ void Foam::solvers::XiFluid::ftSolve
     const volScalarField& Db
 )
 {
-    volScalarField& ft = thermo_.Y("ft");
+    volScalarField& ft = thermo_().Y("ft");
 
     fvScalarMatrix ftEqn
     (
-        fvm::ddt(rho, ft)
-      + mvConvection.fvmDiv(phi, ft)
+        fvm::ddt(rho(), ft)
+      + mvConvection.fvmDiv(phi(), ft)
       - fvm::laplacian(Db, ft)
      ==
-        fvModels().source(rho, ft)
+        fvModels().source(rho(), ft)
     );
 
     ftEqn.relax();
@@ -62,17 +62,17 @@ void Foam::solvers::XiFluid::fuSolve
     const volScalarField& bSource
 )
 {
-    volScalarField& fu = thermo_.Y("fu");
-    const volScalarField& ft = thermo_.Y("ft");
-    const volScalarField& b(b_);
+    volScalarField& fu = thermo_().Y("fu");
+    const volScalarField& ft = thermo_().Y("ft");
+    const volScalarField& b(b_());
 
     // Progress variable
     const volScalarField c("c", scalar(1) - b);
 
     // Unburnt gas density
-    const volScalarField rhou("rhou", thermo.rhou());
+    const volScalarField rhou("rhou", thermo().rhou());
 
-    const volScalarField fres(thermo_.fres());
+    const volScalarField fres(thermo_().fres());
     const volScalarField fuFres(max(fu - fres, scalar(0)));
 
     const volScalarField fuDot
@@ -85,13 +85,13 @@ void Foam::solvers::XiFluid::fuSolve
 
     fvScalarMatrix fuEqn
     (
-        fvm::ddt(rho, fu)
-      + mvConvection.fvmDiv(phi, fu)
+        fvm::ddt(rho(), fu)
+      + mvConvection.fvmDiv(phi(), fu)
       - fvm::laplacian(Db, fu)
      ==
         fvm::Sp(fuDot, fu)
       - fuDot*fres
-      + fvModels().source(rho, fu)
+      + fvModels().source(rho(), fu)
     );
 
     fuEqn.relax();
@@ -107,15 +107,15 @@ void Foam::solvers::XiFluid::egrSolve
     const volScalarField& Db
 )
 {
-    volScalarField& egr = thermo_.Y("egr");
+    volScalarField& egr = thermo_().Y("egr");
 
     fvScalarMatrix egrEqn
     (
-        fvm::ddt(rho, egr)
-      + mvConvection.fvmDiv(phi, egr)
+        fvm::ddt(rho(), egr)
+      + mvConvection.fvmDiv(phi(), egr)
       - fvm::laplacian(Db, egr)
      ==
-        fvModels().source(rho, egr)
+        fvModels().source(rho(), egr)
     );
 
     egrEqn.relax();
@@ -157,12 +157,12 @@ Foam::tmp<Foam::volScalarField> Foam::solvers::XiFluid::XiCorr
         // discretisation of the b equation.
         const volScalarField mgb
         (
-            fvc::div(nf, b, "div(phiSt,b)") - b*fvc::div(nf) + dMgb
+            fvc::div(nf, b(), "div(phiSt,b)") - b()*fvc::div(nf) + dMgb
         );
 
         forAll(ignitionModels, i)
         {
-            ignitionModels[i].XiCorr(tXi.ref(), b, mgb);
+            ignitionModels[i].XiCorr(tXi.ref(), b(), mgb);
         }
 
         return tXi;
@@ -180,13 +180,13 @@ void Foam::solvers::XiFluid::bSolve
     const volScalarField& Db
 )
 {
-    volScalarField& b(b_);
+    volScalarField& b(b_());
 
     // Progress variable
     const volScalarField c("c", scalar(1) - b);
 
     // Unburnt gas density
-    const volScalarField rhou("rhou", thermo.rhou());
+    const volScalarField rhou("rhou", thermo().rhou());
 
     // Calculate flame normal etc.
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -217,12 +217,12 @@ void Foam::solvers::XiFluid::bSolve
     const surfaceScalarField phiSt
     (
         "phiSt",
-        fvc::interpolate(rhou*Su*XiCorr(Xi, nf, dMgb))*nf
+        fvc::interpolate(rhou*Su()*XiCorr(Xi(), nf, dMgb))*nf
     );
 
     fvScalarMatrix bSourceEqn
     (
-        fvModels().source(rho, b)
+        fvModels().source(rho(), b)
       - fvm::div(phiSt, b)
       + fvm::Sp(fvc::div(phiSt), b)
     );
@@ -230,8 +230,8 @@ void Foam::solvers::XiFluid::bSolve
     // Create b equation
     fvScalarMatrix bEqn
     (
-        fvm::ddt(rho, b)
-      + mvConvection.fvmDiv(phi, b)
+        fvm::ddt(rho(), b)
+      + mvConvection.fvmDiv(phi(), b)
       - fvm::laplacian(Db, b)
      ==
         bSourceEqn
@@ -249,7 +249,7 @@ void Foam::solvers::XiFluid::bSolve
     // Correct the laminar flame speed
     SuModel_->correct();
 
-    if (thermo_.containsSpecie("fu"))
+    if (thermo_().containsSpecie("fu"))
     {
         fuSolve(mvConvection, Db, (bSourceEqn & b));
     }
@@ -262,20 +262,20 @@ void Foam::solvers::XiFluid::EauSolve
     const volScalarField& Db
 )
 {
-    volScalarField& heau = thermo_.heu();
+    volScalarField& heau = thermo_().heu();
 
-    const volScalarField::Internal rhoByRhou(rho()/thermo.rhou()());
+    const volScalarField::Internal rhoByRhou(rho()/thermo().rhou()());
 
     fvScalarMatrix EauEqn
     (
-        fvm::ddt(rho, heau) + mvConvection.fvmDiv(phi, heau)
+        fvm::ddt(rho(), heau) + mvConvection.fvmDiv(phi(), heau)
       + rhoByRhou
        *(
-            (fvc::ddt(rho, K) + fvc::div(phi, K))()
+            (fvc::ddt(rho(), K) + fvc::div(phi(), K))()
           + pressureWork
             (
                 heau.name() == "eau"
-              ? mvConvection.fvcDiv(phi, p/rho)()
+              ? mvConvection.fvcDiv(phi(), p()/rho())()
               : -dpdt
             )
         )
@@ -288,7 +288,7 @@ void Foam::solvers::XiFluid::EauSolve
         //+ fvm::Sp(fvc::div(muEff*fvc::grad(b)/(b + 0.001)), heau)
 
      ==
-        fvModels().source(rho, heau)
+        fvModels().source(rho(), heau)
     );
 
     EauEqn.relax();
@@ -304,24 +304,24 @@ void Foam::solvers::XiFluid::EaSolve
     const volScalarField& Db
 )
 {
-    volScalarField& hea = thermo_.he();
+    volScalarField& hea = thermo_().he();
 
     fvScalarMatrix EaEqn
     (
-        fvm::ddt(rho, hea) + mvConvection.fvmDiv(phi, hea)
-      + fvc::ddt(rho, K) + fvc::div(phi, K)
+        fvm::ddt(rho(), hea) + mvConvection.fvmDiv(phi(), hea)
+      + fvc::ddt(rho(), K) + fvc::div(phi(), K)
       + pressureWork
         (
             hea.name() == "ea"
-          ? mvConvection.fvcDiv(phi, p/rho)()
+          ? mvConvection.fvcDiv(phi(), p()/rho())()
           : -dpdt
         )
       - fvm::laplacian(Db, hea)
      ==
         (
             buoyancy.valid()
-          ? fvModels().source(rho, hea) + rho*(U & buoyancy->g)
-          : fvModels().source(rho, hea)
+          ? fvModels().source(rho(), hea) + rho()*(U() & buoyancy->g)
+          : fvModels().source(rho(), hea)
         )
     );
 
@@ -356,7 +356,7 @@ void Foam::solvers::XiFluid::thermophysicalPredictor()
         (
             mesh,
             fields,
-            phi,
+            phi(),
             mesh.schemes().div("div(phi,ft_b_ha_hau)")
         )
     );
@@ -364,10 +364,10 @@ void Foam::solvers::XiFluid::thermophysicalPredictor()
     const volScalarField Db
     (
         "Db",
-        ignited ? XiModel_->Db() : thermophysicalTransport.DEff(b)
+        ignited ? XiModel_->Db() : thermophysicalTransport.DEff(b())
     );
 
-    if (thermo_.containsSpecie("ft"))
+    if (thermo_().containsSpecie("ft"))
     {
         ftSolve(mvConvection(), Db);
     }
@@ -379,15 +379,15 @@ void Foam::solvers::XiFluid::thermophysicalPredictor()
     }
     else
     {
-        if (thermo_.containsSpecie("fu"))
+        if (thermo_().containsSpecie("fu"))
         {
-            volScalarField& fu = thermo_.Y("fu");
-            const volScalarField& ft = thermo_.Y("ft");
+            volScalarField& fu = thermo_().Y("fu");
+            const volScalarField& ft = thermo_().Y("ft");
             fu = ft;
         }
     }
 
-    if (thermo_.containsSpecie("egr"))
+    if (thermo_().containsSpecie("egr"))
     {
         egrSolve(mvConvection(), Db);
     }
@@ -396,10 +396,10 @@ void Foam::solvers::XiFluid::thermophysicalPredictor()
 
     if (!ignited)
     {
-        thermo_.heu() == thermo.he();
+        thermo_().heu() == thermo().he();
     }
 
-    thermo_.correct();
+    thermo_().correct();
 }
 
 

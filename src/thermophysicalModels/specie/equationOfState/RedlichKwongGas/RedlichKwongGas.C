@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2022-2023 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2014-2023 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,27 +23,49 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "isothermalFluid.H"
-#include "fvcDiv.H"
+#include "RedlichKwongGas.H"
+#include "IOstreams.H"
 
-// * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
+// * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-void Foam::solvers::isothermalFluid::correctDensity()
+template<class Specie>
+Foam::RedlichKwongGas<Specie>::RedlichKwongGas
+        (
+                const word& name,
+                const dictionary& dict
+        )
+        :
+        Specie(name, dict),
+        Tc_(dict.subDict("equationOfState").lookup<scalar>("Tc")),
+        Vc_(dict.subDict("equationOfState").lookup<scalar>("Vc")),
+        Zc_(1.0),
+        Pc_(dict.subDict("equationOfState").lookup<scalar>("Pc"))
 {
-    volScalarField& rho(rho_);
+    Zc_ = Pc_*Vc_/(RR*Tc_);
+}
 
-    fvScalarMatrix rhoEqn
-    (
-        fvm::ddt(rho) + fvc::div(phi_)
-      ==
-        fvModels().source(rho)
-    );
 
-    fvConstraints().constrain(rhoEqn);
+// * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-    rhoEqn.solve();
 
-    fvConstraints().constrain(rho);
+template<class Specie>
+void Foam::RedlichKwongGas<Specie>::write(Ostream& os) const
+{
+    Specie::write(os);
+}
+
+
+// * * * * * * * * * * * * * * * Ostream Operator  * * * * * * * * * * * * * //
+
+template<class Specie>
+Foam::Ostream& Foam::operator<<
+        (
+                Ostream& os,
+                const RedlichKwongGas<Specie>& pg
+        )
+{
+    pg.write(os);
+    return os;
 }
 
 

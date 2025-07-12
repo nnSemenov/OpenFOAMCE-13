@@ -276,8 +276,16 @@ Foam::basicThermo::implementation::implementation
         dimensionedScalar(dimThermalConductivity, Zero)
     ),
 
-    dpdt_(dict.lookupOrDefault<Switch>("dpdt", true))
-{}
+    dpdt_(dict.lookupOrDefault<Switch>("dpdt", true)),
+
+    pOffset_(dict.lookupOrDefault<dimensionedScalar>(
+            "pOffset",
+            dimensionedScalar{"pOffset",dimPressure,0.0}
+    ))
+{
+
+    Info<<"Pressure offset is "<<this->pOffset().value()<<" Pa"<<endl;
+}
 
 
 // * * * * * * * * * * * * * * * * Selectors * * * * * * * * * * * * * * * * //
@@ -378,8 +386,16 @@ const Foam::volScalarField& Foam::basicThermo::implementation::kappa() const
 }
 
 
-void Foam::basicThermo::implementation::read(const dictionary&)
+void Foam::basicThermo::implementation::read(const dictionary&dict)
 {}
 
+
+const Foam::dimensionedScalar & Foam::basicThermo::implementation::pOffset() const {
+    return this->pOffset_;
+}
+
+Foam::dimensionedScalar & Foam::basicThermo::implementation::pOffset() {
+    return this->pOffset_;
+}
 
 // ************************************************************************* //

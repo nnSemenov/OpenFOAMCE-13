@@ -41,8 +41,8 @@ License
 void Foam::solvers::isothermalFluid::correctBuoyantPressure()
 {
     volScalarField& rho(rho_);
-    volScalarField& p(p_);
-    volScalarField& p_rgh = p_rgh_;
+    volScalarField& p(p_());
+    volScalarField& p_rgh = p_rgh_();
     volVectorField& U(U_);
     surfaceScalarField& phi(phi_);
 
@@ -51,8 +51,8 @@ void Foam::solvers::isothermalFluid::correctBuoyantPressure()
     const surfaceScalarField& ghf = buoyancy->ghf;
     const uniformDimensionedScalarField pRef = buoyancy->pRef;
 
-    const volScalarField& psi = thermo.psi();
-    rho = thermo.rho();
+    const volScalarField& psi = thermoPtr_().psi();
+    rho = thermoPtr_().rho();
     rho.relax();
 
     fvVectorMatrix& UEqn = tUEqn.ref();
@@ -230,11 +230,11 @@ void Foam::solvers::isothermalFluid::correctBuoyantPressure()
         const bool constrained = fvConstraints().constrain(p);
 
         // Thermodynamic density update
-        thermo_.correctRho(psi*p - psip0);
+        thermoPtr_().correctRho(psi*p - psip0);
 
         if (constrained)
         {
-            rho = thermo.rho();
+            rho = thermoPtr_().rho();
         }
 
         correctDensity();
@@ -255,9 +255,9 @@ void Foam::solvers::isothermalFluid::correctBuoyantPressure()
 
     // For steady compressible closed-volume cases adjust the pressure level
     // to obey overall mass continuity
-    if (adjustMass && !thermo.incompressible())
+    if (adjustMass && !thermoPtr_().incompressible())
     {
-        p += (initialMass - fvc::domainIntegrate(thermo.rho()))
+        p += (initialMass - fvc::domainIntegrate(thermoPtr_().rho()))
             /fvc::domainIntegrate(psi);
         p_rgh = p - rho*gh - pRef;
         p_rgh.correctBoundaryConditions();
@@ -268,7 +268,7 @@ void Foam::solvers::isothermalFluid::correctBuoyantPressure()
 
     if (mesh.schemes().steady() || pimple.simpleRho() || adjustMass)
     {
-        rho = thermo.rho();
+        rho = thermoPtr_().rho();
     }
 
     if (mesh.schemes().steady() || pimple.simpleRho())
@@ -279,7 +279,7 @@ void Foam::solvers::isothermalFluid::correctBuoyantPressure()
     // Correct rhoUf if the mesh is moving
     fvc::correctRhoUf(rhoUf, rho, U, phi, MRF);
 
-    if (thermo.dpdt())
+    if (thermoPtr_().dpdt())
     {
         dpdt = fvc::ddt(p);
     }
