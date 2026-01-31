@@ -34,6 +34,7 @@ Foam::uInhomogeneousEGRMixture<ThermoType>::uInhomogeneousEGRMixture
     const dictionary& dict
 )
 :
+    species_({"fu", "egr"}),
     stoicRatio_(dict.lookup<scalar>("stoichiometricAirFuelMassRatio")),
     fuel_("fuel", dict.subDict("fuel")),
     oxidant_("oxidant", dict.subDict("oxidant")),
@@ -74,10 +75,10 @@ const ThermoType& Foam::uInhomogeneousEGRMixture<ThermoType>::specieThermo
 template<class ThermoType>
 Foam::scalar Foam::uInhomogeneousEGRMixture<ThermoType>::Phi
 (
-    const scalarFieldListSlice& Y
+    const scalarFieldListSlice& Yu
 ) const
 {
-    const scalar ft = Y[FU] + Y[EGR]/(stoicRatio_ + 1);
+    const scalar ft = Yu[FU] + Yu[EGR]/(stoicRatio_ + 1);
     return stoicRatio_*ft/max(1 - ft, small);
 }
 
@@ -148,7 +149,7 @@ Foam::uInhomogeneousEGRMixture<ThermoType>::prompt
 ) const
 {
     PtrList<volScalarField::Internal> Yp(1);
-    Yp.set(0, Yu[FU]());
+    Yp.set(bInhomogeneousMixture<ThermoType>::FT, Yu[FU]());
 
     return Yp;
 }

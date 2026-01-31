@@ -80,6 +80,9 @@ private:
 
     // Private Data
 
+        //- Table of specie names
+        speciesTable species_;
+
         //- Stoichiometric air/fuel ratio
         scalar stoicRatio_;
 
@@ -131,10 +134,10 @@ public:
             return "uInhomogeneousEGRMixture<" + ThermoType::typeName() + '>';
         }
 
-        //- Return the specie names
-        static wordList specieNames()
+        //- Return the table of species
+        const speciesTable& species() const
         {
-            return {"fu", "egr"};
+            return species_;
         }
 
         //- Access the specie active flags
@@ -152,7 +155,7 @@ public:
         const ThermoType& specieThermo(const label speciei) const;
 
         //- Return the fuel-oxidant equivalence ratio
-        scalar Phi(const scalarFieldListSlice& Y) const;
+        scalar Phi(const scalarFieldListSlice& Yu) const;
 
         //- Return the mixture for thermodynamic properties
         const thermoMixtureType& thermoMixture

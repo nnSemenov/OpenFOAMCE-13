@@ -94,10 +94,10 @@ public:
             return "uHomogeneousMixture<" + ThermoType::typeName() + '>';
         }
 
-        //- Return the specie names
-        static wordList specieNames()
+        //- Return the table of species
+        const speciesTable& species() const
         {
-            return wordList::null();
+            return speciesTable::null;
         }
 
         //- Access the specie active flags
@@ -120,7 +120,7 @@ public:
         }
 
         //- Return the fuel-oxidant equivalence ratio
-        scalar Phi(const scalarFieldListSlice& Y) const
+        scalar Phi(const scalarFieldListSlice& Yu) const
         {
             return Phi_;
         }
@@ -142,7 +142,9 @@ public:
             const PtrList<volScalarField>& Yb
         ) const
         {
-            NotImplemented;
+            FatalErrorInFunction
+                << "EGR not supported by " << typeName()
+                << exit(FatalError);
         }
 
         //- Return the mixture for thermodynamic properties
