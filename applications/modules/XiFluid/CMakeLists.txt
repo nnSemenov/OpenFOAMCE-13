@@ -99,7 +99,8 @@ target_link_libraries(${target_name} PRIVATE
     phaseCompressibleMomentumTransportModels 
     phaseFluidThermophysicalTransportModels 
     coupledThermophysicalTransportModels 
-    multicomponentThermophysicalModels 
+    multicomponentThermophysicalModels
+    reactionModels
     specie 
     finiteVolume 
     fvModels 

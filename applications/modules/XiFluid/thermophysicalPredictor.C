@@ -382,7 +382,7 @@ void Foam::solvers::XiFluid::ubSolve
       + alpha*reaction.R(f)
 
         // Other sources
-      + fvModels().source(bc, rho, f)
+      + fvModels().source(bc, rho(), f)
     );
 
     fEqn.relax();

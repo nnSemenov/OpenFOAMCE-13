@@ -28,9 +28,9 @@ target_link_libraries(${target_name} PRIVATE
 
     fluidThermophysicalModels
     fluidThermophysicalTransportModel 
-    specie 
-    chemistryModel 
-    ODE 
+    specie
+#    chemistryModel
+#    ODE
     reactionModels
     multicomponentThermophysicalModels 
     momentumTransportModels 

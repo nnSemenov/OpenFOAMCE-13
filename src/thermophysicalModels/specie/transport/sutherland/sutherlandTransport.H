@@ -101,7 +101,7 @@ struct EuckenCoeff {
     scalar A{1.32};
     scalar B{1.77};
 
-    EuckenCoeff(const EuckenCoeff&)=default;
+    // EuckenCoeff(const EuckenCoeff&)=default;
     // inline EuckenCoeff
 };
 
