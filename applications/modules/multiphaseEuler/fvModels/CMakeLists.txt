@@ -12,6 +12,10 @@ add_library(${target_name} SHARED
     massDiffusionLimitedPhaseChange/massDiffusionLimitedPhaseChange.C
     reactionDrivenPhaseChange/reactionDrivenPhaseChange.C
 
+    # Wall phase change
+    wallPhaseChange/wallPhaseChange.C
+    wallPhaseChange/alphatPhaseChangeWallFunctionFvPatchScalarField.C
+
     # Nucleation phase change
     nucleation/nucleation.C
     homogeneousNucleation/homogeneousNucleation.C
@@ -19,8 +23,12 @@ add_library(${target_name} SHARED
     homogeneousNucleation/homogeneousLiquidPhaseSeparation.C
     wallBoiling/wallBoiling.C
     wallBoiling/wallBoilingPhaseChangeRateFvPatchScalarField.C
-    wallBoiling/alphatBoilingWallFunctionFvPatchScalarField.C
     phaseSurfaceBoiling/phaseSurfaceBoiling.C
+
+    # Surface condensation
+    wallCondensation/wallCondensation.C
+    wallCondensation/wallCondensationPhaseChangeRateFvPatchScalarField.C
+    phaseSurfaceCondensation/phaseSurfaceCondensation.C
 
     # Cavitation
     multiphaseEulerCavitation/multiphaseEulerCavitation.C
