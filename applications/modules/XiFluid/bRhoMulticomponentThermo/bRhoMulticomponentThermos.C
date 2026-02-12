@@ -25,8 +25,9 @@ License
 
 #include "bRhoMulticomponentThermo.H"
 
-#include "bHomogeneousMixture.H"
-#include "bInhomogeneousMixture.H"
+#include "BHomogeneousMixture.H"
+#include "BInhomogeneousMixture.H"
+#include "BMulticomponentMixture.H"
 
 #include "forGases.H"
 
@@ -35,24 +36,24 @@ License
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 #define makeBRhoMulticomponentThermos(Mixture, ThermoPhysics)                 \
-                                                                               \
+                                                                              \
     defineThermo(bRhoMulticomponentThermo, Mixture, ThermoPhysics);           \
-                                                                               \
+                                                                              \
     addThermo(basicThermo, bRhoMulticomponentThermo, Mixture, ThermoPhysics); \
     addThermo(fluidThermo, bRhoMulticomponentThermo, Mixture, ThermoPhysics); \
-    addThermo                                                                  \
-    (                                                                          \
-        rhoFluidThermo,                                                        \
+    addThermo                                                                 \
+    (                                                                         \
+        rhoFluidThermo,                                                       \
         bRhoMulticomponentThermo,                                             \
-        Mixture,                                                               \
-        ThermoPhysics                                                          \
-    );                                                                         \
-    addThermo                                                                  \
-    (                                                                          \
+        Mixture,                                                              \
+        ThermoPhysics                                                         \
+    );                                                                        \
+    addThermo                                                                 \
+    (                                                                         \
         bRhoMulticomponentThermo,                                             \
         bRhoMulticomponentThermo,                                             \
-        Mixture,                                                               \
-        ThermoPhysics                                                          \
+        Mixture,                                                              \
+        ThermoPhysics                                                         \
     )
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -62,12 +63,17 @@ namespace Foam
     forCoeffEnthalpyGases
     (
         makeBRhoMulticomponentThermos,
-        bHomogeneousMixture
+        BHomogeneousMixture
     );
     forCoeffEnthalpyGases
     (
         makeBRhoMulticomponentThermos,
-        bInhomogeneousMixture
+        BInhomogeneousMixture
+    );
+    forCoeffEnthalpyGases
+    (
+        makeBRhoMulticomponentThermos,
+        BMulticomponentMixture
     );
 }
 

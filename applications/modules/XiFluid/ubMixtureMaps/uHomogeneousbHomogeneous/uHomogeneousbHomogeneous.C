@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2024-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,32 +23,37 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "wallBoiling.H"
+#include "uHomogeneousbHomogeneous.H"
+#include "addToRunTimeSelectionTable.H"
 
-// * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
+// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
-inline const Foam::phaseModel& Foam::fv::wallBoiling::liquid() const
+namespace Foam
 {
-    return liquid_;
+namespace ubMixtureMaps
+{
+    defineTypeNameAndDebug(uHomogeneousbHomogeneous, 0);
+    addToRunTimeSelectionTable(ubMixtureMap, uHomogeneousbHomogeneous, thermo);
+}
 }
 
 
-inline const Foam::phaseModel& Foam::fv::wallBoiling::vapour() const
-{
-    return vapour_;
-}
+// * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
+
+Foam::ubMixtureMaps::uHomogeneousbHomogeneous::uHomogeneousbHomogeneous
+(
+    const uRhoMulticomponentThermo& uThermo,
+    const bRhoMulticomponentThermo& bThermo
+)
+:
+    ubMixtureMap(uThermo, bThermo)
+{}
 
 
-inline const Foam::volScalarField& Foam::fv::wallBoiling::alphatLiquid() const
-{
-    return alphatLiquid_;
-}
+// * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
-
-inline const Foam::volScalarField& Foam::fv::wallBoiling::alphatVapour() const
-{
-    return alphatVapour_;
-}
+Foam::ubMixtureMaps::uHomogeneousbHomogeneous::~uHomogeneousbHomogeneous()
+{}
 
 
 // ************************************************************************* //
