@@ -177,14 +177,13 @@ bool Foam::dynamicCode::createMakeFiles() const
                 << "Failed writing " << dstFile
                 << exit(FatalError);
     }
-
-    writeCommentSHA1(os);
+    // os  << nl << dynamicCode::libTargetRoot << codeSha1Name_ << nl;
 
     os<<"cmake_minimum_required(VERSION 3.28)"<<nl;
 
-    os<<"project("<<codeName_.c_str()<<" LANGUAGES CXX)"<<nl;
+    os<<"project("<<codeSha1Name_<<" LANGUAGES CXX)"<<nl;
 
-    os<<"set(target_name "<<codeName_.c_str()<<")"<<nl;
+    os<<"set(target_name "<<codeSha1Name_<<")"<<nl;
     //$(PWD)/../platforms/$(WM_OPTIONS)/lib/lib";
     os<<"set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../platforms/"<<wm_options_string<<"/lib)"<<nl;
 
@@ -193,7 +192,7 @@ bool Foam::dynamicCode::createMakeFiles() const
     forAll(compileFiles_, fileI)
     {
         os<<"    ";
-        os.writeQuoted(compileFiles_[fileI].name(), false) << nl;
+        os.writeQuoted(compileFiles_[fileI], false) << nl;
     }
 
     os<<")"<<nl;
@@ -225,16 +224,26 @@ bool Foam::dynamicCode::createMakeOptions() const
                 << exit(FatalError);
     }
 
-    writeCommentSHA1(os);
-
     auto vars = wmakeParse::get_environment_variables();
 
     wmakeParse::wmake_parse_option option{};
     option.when_undefined_reference=wmakeParse::undefined_reference_behavior::throw_exception;
-    wmakeParse::parse_wmake_file(makeOptions_,vars,option);
+    const std::string combined_options = this->optionsString_+'\n'+this->libsString_;
+    auto direct_options = wmakeParse::parse_wmake_file(combined_options ,vars,option);
+
+    std::vector<std::string> link_lib_names;
+    for (auto it=direct_options.begin();it not_eq direct_options.end();) {
+        auto parsed_lib_name = wmakeParse::parse_link_libs(*it);
+        if (parsed_lib_name.empty()) {
+            ++it;
+            continue;
+        }
+        link_lib_names.emplace_back(parsed_lib_name);
+        it=direct_options.erase(it);
+    }
 
     os<<"# Original value of makeOptions: \n# ";
-    for(char ch:makeOptions_) {
+    for(char ch:combined_options) {
       os<<ch;
       if(ch=='\n') {
         os<<"# ";
@@ -250,7 +259,27 @@ bool Foam::dynamicCode::createMakeOptions() const
         if(it not_eq vars.end()) {
             os<<"    "<<it->second.c_str()<<nl;
         }
+        for (const auto & direct_option_str:direct_options) {
+            os<<"    "<<direct_option_str<<nl;
+        }
         os<<")"<<nl;
+    }
+
+    {
+        os<<"set(link_lib_names "<<nl;
+        for (auto &lib_name:link_lib_names) {
+            os<<"  "<<lib_name<<nl;
+        }
+        os<<")"<<nl;
+        os<<R"(
+# Translate -l<> options into cmake. Example: -lsampling -> Mikeno::sampling
+foreach (lib_name ${link_lib_names})
+    if(TARGET Mikeno::${lib_name})
+        target_link_libraries(${target_name} PRIVATE Mikeno::${lib_name})
+    else ()
+        target_link_libraries(${target_name} PRIVATE ${lib_name})
+    endif ()
+endforeach ())"<<nl;
     }
 
     {
