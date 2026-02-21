@@ -27,6 +27,8 @@ namespace Foam::wmakeParse {
                                             const wmake_parse_option&option={});
 
   [[maybe_unused]] [[nodiscard]] std::map<std::string,std::string> get_environment_variables() noexcept;
+
+  [[nodiscard]] std::string parse_link_libs(std::string_view compile_command) noexcept;
 }
 
 #endif
