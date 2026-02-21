@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2012-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2012-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -25,8 +25,6 @@ License
 
 #include "codedFvModel.H"
 #include "fvMatrices.H"
-#include "dynamicCode.H"
-#include "dynamicCodeContext.H"
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -59,6 +57,21 @@ const Foam::wordList Foam::fv::codedFvModel::codeDictVars
     word::null
 };
 
+const Foam::word Foam::fv::codedFvModel::codeOptions
+(
+    "codedFvModelOptions"
+);
+
+const Foam::wordList Foam::fv::codedFvModel::compileFiles
+{
+    "codedFvModelTemplate.C"
+};
+
+const Foam::wordList Foam::fv::codedFvModel::copyFiles
+{
+    "codedFvModelTemplate.H"
+};
+
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
@@ -76,47 +89,6 @@ Foam::word Foam::fv::codedFvModel::fieldPrimitiveTypeName() const
       :
 
     return FOR_ALL_FIELD_TYPES(fieldPrimitiveTypeNameTernary) word::null;
-}
-
-
-void Foam::fv::codedFvModel::prepare
-(
-    dynamicCode& dynCode,
-    const dynamicCodeContext& context
-) const
-{
-    const word primitiveTypeName = fieldPrimitiveTypeName();
-
-    // Set additional rewrite rules
-    dynCode.setFilterVariable("typeName", name());
-    dynCode.setFilterVariable("TemplateType", primitiveTypeName);
-    dynCode.setFilterVariable("SourceType", primitiveTypeName + "Source");
-
-    // compile filtered C template
-    dynCode.addCompileFile("codedFvModelTemplate.C");
-
-    // copy filtered H template
-    dynCode.addCopyFile("codedFvModelTemplate.H");
-
-    // Make verbose if debugging
-    dynCode.setFilterVariable("verbose", Foam::name(bool(debug)));
-
-    // define Make/options
-    dynCode.setMakeOptions
-    (
-        "EXE_INC = -g \\\n"
-        "-I$(LIB_SRC)/finiteVolume/lnInclude \\\n"
-        "-I$(LIB_SRC)/meshTools/lnInclude \\\n"
-        "-I$(LIB_SRC)/sampling/lnInclude \\\n"
-        "-I$(LIB_SRC)/fvModels/general/lnInclude \\\n"
-        + context.options()
-        + "\n\nLIB_LIBS = \\\n"
-        + "    -lmeshTools \\\n"
-        + "    -lfvModels \\\n"
-        + "    -lsampling \\\n"
-        + "    -lfiniteVolume \\\n"
-        + context.libs()
-    );
 }
 
 
@@ -211,11 +183,32 @@ Foam::fv::codedFvModel::codedFvModel
 )
 :
     fvModel(name, modelType, mesh, dict),
-    codedBase(name, coeffs(dict), codeKeys, codeDictVars),
+    codedBase
+    (
+        name,
+        coeffs(dict),
+        codeKeys,
+        codeDictVars,
+        codeOptions,
+        compileFiles,
+        copyFiles
+    ),
     fieldName_(word::null),
     coeffsDict_(coeffs(dict))
 {
     readCoeffs(coeffsDict_);
+
+    const word primitiveTypeName = fieldPrimitiveTypeName();
+
+    // Set variable substitutions
+    varSubstitutions().set
+    (
+        {
+            {"TemplateType", primitiveTypeName},
+            {"SourceType", primitiveTypeName + "Source"},
+            {"verbose", Foam::name(bool(debug))}
+        }
+    );
 }
 
 

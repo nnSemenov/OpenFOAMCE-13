@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,7 +24,6 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "codedBase.H"
-#include "dynamicCode.H"
 #include "dlLibraryTable.H"
 #include "regIOobject.H"
 #include "OSspecific.H"
@@ -40,7 +39,7 @@ namespace Foam
 
 // * * * * * * * * * * * * * Static Member Functions * * * * * * * * * * * * //
 
-Foam::word Foam::codedBase::codeName(const word& name)
+Foam::word Foam::codedBase::filterCodeName(const word& name)
 {
     word result(name);
 
@@ -66,68 +65,56 @@ Foam::word Foam::codedBase::codeName(const word& name)
 }
 
 
-void* Foam::codedBase::loadLibrary
+// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
+
+void Foam::codedBase::checkLibrary
 (
+    const dictionary& dict,
     const fileName& libPath,
-    const string& globalFuncName,
-    const dictionary& contextDict
+    void* lib,
+    const string& uniqueFuncName,
+    const bool load
 ) const
 {
-    void* lib = 0;
-
-    // Avoid compilation by loading an existing library
-    if (!libPath.empty())
+    // Provision for manual execution of code before loading/unloading
+    if (dlSymFound(lib, uniqueFuncName))
     {
-        if (libs.open(libPath, false))
+        const loaderFunctionType function =
+            reinterpret_cast<loaderFunctionType>
+            (
+                dlSym(lib, uniqueFuncName)
+            );
+
+        if (function)
         {
-            lib = libs.findLibrary(libPath);
-
-            // Verify the loaded version and unload if needed
-            if (lib)
-            {
-                // Provision for manual execution of code after loading
-                if (dlSymFound(lib, globalFuncName))
-                {
-                    const loaderFunctionType function =
-                        reinterpret_cast<loaderFunctionType>
-                        (
-                            dlSym(lib, globalFuncName)
-                        );
-
-                    if (function)
-                    {
-                        (*function)(true);    // Force load
-                    }
-                    else
-                    {
-                        FatalIOErrorInFunction
-                        (
-                            contextDict
-                        )   << "Failed looking up symbol " << globalFuncName
-                            << nl << "from " << libPath << exit(FatalIOError);
-                    }
-                }
-                else
-                {
-                    FatalIOErrorInFunction
-                    (
-                        contextDict
-                    )   << "Failed looking up symbol " << globalFuncName << nl
-                        << "from " << libPath << exit(FatalIOError);
-
-                    lib = 0;
-                    if (!libs.close(libPath, false))
-                    {
-                        FatalIOErrorInFunction
-                        (
-                            contextDict
-                        )   << "Failed unloading library "
-                            << libPath
-                            << exit(FatalIOError);
-                    }
-                }
-            }
+            (*function)(load);
+            return;
         }
+    }
+
+    FatalIOErrorInFunction(dict)
+        << "Failed looking up symbol " << uniqueFuncName << nl
+        << "from " << libPath << exit(FatalIOError);
+}
+
+
+void* Foam::codedBase::loadLibrary
+(
+    const dictionary& dict,
+    const fileName& libPath,
+    const string& uniqueFuncName
+) const
+{
+    if (libPath.empty())
+    {
+        return 0;
+    }
+
+    void* lib = dynamicCode::loadLibrary(libPath);
+
+    if (lib)
+    {
+        checkLibrary(dict, libPath, lib, uniqueFuncName, true);
     }
 
     return lib;
@@ -136,66 +123,39 @@ void* Foam::codedBase::loadLibrary
 
 void Foam::codedBase::unloadLibrary
 (
+    const dictionary& dict,
     const fileName& libPath,
-    const string& globalFuncName,
-    const dictionary& contextDict
+    const string& uniqueFuncName
 ) const
 {
-    void* lib = 0;
-
     if (libPath.empty())
     {
         return;
     }
 
-    lib = libs.findLibrary(libPath);
+    void* lib = libs.findLibrary(libPath);
 
     if (!lib)
     {
         return;
     }
 
-    // Provision for manual execution of code before unloading
-    if (dlSymFound(lib, globalFuncName))
-    {
-        const loaderFunctionType function =
-            reinterpret_cast<loaderFunctionType>
-            (
-                dlSym(lib, globalFuncName)
-            );
-
-        if (function)
-        {
-            (*function)(false);    // Force unload
-        }
-        else
-        {
-            FatalIOErrorInFunction
-            (
-                contextDict
-            )   << "Failed looking up symbol " << globalFuncName << nl
-                << "from " << libPath << exit(FatalIOError);
-        }
-    }
+    checkLibrary(dict, libPath, lib, uniqueFuncName, false);
 
     if (!libs.close(libPath, false))
     {
-        FatalIOErrorInFunction
-        (
-            contextDict
-        )   << "Failed unloading library " << libPath
+        FatalIOErrorInFunction(dict)
+            << "Failed unloading library " << libPath
             << exit(FatalIOError);
     }
 }
 
 
-// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
-
 Foam::verbatimString Foam::codedBase::expandCodeString
 (
+    const dictionary& dict,
     const word& codeKey,
-    const word& codeDictVar,
-    const dictionary& dict
+    const word& codeDictVar
 ) const
 {
     verbatimString codeString;
@@ -220,116 +180,6 @@ Foam::verbatimString Foam::codedBase::expandCodeString
 }
 
 
-void Foam::codedBase::createLibrary
-(
-    const dictionary& dict,
-    dynamicCode& dynCode,
-    const dynamicCodeContext& context
-) const
-{
-    const bool create =
-        Pstream::master()
-     || (regIOobject::fileModificationSkew <= 0);   // Not NFS
-
-    if (create)
-    {
-        // Write files for new library
-        if (!dynCode.upToDate(context))
-        {
-            // Filter with this context
-            dynCode.reset(context);
-
-            this->prepare(dynCode, context);
-
-            if (!dynCode.copyOrCreateFiles(true))
-            {
-                FatalIOErrorInFunction
-                (
-                    dict
-                )   << "Failed writing files for" << nl
-                    << dynCode.libRelPath() << nl
-                    << exit(FatalIOError);
-            }
-        }
-
-        if (!dynCode.wmakeLibso())
-        {
-            FatalIOErrorInFunction
-            (
-                dict
-            )   << "Failed wmake " << dynCode.libRelPath() << nl
-                << exit(FatalIOError);
-        }
-    }
-
-    // All processes must wait for compile to finish
-    if (regIOobject::fileModificationSkew > 0)
-    {
-        const fileName libPath = dynCode.libPath();
-
-        // Determine and communicate the master file size. Scattering
-        // blocks the other processes until the master has finished
-        // compiling.
-        off_t masterSize = Pstream::master() ? fileSize(libPath) : -1;
-        Pstream::scatter(masterSize);
-
-        // Determine the local file size. This may be incorrect if NFS is
-        // taking its time, in which case we wait and try again.
-        off_t mySize = Pstream::master() ? masterSize : fileSize(libPath);
-
-        if (debug)
-        {
-            Pout<< endl<< "on processor " << Pstream::myProcNo()
-                << " have masterSize:" << masterSize
-                << " and localSize:" << mySize
-                << endl;
-        }
-
-        if (mySize < masterSize)
-        {
-            if (debug)
-            {
-                Pout<< "Local file " << libPath
-                    << " not of same size (" << mySize
-                    << ") as master ("
-                    << masterSize << "). Waiting for "
-                    << regIOobject::fileModificationSkew
-                    << " seconds." << endl;
-            }
-            sleep(regIOobject::fileModificationSkew);
-
-            // Recheck local size
-            mySize = Foam::fileSize(libPath);
-
-            if (mySize < masterSize)
-            {
-                FatalIOErrorInFunction
-                (
-                    dict
-                )   << "Cannot read (NFS mounted) library " << nl
-                    << libPath << nl
-                    << "on processor " << Pstream::myProcNo()
-                    << " detected size " << mySize
-                    << " whereas master size is " << masterSize
-                    << " bytes." << nl
-                    << "If your case is not NFS mounted"
-                    << " (so distributed) set fileModificationSkew"
-                    << " to 0"
-                    << exit(FatalIOError);
-            }
-        }
-
-        if (debug)
-        {
-            Pout<< endl<< "on processor " << Pstream::myProcNo()
-                << " after waiting: have masterSize:" << masterSize
-                << " and localSize:" << mySize
-                << endl;
-        }
-    }
-}
-
-
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 Foam::codedBase::codedBase
@@ -337,11 +187,23 @@ Foam::codedBase::codedBase
     const word& name,
     const dictionary& dict,
     const wordList& codeKeys,
-    const wordList& codeDictVars
+    const wordList& codeDictVars,
+    const word& codeOptionsFileName,
+    const wordList& compileFiles,
+    const wordList& copyFiles
 )
 :
-    codeName_(codeName(name)),
-    codeContext_(dict, codeKeys, codeDictVars)
+    dynamicCode
+    (
+        dict,
+        filterCodeName(name),
+        filterCodeName(name),
+        codeKeys,
+        codeDictVars,
+        codeOptionsFileName,
+        compileFiles,
+        copyFiles
+    )
 {}
 
 
@@ -349,17 +211,22 @@ Foam::codedBase::codedBase
 (
     const dictionary& dict,
     const wordList& codeKeys,
-    const wordList& codeDictVars
+    const wordList& codeDictVars,
+    const word& codeOptionsFileName,
+    const wordList& compileFiles,
+    const wordList& copyFiles
 )
 :
-    codedBase(codeName(dict.lookup("name")), dict, codeKeys, codeDictVars)
-{}
-
-
-Foam::codedBase::codedBase(const codedBase& cb)
-:
-    codeName_(cb.codeName_),
-    codeContext_(cb.codeContext_)
+    codedBase
+    (
+        dict.lookup("name"),
+        dict,
+        codeKeys,
+        codeDictVars,
+        codeOptionsFileName,
+        compileFiles,
+        copyFiles
+    )
 {}
 
 
@@ -371,49 +238,9 @@ Foam::codedBase::~codedBase()
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-const Foam::word& Foam::codedBase::codeName() const
-{
-    return codeName_;
-}
-
-
-Foam::string Foam::codedBase::description() const
-{
-    return this->type() + " " + codeName();
-}
-
-
-Foam::word Foam::codedBase::codeTemplateC(const word& baseTypeName) const
-{
-    return baseTypeName + "Template.C";
-}
-
-
-Foam::word Foam::codedBase::codeTemplateH(const word& baseTypeName) const
-{
-    return baseTypeName + "Template.H";
-}
-
-
 bool Foam::codedBase::updateLibrary(const dictionary& dict) const
 {
-    const word& name = codeName();
-
-    dynamicCode::checkSecurity
-    (
-        "codedBase::updateLibrary()",
-        dict
-    );
-
-    // codeName: name + _<sha1>
-    // codeDir : name
-    dynamicCode dynCode
-    (
-        name + codeContext_.sha1().str(true),
-        name
-    );
-    const fileName libPath = dynCode.libPath();
-
+    const fileName libPath = this->libPath();
 
     // The correct library was already loaded => we are done
     if (libs.findLibrary(libPath))
@@ -421,24 +248,24 @@ bool Foam::codedBase::updateLibrary(const dictionary& dict) const
         return false;
     }
 
-    Info<< "Using dynamicCode for " << this->description().c_str()
+    Info<< "Using dynamicCode for " << type() << " " << codeName()
         << " at line " << dict.startLineNumber()
         << " in " << dict.name() << endl;
 
     // May need to unload old library
     unloadLibrary
     (
+        dict,
         oldLibPath_,
-        dynamicCode::libraryBaseName(oldLibPath_),
-        dict
+        dynamicCode::libraryBaseName(oldLibPath_)
     );
 
     // Try loading an existing library (avoid compilation when possible)
-    if (!loadLibrary(libPath, dynCode.codeName(), dict))
+    if (!loadLibrary(dict, libPath, codeSha1Name()))
     {
-        createLibrary(dict, dynCode, codeContext_);
+        createLibrary(dict);
 
-        if (!loadLibrary(libPath, dynCode.codeName(), dict))
+        if (!loadLibrary(dict, libPath, codeSha1Name()))
         {
             FatalIOErrorInFunction(dict)
                 << "Failed to load " << libPath << exit(FatalIOError);
@@ -449,23 +276,6 @@ bool Foam::codedBase::updateLibrary(const dictionary& dict) const
     oldLibPath_ = libPath;
 
     return true;
-}
-
-
-void Foam::codedBase::read(const dictionary& dict)
-{
-    codeContext_.read(dict);
-}
-
-
-void Foam::codedBase::write(Ostream& os) const
-{
-    if (codeName().size())
-    {
-        writeEntry(os, "name", codeName());
-    }
-
-    codeContext_.write(os);
 }
 
 

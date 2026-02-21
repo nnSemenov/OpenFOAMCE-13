@@ -1,0 +1,58 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  dev
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       volVectorField;
+    location    "0";
+    object      U;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [velocity];
+
+rpm             60;
+
+#codeStream
+{
+    codeOptions     #{ -I$(LIB_SRC)/finiteVolume/lnInclude #};
+
+    codeLibs        #{ -lfiniteVolume #};
+
+    codeInclude     #{ #include "volFields.H" #};
+
+    code
+    #{
+        const fvMesh& mesh = region(dict);
+
+        const vector omega =
+            units()["rpm"].toStandard($<scalar>rpm)
+           *vector(Vector<label>::one - mesh.geometricD())/2;
+
+        writeEntry
+        (
+            os,
+            "internalField",
+            (omega^(mesh.C().primitiveField() - mesh.bounds().midpoint()))()
+        );
+    #};
+};
+
+boundaryField
+{
+    #includeEtc "caseDicts/setConstraintTypes"
+
+    ".*"
+    {
+        type            calculated;
+        value           uniform (0 0 0);
+    }
+}
+
+
+// ************************************************************************* //
