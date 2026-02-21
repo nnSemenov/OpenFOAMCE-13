@@ -191,7 +191,6 @@ target_sources(OpenFOAM PRIVATE
     primitives/Barycentric2D/barycentric2D/barycentric2D.C
 
     containers/HashTables/HashTable/HashTableCore.C
-    containers/HashTables/ListHashTable/ListHashTableCore.C
     containers/Lists/SortableList/ParSortableListName.C
     containers/Lists/PackedList/PackedListCore.C
     containers/Lists/PackedList/PackedBoolList.C
@@ -353,7 +352,6 @@ set(dll db/dynamicLibrary)
 target_sources(OpenFOAM PRIVATE
     ${dll}/dlLibraryTable/dlLibraryTable.C
     ${dll}/dynamicCode/dynamicCode.C
-    ${dll}/dynamicCode/dynamicCodeContext.C
     ${dll}/codedBase/codedBase.C
     ${dll}/compileTemplate/compileTemplate.C
 

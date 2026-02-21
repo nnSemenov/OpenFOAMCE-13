@@ -7,6 +7,10 @@ add_library(${target_name} SHARED
     forces/forces.C
     movingForces/movingForces.C
     forceCoeffs/forceCoeffs.C
+
+    sectionalForcesBase/sectionalForcesBase.C
+    sectionalForceGraph/sectionalForceGraph.C
+    sectionalForceProbes/sectionalForceProbes.C
 )
 
 target_include_directories(${target_name} PUBLIC
@@ -30,7 +34,8 @@ target_link_libraries(${target_name} PRIVATE
     phaseIncompressibleMomentumTransportModels 
     phaseCompressibleMomentumTransportModels 
     specie 
-    fileFormats 
+    fileFormats
+    sampling
     finiteVolume 
     meshTools
 )
