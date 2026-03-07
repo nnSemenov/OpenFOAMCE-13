@@ -229,6 +229,16 @@ bool Foam::dynamicCode::createMakeOptions() const
     wmakeParse::wmake_parse_option option{};
     option.when_undefined_reference=wmakeParse::undefined_reference_behavior::throw_exception;
     std::string combined_options = this->optionsString_+'\n'+this->libsString_;
+    // Remove line continuation
+    while (true) {
+        std::string_view line_continuation{"\\\n"};
+        auto pos_beg = combined_options.find(line_continuation);
+        if (pos_beg==std::string::npos) {
+            break;
+        }
+        combined_options.replace(pos_beg,line_continuation.size(),"\n");
+    }
+
     auto direct_options = wmakeParse::parse_wmake_file(combined_options ,vars,option);
 
     std::vector<std::string> link_lib_names;
@@ -240,12 +250,12 @@ bool Foam::dynamicCode::createMakeOptions() const
             it=direct_options.erase(it);
             continue;
         }
-        // auto include_dir = wmakeParse::parse_include_dirs(*it);
-        // if (not include_dir.empty()) {
-        //     include_dirs.emplace_back(include_dir);
-        //     it=direct_options.erase(it);
-        //     continue;
-        // }
+        auto include_dir = wmakeParse::parse_include_dirs(*it);
+        if (not include_dir.empty()) {
+            include_dirs.emplace_back(include_dir);
+            it=direct_options.erase(it);
+            continue;
+        }
         ++it;
     }
 
