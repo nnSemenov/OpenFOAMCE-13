@@ -533,8 +533,18 @@ target_sources(OpenFOAM PRIVATE
     ${GAMGProcAgglomerations}/pair/pairGAMGProcAgglomeration.C
 )
 
+target_sources(OpenFOAM PRIVATE
+    fields/GeometricFields/pointFields/pointFields.C
+
+    fields/DimensionedFields/DimensionedFieldFunctions/makeDimensionedPointFieldFunctions.C
+
+    fields/UniformDimensionedFields/uniformDimensionedFields.C
+
+    fields/UniformGeometricFields/uniformGeometricFields.C
+)
 
 target_sources(OpenFOAM PRIVATE
+
     meshes/lduMesh/lduMesh.C
     meshes/lduMesh/lduPrimitiveMesh.C
 )
@@ -811,12 +821,6 @@ target_sources(OpenFOAM PRIVATE
     ${meshTools}/matchPoints.C
 )
 
-target_sources(OpenFOAM PRIVATE
-    fields/UniformDimensionedFields/uniformDimensionedFields.C
-
-    fields/UniformGeometricFields/uniformGeometricFields.C
-)
-
 set(Fields fields/Fields)
 target_sources(OpenFOAM PRIVATE
     ${Fields}/fieldMappers/fieldMapper/fieldMapper.C
@@ -920,6 +924,7 @@ target_sources(OpenFOAM PRIVATE
     algorithms/dynamicIndexedOctree/dynamicTreeDataPoint.C
     algorithms/polygonTriangulate/polygonTriangulate.C
     algorithms/solutionControl/solutionControl.C
+    algorithms/boundSphere/boundSphere.C
 )
 
 target_sources(OpenFOAM PRIVATE

@@ -246,6 +246,7 @@ target_sources(meshTools PRIVATE
     zoneGenerators/remove/remove.C
     zoneGenerators/clear/clear.C
     zoneGenerators/write/write.C
+    zoneGenerators/print/print.C
 
     zoneGenerators/union/union.C
     zoneGenerators/difference/difference.C
@@ -265,6 +266,7 @@ target_sources(meshTools PRIVATE
 
     zoneGenerators/cell/containsPoints/containsPoints.C
     zoneGenerators/cell/generatedCellZone/generatedCellZone.C
+    zoneGenerators/cell/patchCells/patchCells_zoneGenerator.C
     zoneGenerators/cell/nearPatchCells/nearPatchCells_zoneGenerator.C
 
     zoneGenerators/face/face/face_zoneGenerator.C

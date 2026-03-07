@@ -346,10 +346,12 @@ target_sources(finiteVolume PRIVATE
     ${derivedFvFieldSources}/uniformInletOutlet/uniformInletOutletFvFieldSources.C
     ${derivedFvFieldSources}/turbulentIntensityKineticEnergy/turbulentIntensityKineticEnergyFvScalarFieldSource.C
     ${derivedFvFieldSources}/NaN/NaNFvFieldSources.C
-
 )
 
 target_sources(finiteVolume PRIVATE
+    fields/DimensionedFields/DimensionedFieldFunctions/makeDimensionedVolFieldFunctions.C
+    fields/DimensionedFields/DimensionedFieldFunctions/makeDimensionedSurfaceFieldFunctions.C
+
     fields/volFields/volFields.C
     fields/surfaceFields/surfaceFields.C
 
