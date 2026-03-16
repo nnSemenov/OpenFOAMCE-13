@@ -165,6 +165,9 @@ target_sources(finiteVolume PRIVATE
 set(fvPatchFields fields/fvPatchFields)
 target_sources(finiteVolume PRIVATE
     ${fvPatchFields}/fvPatchField/fvPatchFields.C
+
+    ${fvPatchFields}/DimensionedFvPatchFields/DimensionedFvPatchFields.C
+    ${fvPatchFields}/DimensionedFvPatchFieldFunctions/makeDimensionedFvPatchFieldFunctions.C
 )
 
 set(basicFvPatchFields ${fvPatchFields}/basic)
@@ -208,6 +211,7 @@ set(derivedFvPatchFields ${fvPatchFields}/derived)
 target_sources(finiteVolume PRIVATE
     ${derivedFvPatchFields}/advective/advectiveFvPatchFields.C
     ${derivedFvPatchFields}/codedFixedValue/codedFixedValueFvPatchFields.C
+    ${derivedFvPatchFields}/functionalFixedValue/functionalFixedValueFvPatchFields.C
     ${derivedFvPatchFields}/codedMixed/codedMixedFvPatchFields.C
     ${derivedFvPatchFields}/externalCoupledMixed/externalCoupledMixedFvPatchFields.C
     ${derivedFvPatchFields}/fanPressureJump/fanPressureJumpFvPatchScalarField.C
