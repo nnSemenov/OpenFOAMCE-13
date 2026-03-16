@@ -59,7 +59,7 @@ public:
 
     // Public Typedefs
 
-        //- Type of mesh on which this SlicedDimensionedField is instantiated
+        //- Base mesh type from which GeoMesh is constructed
         typedef typename GeoMesh::Mesh Mesh;
 
 
@@ -77,6 +77,12 @@ public:
 
     //- Destructor
     ~SlicedDimensionedField();
+
+
+    // Member Functions
+
+        //- Reset internalField pointer
+        void reset(const Field<Type>& iField);
 };
 
 

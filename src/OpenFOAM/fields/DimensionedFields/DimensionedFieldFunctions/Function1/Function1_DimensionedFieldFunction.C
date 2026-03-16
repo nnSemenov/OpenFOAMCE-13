@@ -53,6 +53,34 @@ Function1
 }
 
 
+template<class DimensionedFieldType>
+Foam::DimensionedFieldFunctions::Function1<DimensionedFieldType>::
+Function1
+(
+    const Function1& dff,
+    DimensionedFieldType& field
+)
+:
+    DimensionedFieldFunction<DimensionedFieldType>(dff, field),
+    funcPtr_(dff.funcPtr_, false),
+    direction_(dff.direction_)
+{}
+
+
+template<class DimensionedFieldType>
+Foam::autoPtr<Foam::DimensionedFieldFunction<DimensionedFieldType>>
+Foam::DimensionedFieldFunctions::Function1<DimensionedFieldType>::clone
+(
+    DimensionedFieldType& field
+) const
+{
+    return autoPtr<DimensionedFieldFunction<DimensionedFieldType>>
+    (
+        new Function1<DimensionedFieldType>(*this, field)
+    );
+}
+
+
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 template<class DimensionedFieldType>

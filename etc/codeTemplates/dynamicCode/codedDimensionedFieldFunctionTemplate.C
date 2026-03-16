@@ -24,6 +24,7 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "codedDimensionedFieldFunctionTemplate.H"
+#include "read.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
@@ -83,6 +84,38 @@ ${typeName}DimensionedFieldFunction${DimensionedFieldTypeName}
     {
         Info<< "Construct ${typeName} sha1: ${SHA1sum} from dictionary\n";
     }
+}
+
+
+Foam::DimensionedFieldFunctions::
+${typeName}DimensionedFieldFunction${DimensionedFieldTypeName}::
+${typeName}DimensionedFieldFunction${DimensionedFieldTypeName}
+(
+    const ${typeName}DimensionedFieldFunction${DimensionedFieldTypeName}& dff,
+    ${DimensionedFieldType}& field_
+)
+:
+    DimensionedFieldFunction<${DimensionedFieldType}>(dff, field_),
+    field(field_)
+{}
+
+
+Foam::autoPtr<Foam::DimensionedFieldFunction<Foam::${DimensionedFieldType}>>
+Foam::DimensionedFieldFunctions::
+${typeName}DimensionedFieldFunction${DimensionedFieldTypeName}::
+clone
+(
+    ${DimensionedFieldType}& field_
+) const
+{
+    return autoPtr<DimensionedFieldFunction<${DimensionedFieldType}>>
+    (
+        new ${typeName}DimensionedFieldFunction${DimensionedFieldTypeName}
+        (
+            *this,
+            field_
+        )
+    );
 }
 
 
