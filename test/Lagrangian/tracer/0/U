@@ -16,32 +16,24 @@ FoamFile
 
 dimensions      [velocity];
 
-rpm             60;
+omega           60 [rpm];
 
-#codeStream
+internalField
 {
-    codeOptions     #{ -I$(LIB_SRC)/finiteVolume/lnInclude #};
+    type            coded;
 
-    codeLibs        #{ -lfiniteVolume #};
+    name            swirlVelocity;
 
-    codeInclude     #{ #include "volFields.H" #};
-
-    code
+    evaluate
     #{
-        const fvMesh& mesh = region(dict);
+        const dimensionedVector omega =
+            $<dimensionedScalar>omega*vector(0, 0, 1);
 
-        const vector omega =
-            units()["rpm"].toStandard($<scalar>rpm)
-           *vector(Vector<label>::one - mesh.geometricD())/2;
+        const dimensionedVector O(dimLength, field.mesh().bounds().midpoint());
 
-        writeEntry
-        (
-            os,
-            "internalField",
-            (omega^(mesh.C().primitiveField() - mesh.bounds().midpoint()))()
-        );
+        field = omega^(C - O);
     #};
-};
+}
 
 boundaryField
 {

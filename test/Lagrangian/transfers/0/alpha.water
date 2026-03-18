@@ -16,44 +16,28 @@ FoamFile
 
 dimensions      [];
 
-interfaceMiddle 0.2;
-interfaceDepth  0.04;
+interfaceHeight 0.2 [m];
+interfaceThickness 0.04 [m];
 
-#codeStream
+internalField
 {
-    codeOptions     #{ -I$(LIB_SRC)/finiteVolume/lnInclude #};
+    type            coded;
 
-    codeLibs        #{ -lfiniteVolume #};
+    name            thickenedInterfaceVolumeFraction;
 
-    codeInclude
+    evaluate
     #{
-        #include "volFields.H"
-        #include "mathematicalConstants.H"
-    #};
+        const volScalarField::Internal z(C.component(2));
 
-    code
-    #{
-        const fvMesh& mesh = region(dict);
+        const dimensionedScalar h = $<dimensionedScalar>interfaceHeight;
+        const dimensionedScalar t = $<dimensionedScalar>interfaceThickness;
 
-        // Signed height from the interface
-        const scalarField h
-        (
-            mesh.C().primitiveField().component(2) - $<scalar>interfaceMiddle
-        );
+        // Linear ramp over the interface thickness
+        tmp<volScalarField::Internal> r =
+            min(max(0.5 + (h - z)/t, scalar(0)), scalar(1));
 
-        // Linear ramp over the interface width
-        const scalarField r
-        (
-            min(max(0.5 + h/$<scalar>interfaceDepth, scalar(0)), scalar(1))
-        );
-
-        // Smooth cosine function for alpha
-        writeEntry
-        (
-            os,
-            "internalField",
-            ((1 - cos(constant::mathematical::pi*r))/2)()
-        );
+        // Smooth cosine function for the volume fraction
+        field = (1 - cos(constant::mathematical::pi*r))/2;
     #};
 }
 

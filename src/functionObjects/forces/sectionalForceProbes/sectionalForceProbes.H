@@ -104,7 +104,7 @@ class sectionalForceProbes
         vector normal_;
 
         //- Points in the section planes
-        List<point> points_;
+        Field<point> points_;
 
         //- The order the points when sorted by distance in the normal
         labelList pointOrders_;

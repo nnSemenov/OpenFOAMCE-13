@@ -253,7 +253,7 @@ Foam::functionObjects::sectionalForcesBase::patch() const
             const label ppi = iter.key();
             const polyPatch& pp = mesh().boundaryMesh()[ppi];
 
-            patchFaces.append(identityMap(pp.size()) + pp.start());
+            patchFaces.append(identityMap(pp.start(), pp.size()));
         }
 
         patchPtr_.reset

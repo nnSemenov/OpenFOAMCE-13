@@ -34,9 +34,14 @@ namespace Function1s
 {
     defineTypeNameAndDebug(${typeName}Function1${TemplateType}, 0);
 }
-    Function1<${TemplateType}>::adddictionaryConstructorToTable<Function1s::
-        ${typeName}Function1${TemplateType}>
-        ${typeName}Function1${TemplateType}ConstructorToTable_;
+
+Function1<${TemplateType}>::
+addRemovabledictionaryConstructorToTable
+<
+    Function1s::${typeName}Function1${TemplateType}
+>
+${typeName}Function1${TemplateType}ConstructorToTable_;
+
 }
 
 

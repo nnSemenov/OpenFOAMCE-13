@@ -551,8 +551,11 @@ void Foam::meshRefinement::checkData()
         localPointRegion::findDuplicateFaces
         (
             mesh_,
-            identityMap(mesh_.nFaces() - mesh_.nInternalFaces())
-          + mesh_.nInternalFaces()
+            identityMap
+            (
+                mesh_.nInternalFaces(),
+                mesh_.nFaces() - mesh_.nInternalFaces()
+            )
         )
     );
 

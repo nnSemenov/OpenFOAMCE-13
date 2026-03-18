@@ -37,8 +37,8 @@ SourceFiles
 #define boundSphere_H
 
 #include "point.H"
-#include "DLPermutation.H"
 #include "nil.H"
+#include "randomGenerator.H"
 #include "RemoteData.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -436,11 +436,11 @@ public:
 
     // IOstream operators
 
-        //- Read form stream
-        inline friend Istream& operator>>(Istream&, boundSphere&);
+        //- Read from stream
+        friend Istream& operator>>(Istream&, boundSphere&);
 
         //- Write to stream
-        inline friend Ostream& operator<<(Ostream&, const boundSphere&);
+        friend Ostream& operator<<(Ostream&, const boundSphere&);
 };
 
 

@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2023 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -107,7 +107,7 @@ Foam::patchWriter::patchWriter
             const face& f = pp.localFaces()[facei];
 
             vertLabels.append(f.size());
-            vtkWriteOps::insert(f + offset, vertLabels);
+            vtkWriteOps::insert(SubField<label>(f) + offset, vertLabels);
         }
         offset += pp.nPoints();
     }

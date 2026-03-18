@@ -241,7 +241,7 @@ void Foam::conformedFvPatchField<Type>::conform
         const fvPatch& origFvp = fvbm[origPatchi];
 
         const labelList ncOrigPatchFace =
-            ncFvp.polyFaces() - origFvp.start();
+            SubField<label>(ncFvp.polyFaces()) - origFvp.start();
 
         const scalarField origNcMagSf
         (
@@ -275,7 +275,7 @@ void Foam::conformedFvPatchField<Type>::conform
         const fvPatch& origFvp = fvbm[origPatchi];
 
         const labelList ncOrigPatchFace =
-            ncFvp.polyFaces() - origFvp.start();
+            SubField<label>(ncFvp.polyFaces()) - origFvp.start();
 
         conformedFvPatchField<Type>& cpF =
             refCast<conformedFvPatchField<Type>>(bF[origPatchi]);
@@ -336,7 +336,7 @@ void Foam::conformedFvPatchField<Type>::unconform
             refCast<conformedFvPatchField<Type>>(bF[origPatchi]);
 
         labelList ncOrigPatchFace =
-            ncFvp.polyFaces() - origFvp.start();
+            SubField<label>(ncFvp.polyFaces()) - origFvp.start();
 
         forAll(ncOrigPatchFace, ncPatchFacei)
         {

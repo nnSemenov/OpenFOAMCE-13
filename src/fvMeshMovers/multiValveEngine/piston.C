@@ -59,8 +59,8 @@ void Foam::fvMeshMovers::multiValveEngine::pistonObject::calculateBore()
 
     // Assuming the piston moves in the positive axis direction
     // remove the axis_ component to find the lateral extent of the piston
-    pistonMax = pistonMax - (axis & pistonMax)*pistonMax;
-    pistonMin = pistonMin - (axis & pistonMin)*pistonMin;
+    pistonMax -= (axis & pistonMax)*axis;
+    pistonMin -= (axis & pistonMin)*axis;
 
     bore_ = mag(pistonMax - pistonMin)/sqrt(2.0);
     centre_ = (pistonMax + pistonMin)/2;

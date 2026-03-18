@@ -24,6 +24,7 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "boundSphere.H"
+#include "DLPermutation.H"
 #include "labelPair.H"
 #include "triPointRef.H"
 #include "tetPointRef.H"
@@ -591,6 +592,43 @@ InstantiateBoundSphere(UIndirectList<point>);
 
 
 #undef InstantiateBoundSphere
+
+
+// * * * * * * * * * * * * * * IOstream operators  * * * * * * * * * * * * * //
+
+Foam::Istream& Foam::operator>>(Istream& is, boundSphere& s)
+{
+    is.readBegin("boundSphere");
+    is >> s.c_ >> s.rSqr_;
+    is.readEnd("boundSphere");
+
+    // Check state of Istream
+    is.check("operator>>(Istream&, boundSphere&)");
+
+    if (is.format() == IOstream::ASCII && s.valid())
+    {
+        s.rSqr_ = sqr(s.rSqr_);
+    }
+
+    return is;
+}
+
+
+Foam::Ostream& Foam::operator<<(Ostream& os, const boundSphere& s)
+{
+    os << s.c_ << token::SPACE;
+
+    if (os.format() == IOstream::ASCII && s.valid())
+    {
+        os << sqrt(s.rSqr_);
+    }
+    else
+    {
+        os << s.rSqr_;
+    }
+
+    return os;
+}
 
 
 // ************************************************************************* //
