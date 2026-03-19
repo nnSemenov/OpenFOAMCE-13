@@ -40,11 +40,8 @@ namespace DimensionedFieldFunctions
 }
 
 DimensionedFieldFunction<${DimensionedFieldType}>::
-addRemovabledictionaryConstructorToTable
-<
-    DimensionedFieldFunctions::
-    ${typeName}DimensionedFieldFunction${DimensionedFieldTypeName}
->
+adddictionaryConstructorToTable<DimensionedFieldFunctions::
+${typeName}DimensionedFieldFunction${DimensionedFieldTypeName}>
 ${typeName}DimensionedFieldFunction${DimensionedFieldTypeName}ConstructorToTable_;
 
 }

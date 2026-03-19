@@ -205,14 +205,7 @@ Foam::codedBase::codedBase
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
 Foam::codedBase::~codedBase()
-{
-    unloadLibrary
-    (
-        dictionary(),
-        oldLibPath_,
-        dynamicCode::libraryBaseName(oldLibPath_)
-    );
-}
+{}
 
 
 // * * * * * * * * * * * * * Static Member Functions * * * * * * * * * * * * //
