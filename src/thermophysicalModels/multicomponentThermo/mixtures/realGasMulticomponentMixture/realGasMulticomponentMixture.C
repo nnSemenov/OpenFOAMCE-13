@@ -82,7 +82,7 @@ Foam::realGasMulticomponentMixture<ThermoType>::realGasMulticomponentMixture
         transportMixture_(this->specieThermos()) {
     static_assert(Foam::is_cubic_EOS<ThermoType>::value, "Only cubic EOS is supported now.");
 
-    this->thermoMixture_.mixer_=new typename ThermoType::EOSMixer{this->specieNames(), dict};
+    this->thermoMixture_.mixer_=new typename ThermoType::EOSMixer{this->species(), dict};
 }
 
 
@@ -260,17 +260,6 @@ Foam::realGasMulticomponentMixture<ThermoType>::thermoMixtureType::gamma (
         return this->Cp(p, T)/this->Cv(p, T);
 }
 
-
-template<class ThermoType>
-Foam::scalar
-    Foam::realGasMulticomponentMixture<ThermoType>::thermoMixtureType::dhedp_T(const Foam::scalar p,
-                                                                               const Foam::scalar T) const {
-    if(ThermoType::enthalpy()) {
-        return this->dhdp_T(p,T);
-    }else{
-        return this->dedp_T(p,T);
-    }
-}
 
 template<class ThermoType>
 Foam::scalar
