@@ -114,7 +114,7 @@ target_sources(OpenFOAM PRIVATE
 
 # Run-time selectable functions
 target_sources(OpenFOAM PRIVATE
-    primitives/functions/Function1/Function1/Function1UnitConversions.C
+    primitives/functions/Function1/Function1/Function1UnitSets.C
     primitives/functions/Function1/makeFunction1s.C
     primitives/functions/Function1/reverseRamp/reverseRamp.C
     primitives/functions/Function1/linearRamp/linearRamp.C
@@ -131,7 +131,7 @@ target_sources(OpenFOAM PRIVATE
     primitives/functions/Function1/omega1/omega1.C
     primitives/functions/Function1/Table/TableReader/Foam/tokenTupleN.C
 
-    primitives/functions/Function2/Function2/Function2UnitConversions.C
+    primitives/functions/Function2/Function2/Function2UnitSets.C
     primitives/functions/Function2/makeFunction2s.C
 )
 
@@ -394,12 +394,12 @@ target_sources(OpenFOAM PRIVATE
     symbols/symbols.C
     dimensionSet/dimensionSet.C
     dimensionSet/dimensionSetIO.C
-    dimensionSet/dimensionSets.C
-    unitConversion/unitConversion.C
-    unitConversion/unitConversionIO.C
-    unitConversion/unitConversions.C
-    unitConversion/namedUnitConversion.C
-    unitConversion/namedUnitConversionIO.C
+    dimensionSet/dimensions.C
+    unitSet/unitSet.C
+    unitSet/unitSetIO.C
+    unitSet/units.C
+    unitSet/namedUnitSet.C
+    unitSet/namedUnitSetIO.C
     dimensionedTypes/dimensionedScalar/dimensionedScalar.C
     dimensionedTypes/dimensionedSphericalTensor/dimensionedSphericalTensor.C
     dimensionedTypes/dimensionedSymmTensor/dimensionedSymmTensor.C

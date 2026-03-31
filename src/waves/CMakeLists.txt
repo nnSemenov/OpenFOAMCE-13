@@ -18,7 +18,9 @@ add_library(${target_name} SHARED
 
     waveSuperpositions/waveSuperposition/waveSuperposition.C
     waveSuperpositions/waveSuperposition/waveSuperpositionNew.C
-    waveSuperpositions/waveAtmBoundaryLayerSuperposition/waveAtmBoundaryLayerSuperposition.C
+
+    dimensionedFieldFunctions/waveAlpha/waveAlpha_DimensionedFieldFunction.C
+    dimensionedFieldFunctions/waveVelocity/waveVelocity_DimensionedFieldFunction.C
 
     derivedFvPatchFields/waveAlpha/waveAlphaFvPatchScalarField.C
     derivedFvPatchFields/waveInletOutlet/waveInletOutletFvPatchFields.C

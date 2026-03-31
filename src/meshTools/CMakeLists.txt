@@ -113,6 +113,9 @@ target_sources(meshTools PRIVATE
     searchableSurfaces/collection/collection_searchableSurface.C
 
     searchableSurfaces/searchableSurfacesQueries/searchableSurfacesQueries.C
+
+    searchableSurfaces/searchableSurfacesInsideFraction/searchableSurfacesInsideFraction.C
+
     searchableSurfaces/triSurface/extractCloseness.C
 
     topoSets/cellSet.C

@@ -274,7 +274,7 @@ target_sources(finiteVolume PRIVATE
     ${derivedFvPatchFields}/totalTemperature/totalTemperatureFvPatchScalarField.C
     ${derivedFvPatchFields}/translatingWallVelocity/translatingWallVelocityFvPatchVectorField.C
     ${derivedFvPatchFields}/turbulentInlet/turbulentInletFvPatchFields.C
-    ${derivedFvPatchFields}/turbulentIntensityKineticEnergyInlet/turbulentIntensityKineticEnergyInletFvPatchScalarField.C
+    ${derivedFvPatchFields}/turbulentKineticEnergy/turbulentKineticEnergyFvPatchScalarField.C
     ${derivedFvPatchFields}/uniformDensityHydrostaticPressure/uniformDensityHydrostaticPressureFvPatchScalarField.C
     ${derivedFvPatchFields}/uniformFixedGradient/uniformFixedGradientFvPatchFields.C
     ${derivedFvPatchFields}/uniformFixedValue/uniformFixedValueFvPatchFields.C
@@ -348,7 +348,7 @@ target_sources(finiteVolume PRIVATE
     ${derivedFvFieldSources}/internal/internalFvFieldSources.C
     ${derivedFvFieldSources}/uniformFixedValue/uniformFixedValueFvFieldSources.C
     ${derivedFvFieldSources}/uniformInletOutlet/uniformInletOutletFvFieldSources.C
-    ${derivedFvFieldSources}/turbulentIntensityKineticEnergy/turbulentIntensityKineticEnergyFvScalarFieldSource.C
+    ${derivedFvFieldSources}/turbulentKineticEnergy/turbulentKineticEnergyFvScalarFieldSource.C
     ${derivedFvFieldSources}/NaN/NaNFvFieldSources.C
 )
 

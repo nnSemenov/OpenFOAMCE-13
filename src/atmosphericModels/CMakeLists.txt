@@ -3,11 +3,14 @@ lnInclude(${CMAKE_CURRENT_SOURCE_DIR})
 set(target_name atmosphericModels)
 
 add_library(${target_name} SHARED
-    derivedFvPatchFields/atmBoundaryLayer/atmBoundaryLayer.C
-    derivedFvPatchFields/atmBoundaryLayerInletVelocity/atmBoundaryLayerInletVelocityFvPatchVectorField.C
-    derivedFvPatchFields/atmBoundaryLayerInletK/atmBoundaryLayerInletKFvPatchScalarField.C
-    derivedFvPatchFields/atmBoundaryLayerInletEpsilon/atmBoundaryLayerInletEpsilonFvPatchScalarField.C
-    derivedFvPatchFields/nutkAtmRoughWallFunction/nutkAtmRoughWallFunctionFvPatchScalarField.C
+    atmosphericBoundaryLayer/atmosphericBoundaryLayer.C
+
+    derivedFvPatchFields/atmosphericBoundaryLayerVelocity/atmosphericBoundaryLayerVelocityFvPatchVectorField.C
+    derivedFvPatchFields/atmosphericBoundaryLayerTurbulentKineticEnergy/atmosphericBoundaryLayerTurbulentKineticEnergyFvPatchScalarField.C
+    derivedFvPatchFields/atmosphericBoundaryLayerTurbulentEpsilon/atmosphericBoundaryLayerTurbulentEpsilonFvPatchScalarField.C
+    derivedFvPatchFields/nutAtmosphericBoundaryLayerWallFunction/nutAtmosphericBoundaryLayerWallFunctionFvPatchScalarField.C
+
+    DimensionedFieldFunctions/makeDimensionedFieldFunctions.C
 
     atmosphericTurbulentTransportModels.C
     porosityModels/powerLawLopesdaCosta/powerLawLopesdaCosta.C
