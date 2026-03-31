@@ -866,21 +866,20 @@ Foam::fvMesh::readUpdateState Foam::fvMesh::readUpdate
         }
     }
 
-    const bool reStitch =
-        stitcher_.valid()
-     && stitcher_->stitches()
-     && stitch != stitchType::none
-     && (
-            !conformal()
-         || time().findInstance
+    const fileName polyFacesInst =
+        time().findInstance
             (
                 dbDir()/typeName,
                 "polyFaces",
                 IOobject::READ_IF_PRESENT,
-                forward ? word(instance0) : word::null
-            )
-         != (forward ? instance0 : polyFacesBfIOPtr_->instance())
-        );
+                word::null
+            );
+
+    const bool reStitch =
+        stitcher_.valid()
+        && stitcher_->stitches()
+        && stitch != stitchType::none
+        && (!conformal() || polyFacesInst != polyFacesBfIOPtr_->instance());
 
     if (reStitch)
     {
