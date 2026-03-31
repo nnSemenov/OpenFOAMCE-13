@@ -105,7 +105,7 @@ thermalBaffle1DFvPatchScalarField
                 p.size()
             );
         valueFraction() =
-            scalarField("valueFraction", unitFraction, dict, p.size());
+            scalarField("valueFraction", units::fraction, dict, p.size());
     }
     else
     {
@@ -363,7 +363,7 @@ void thermalBaffle1DFvPatchScalarField<solidType>::updateCoeffs()
         if (debug)
         {
             scalar Q = gAverage(kappap*snGrad());
-            Info<< patch().boundaryMesh().mesh().name() << ':'
+            Info<< patch().mesh().name() << ':'
                 << patch().name() << ':'
                 << this->internalField().name() << " <- "
                 << nbrField().patch().name() << ':'

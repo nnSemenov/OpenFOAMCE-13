@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -84,9 +84,9 @@ void Foam::fv::rotorDisk::readCoeffs(const dictionary& dict)
     dict.lookup("tipEffect") >> tipEffect_;
 
     const dictionary& flapCoeffs(dict.subDict("flapCoeffs"));
-    flap_.beta0 = flapCoeffs.lookup<scalar>("beta0", unitDegrees);
-    flap_.beta1c = flapCoeffs.lookup<scalar>("beta1c", unitDegrees);
-    flap_.beta2s = flapCoeffs.lookup<scalar>("beta2s", unitDegrees);
+    flap_.beta0 = flapCoeffs.lookup<scalar>("beta0", units::degrees);
+    flap_.beta1c = flapCoeffs.lookup<scalar>("beta1c", units::degrees);
+    flap_.beta2s = flapCoeffs.lookup<scalar>("beta2s", units::degrees);
 
     // Create co-ordinate system
     createCoordinateSystem(dict);
@@ -156,7 +156,7 @@ void Foam::fv::rotorDisk::setFaceArea(vector& axis, const bool correct)
     static const scalar tol = 0.8;
 
     const label nInternalFaces = mesh().nInternalFaces();
-    const polyBoundaryMesh& pbm = mesh().boundaryMesh();
+    const polyBoundaryMesh& pbm = mesh().poly().boundary();
     const vectorField& Sf = mesh().Sf();
     const scalarField& magSf = mesh().magSf();
 

@@ -28,25 +28,19 @@ boundaryField
 
         function
         {
-            type    zonal;
+            type    surfaces;
 
             defaultValue    0;
 
-            zones
+            surfaces
             {
-                inlet
+                cylinder
                 {
                     type        cylinder;
 
                     point1      (-0.51 0 0);
                     point2      (-0.49 0 0);
                     radius      0.05;
-
-                    zone
-                    {
-                        type        patch;
-                        patch       inlet;
-                    }
 
                     value       1;
                 }

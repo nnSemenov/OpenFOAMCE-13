@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 
     Info<< "Constructing the function\n" << endl;
     const autoPtr<Function1<scalar>> functionPtr =
-        Function1<scalar>::New("function", unitNone, unitNone, dict);
+        Function1<scalar>::New("function", units::none, units::none, dict);
     const Function1<scalar>& function = functionPtr();
 
     const bool integral = dict.lookupOrDefault<bool>("integral", true);
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
     const scalar x1 = dict.lookup<scalar>("x1");
     const label nX = dict.lookup<label>("nX");
     const scalar dx = (x1 - x0)/(nX - 1);
-    const scalarField xs(x0 + dx*List<scalar>(identityMap(nX)));
+    const scalarField xs(x0 + (x1 - x0)*linearSequence01(nX));
 
     Info<< "Calculating values\n" << endl;
 

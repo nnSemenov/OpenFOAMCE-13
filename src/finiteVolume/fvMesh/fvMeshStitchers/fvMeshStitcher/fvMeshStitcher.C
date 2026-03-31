@@ -768,7 +768,7 @@ void Foam::fvMeshStitcher::intersectNonConformalCyclic
 ) const
 {
     // Alias the original poly patches
-    const polyPatch& origPp = nccFvp.origPatch().patch();
+    const polyPatch& origPp = nccFvp.origPatch().poly();
 
     // Get the indices of the related (i.e., cyclic and processorCyclic)
     // non-conformal patches. Index based on the connected processor.
@@ -793,8 +793,8 @@ void Foam::fvMeshStitcher::intersectNonConformalCyclic
     // Get the intersection geometry
     const patchToPatches::intersection& intersection =
         nccFvp.owner()
-      ? nccFvp.nonConformalCyclicPatch().intersection()
-      : nccFvp.nbrPatch().nonConformalCyclicPatch().intersection();
+      ? nccFvp.nonConformalCyclicPoly().intersection()
+      : nccFvp.nbrPatch().nonConformalCyclicPoly().intersection();
 
     // Unpack the patchToPatch addressing into a list of indices
     List<List<FixedList<label, 3>>> indices =
@@ -902,13 +902,13 @@ void Foam::fvMeshStitcher::intersectNonConformalMappedWall
 ) const
 {
     // Alias the original poly patch
-    const polyPatch& origPp = ncmwFvp.origPatch().patch();
+    const polyPatch& origPp = ncmwFvp.origPatch().poly();
 
     // Get the intersection geometry
     const patchToPatches::intersection& intersection =
         ncmwFvp.owner()
-      ? ncmwFvp.nonConformalMappedWallPatch().intersection()
-      : ncmwFvp.nbrPatch().nonConformalMappedWallPatch().intersection();
+      ? ncmwFvp.nonConformalMappedWallPoly().intersection()
+      : ncmwFvp.nbrPatch().nonConformalMappedWallPoly().intersection();
 
     // Unpack the patchToPatch addressing into a list of indices
     List<List<FixedList<label, 3>>> indices =
@@ -998,7 +998,7 @@ Foam::fvMeshStitcher::calculateOwnerOrigBoundaryEdgeParts
     const List<List<part>>& patchEdgeParts
 ) const
 {
-    const polyBoundaryMesh& pbMesh = mesh_.boundaryMesh();
+    const polyBoundaryMesh& pbMesh = mesh_.poly().boundary();
 
     const nonConformalBoundary& ncb = nonConformalBoundary::New(mesh_);
     const labelList& ownerOrigBoundaryPointMeshPoint =
@@ -1164,7 +1164,7 @@ void Foam::fvMeshStitcher::applyOwnerOrigBoundaryEdgeParts
     const List<part>& ownerOrigBoundaryEdgeParts
 ) const
 {
-    const polyBoundaryMesh& pbMesh = mesh_.boundaryMesh();
+    const polyBoundaryMesh& pbMesh = mesh_.poly().boundary();
 
     const nonConformalBoundary& ncb = nonConformalBoundary::New(mesh_);
     const labelList ownerOrigPatchIndices = ncb.ownerOrigPatchIndices();
@@ -1412,7 +1412,7 @@ void Foam::fvMeshStitcher::stabiliseOrigPatchFaces
     forAll(allOrigPatchIndices, i)
     {
         const label origPatchi = allOrigPatchIndices[i];
-        const polyPatch& origPp = mesh_.boundaryMesh()[origPatchi];
+        const polyPatch& origPp = mesh_.poly().boundary()[origPatchi];
 
         const vectorField::subField origPpFaceAreas = origPp.faceAreas();
         const pointField::subField origPpFaceCentres = origPp.faceCentres();
@@ -1462,7 +1462,7 @@ void Foam::fvMeshStitcher::intersect
     const bool matchTopology
 ) const
 {
-    const polyBoundaryMesh& pbMesh = mesh_.boundaryMesh();
+    const polyBoundaryMesh& pbMesh = mesh_.poly().boundary();
 
     const nonConformalBoundary& ncb = nonConformalBoundary::New(mesh_);
     const labelList ownerOrigPatchIndices = ncb.ownerOrigPatchIndices();
@@ -1481,7 +1481,7 @@ void Foam::fvMeshStitcher::intersect
 
         patchEdgeParts[origPatchi].resize
         (
-            mesh_.boundaryMesh()[origPatchi].nEdges(),
+            mesh_.poly().boundary()[origPatchi].nEdges(),
             part(Zero)
         );
     }
@@ -1567,7 +1567,7 @@ void Foam::fvMeshStitcher::intersect
         if (!isA<nonConformalFvPatch>(fvp)) continue;
 
         const polyPatch& origPp =
-            refCast<const nonConformalFvPatch>(fvp).origPatch().patch();
+            refCast<const nonConformalFvPatch>(fvp).origPatch().poly();
 
         SfBf[patchi] ==
             vectorField
@@ -1743,7 +1743,7 @@ bool Foam::fvMeshStitcher::connectThis
 
             if (nccFvp.owner())
             {
-                nccFvp.nonConformalCyclicPatch().intersection();
+                nccFvp.nonConformalCyclicPoly().intersection();
             }
         }
         else if (isA<nonConformalProcessorCyclicFvPatch>(fvp))
@@ -1756,7 +1756,7 @@ bool Foam::fvMeshStitcher::connectThis
             const nonConformalMappedWallFvPatch& ownerNcmwFvp =
                 ncmwFvp.owner() ? ncmwFvp : ncmwFvp.nbrPatch();
 
-            ownerNcmwFvp.nonConformalMappedWallPatch().intersection();
+            ownerNcmwFvp.nonConformalMappedWallPoly().intersection();
         }
         else
         {
@@ -2158,8 +2158,8 @@ Foam::boolList Foam::fvMeshStitcher::patchCoupleds() const
                     Pstream::parRun()
                  || patchToPatchTools::singleProcess
                     (
-                        ncmwFvp.patch().size(),
-                        ncmwFvp.nbrPatch().patch().size()
+                        ncmwFvp.poly().size(),
+                        ncmwFvp.nbrPatch().poly().size()
                     ) != -1
                 );
         }
@@ -2183,7 +2183,7 @@ bool Foam::fvMeshStitcher::geometric() const
             mesh_.magSf().boundaryField()[patchi];
 
         const polyPatch& origPp =
-            refCast<const nonConformalFvPatch>(fvp).origPatch().patch();
+            refCast<const nonConformalFvPatch>(fvp).origPatch().poly();
 
         const scalarField origMagSfp
         (

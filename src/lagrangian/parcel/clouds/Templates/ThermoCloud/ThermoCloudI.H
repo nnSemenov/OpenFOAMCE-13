@@ -254,7 +254,7 @@ Foam::ThermoCloud<CloudType>::Sh(const volScalarField& hs) const
         {
             const volScalarField& Cp(carrierThermo_.Cp());
             const volScalarField::Internal
-                Vdt(this->mesh().V()*this->db().time().deltaT());
+                Vdt(this->mesh().V()*this->time().deltaT());
 
             if (hs.dimensions() == dimTemperature)
             {
@@ -276,7 +276,7 @@ Foam::ThermoCloud<CloudType>::Sh(const volScalarField& hs) const
             tmp<fvScalarMatrix> tfvm(new fvScalarMatrix(hs, dimEnergy/dimTime));
             fvScalarMatrix& fvm = tfvm.ref();
 
-            fvm.source() = -hsTrans()/(this->db().time().deltaT());
+            fvm.source() = -hsTrans()/(this->time().deltaT());
 
             return tfvm;
         }
@@ -302,7 +302,7 @@ inline Foam::tmp<Foam::volScalarField> Foam::ThermoCloud<CloudType>::Ep() const
     if (radiation_)
     {
         scalarField& Ep = tEp.ref().primitiveFieldRef();
-        const scalar dt = this->db().time().deltaTValue();
+        const scalar dt = this->time().deltaTValue();
         const scalarField& V = this->mesh().V();
         const scalar epsilon = constProps_.epsilon0();
         const scalarField& sumAreaPT4 = radAreaPT4_->primitiveField();
@@ -330,7 +330,7 @@ inline Foam::tmp<Foam::volScalarField> Foam::ThermoCloud<CloudType>::ap() const
     if (radiation_)
     {
         scalarField& ap = tap.ref().primitiveFieldRef();
-        const scalar dt = this->db().time().deltaTValue();
+        const scalar dt = this->time().deltaTValue();
         const scalarField& V = this->mesh().V();
         const scalar epsilon = constProps_.epsilon0();
         const scalarField& sumAreaP = radAreaP_->primitiveField();
@@ -359,7 +359,7 @@ Foam::ThermoCloud<CloudType>::sigmap() const
     if (radiation_)
     {
         scalarField& sigmap = tsigmap.ref().primitiveFieldRef();
-        const scalar dt = this->db().time().deltaTValue();
+        const scalar dt = this->time().deltaTValue();
         const scalarField& V = this->mesh().V();
         const scalar epsilon = constProps_.epsilon0();
         const scalar f = constProps_.f0();

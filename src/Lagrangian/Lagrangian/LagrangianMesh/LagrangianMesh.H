@@ -622,12 +622,17 @@ public:
         // Access
 
             using objectRegistry::time;
-            using objectRegistry::thisDb;
             using objectRegistry::operator!=;
             using objectRegistry::operator==;
 
-            //- Access the mesh
-            inline const polyMesh& mesh() const;
+            //- Return database
+            const objectRegistry& db() const
+            {
+                return *this;
+            }
+
+            //- Access the poly mesh
+            inline const polyMesh& poly() const;
 
             //- Access the coordinates
             inline const barycentricIODynamicField& coordinates() const;

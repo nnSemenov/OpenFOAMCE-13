@@ -44,7 +44,7 @@ namespace distributions
 
 Foam::distributions::tabulatedCumulative::tabulatedCumulative
 (
-    const unitConversion& defaultUnits,
+    const unitSet& defaultUnits,
     const dictionary& dict,
     const label sampleQ,
     randomGenerator&& rndGen
@@ -63,13 +63,13 @@ Foam::distributions::tabulatedCumulative::tabulatedCumulative
         TableReader<scalar, scalar>::New
         (
             word::null,
-            {defaultUnits, unitAny},
+            {defaultUnits, units::any},
             dict
         )
     )
 {
     List<Tuple2<scalar, scalar>> values =
-        reader_->read({defaultUnits, unitAny}, dict, "distribution");
+        reader_->read({defaultUnits, units::any}, dict, "distribution");
 
     // Checks
     if (values.first().second() != 0)
@@ -261,7 +261,7 @@ Foam::distributions::tabulatedCumulative::integralPDFxPow
 void Foam::distributions::tabulatedCumulative::write
 (
     Ostream& os,
-    const unitConversion& units
+    const unitSet& units
 ) const
 {
     FieldDistribution<distribution, tabulatedCumulative>::write(os, units);
@@ -287,7 +287,7 @@ void Foam::distributions::tabulatedCumulative::write
         values[i].first() = x_[i];
         values[i].second() = CDF[i];
     }
-    reader_->write(os, {units, unitAny}, values, "distribution");
+    reader_->write(os, {units, units::any}, values, "distribution");
 }
 
 

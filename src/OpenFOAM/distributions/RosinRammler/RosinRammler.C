@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -64,7 +64,7 @@ Foam::tmp<Foam::scalarField> Foam::distributions::RosinRammler::PhiForZeroQ
 
 Foam::distributions::RosinRammler::RosinRammler
 (
-    const unitConversion& units,
+    const unitSet& units,
     const dictionary& dict,
     const label sampleQ,
     randomGenerator&& rndGen
@@ -81,7 +81,7 @@ Foam::distributions::RosinRammler::RosinRammler
     min_(dict.lookupBackwardsCompatible<scalar>({"min", "minValue"}, units)),
     max_(dict.lookupBackwardsCompatible<scalar>({"max", "maxValue"}, units)),
     d_(dict.lookup<scalar>("d", units)),
-    n_(dict.lookup<scalar>("n", unitless))
+    n_(dict.lookup<scalar>("n", units::unitless))
 {
     validateBounds(dict);
     validatePositive(dict);
@@ -135,7 +135,7 @@ Foam::scalar Foam::distributions::RosinRammler::max() const
 void Foam::distributions::RosinRammler::write
 (
     Ostream& os,
-    const unitConversion& units
+    const unitSet& units
 ) const
 {
     FieldDistribution<unintegrableForNonZeroQ, RosinRammler>::write(os, units);
@@ -143,7 +143,7 @@ void Foam::distributions::RosinRammler::write
     writeEntry(os, "min", units, min_);
     writeEntry(os, "max", units, max_);
     writeEntry(os, "d", units, d_);
-    writeEntry(os, "n", unitless, n_);
+    writeEntry(os, "n", units::unitless, n_);
 }
 
 

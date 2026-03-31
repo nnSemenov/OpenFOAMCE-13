@@ -190,7 +190,7 @@ void Foam::ReadFields
                 (
                     fieldName,
                     tm,
-                    mesh.thisDb(),
+                    mesh.db(),
                     IOobject::MUST_READ,
                     IOobject::NO_WRITE,
                     false
@@ -233,7 +233,7 @@ void Foam::ReadFields
         timeNames,
         const_cast<objectRegistry&>
         (
-            mesh.thisDb().subRegistry(registryName, true)
+            mesh.db().subRegistry(registryName, true)
         )
     );
 }

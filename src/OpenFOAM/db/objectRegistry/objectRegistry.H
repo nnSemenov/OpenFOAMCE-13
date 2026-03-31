@@ -233,8 +233,10 @@ public:
             //- Return new event number.
             uint64_t getEvent() const;
 
-            //- Return the object registry
-            const objectRegistry& thisDb() const
+            //- Return the objectRegistry
+            //  Required for consistent interface for DemandDrivenMeshObject
+            //  instantiated on objectRegistry
+            const objectRegistry& db() const
             {
                 return *this;
             }

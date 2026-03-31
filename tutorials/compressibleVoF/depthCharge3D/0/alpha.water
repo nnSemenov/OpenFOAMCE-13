@@ -18,27 +18,28 @@ dimensions      [];
 
 internalField
 {
-    type        zonal;
+    type        surfaces;
 
-    defaultValue    1;
+    defaultValue 1;
 
-    zones
+    surfaces
     {
         bubble
         {
             type        sphere;
 
-            centre (0.5 0.5 0.5);
-            radius 0.1;
+            centre      (0.5 0.5 0.5);
+            radius      0.1;
 
             value       0;
         }
 
         air
         {
-            type        box;
+            type        plane;
 
-            box         (-10 1 -1) (10 10 1);
+            point       (0 1 0);
+            normal      (0 -1 0);
 
             value       0;
         }

@@ -30,6 +30,22 @@ License
 
 #define makeTriSurfaceFieldFunctions(Type, nullArg)                            \
                                                                                \
+    typedef DimensionedField<Type, triSurface, Field>                          \
+        DimensionedField##Type##triSurface##Field;                             \
+    defineDimensionedFieldFunction                                             \
+    (                                                                          \
+        DimensionedField##Type##triSurface##Field                              \
+    );
+
+namespace Foam
+{
+    FOR_ALL_FIELD_TYPES(makeTriSurfaceFieldFunctions);
+    makeTriSurfaceFieldFunctions(label, );
+}
+
+
+#define makeTriSurfacePointMeshFieldFunctions(Type, nullArg)                   \
+                                                                               \
     typedef DimensionedField<Type, triSurfacePointMesh, Field>                 \
         DimensionedField##Type##triSurfacePointMesh##Field;                    \
     defineDimensionedFieldFunction                                             \
@@ -39,8 +55,8 @@ License
 
 namespace Foam
 {
-    FOR_ALL_FIELD_TYPES(makeTriSurfaceFieldFunctions);
-    makeTriSurfaceFieldFunctions(label, );
+    FOR_ALL_FIELD_TYPES(makeTriSurfacePointMeshFieldFunctions);
+    makeTriSurfacePointMeshFieldFunctions(label, );
 }
 
 // ************************************************************************* //

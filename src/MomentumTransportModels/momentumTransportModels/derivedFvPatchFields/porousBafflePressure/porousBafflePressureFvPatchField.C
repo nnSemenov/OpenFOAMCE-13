@@ -71,7 +71,7 @@ Foam::porousBafflePressureFvPatchField::porousBafflePressureFvPatchField
     relaxation_
     (
         cyclicPatch().owner()
-      ? dict.lookupOrDefault<scalar>("relaxation", unitFraction, 1)
+      ? dict.lookupOrDefault<scalar>("relaxation", units::fraction, 1)
       : NaN
     ),
     jump0_(cyclicPatch().owner() ? jump()() : scalarField(p.size()))
@@ -168,7 +168,7 @@ void Foam::porousBafflePressureFvPatchField::updateCoeffs()
             scalar avePressureJump = gAverage(jumpRef());
             scalar aveVelocity = gAverage(mag(Un));
 
-            Info<< patch().boundaryMesh().mesh().name() << ':'
+            Info<< patch().mesh().name() << ':'
                 << patch().name() << ':'
                 << " Average pressure drop :" << avePressureJump
                 << " Average velocity :" << aveVelocity

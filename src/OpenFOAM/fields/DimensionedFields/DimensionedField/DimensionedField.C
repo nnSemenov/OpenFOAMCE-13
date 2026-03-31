@@ -389,7 +389,7 @@ DimensionedField<Type, GeoMesh, PrimitiveField>::New
     const PrimitiveField<Type>& field
 )
 {
-    const bool cacheTmp = mesh.thisDb().cacheTemporaryObject(name);
+    const bool cacheTmp = mesh.db().cacheTemporaryObject(name);
 
     return tmp<DimensionedField<Type, GeoMesh, PrimitiveField>>
     (
@@ -398,8 +398,8 @@ DimensionedField<Type, GeoMesh, PrimitiveField>::New
             IOobject
             (
                 name,
-                mesh.thisDb().time().name(),
-                mesh.thisDb(),
+                mesh.db().time().name(),
+                mesh.db(),
                 IOobject::NO_READ,
                 IOobject::NO_WRITE,
                 cacheTmp
@@ -423,7 +423,7 @@ DimensionedField<Type, GeoMesh, PrimitiveField>::New
     const tmp<PrimitiveField<Type>>& tfield
 )
 {
-    const bool cacheTmp = mesh.thisDb().cacheTemporaryObject(name);
+    const bool cacheTmp = mesh.db().cacheTemporaryObject(name);
 
     return tmp<DimensionedField<Type, GeoMesh, PrimitiveField>>
     (
@@ -432,8 +432,8 @@ DimensionedField<Type, GeoMesh, PrimitiveField>::New
             IOobject
             (
                 name,
-                mesh.thisDb().time().name(),
-                mesh.thisDb(),
+                mesh.db().time().name(),
+                mesh.db(),
                 IOobject::NO_READ,
                 IOobject::NO_WRITE,
                 cacheTmp
@@ -456,7 +456,7 @@ DimensionedField<Type, GeoMesh, PrimitiveField>::New
     const dimensionSet& ds
 )
 {
-    const bool cacheTmp = mesh.thisDb().cacheTemporaryObject(name);
+    const bool cacheTmp = mesh.db().cacheTemporaryObject(name);
 
     return tmp<DimensionedField<Type, GeoMesh, PrimitiveField>>
     (
@@ -465,8 +465,8 @@ DimensionedField<Type, GeoMesh, PrimitiveField>::New
             IOobject
             (
                 name,
-                mesh.thisDb().time().name(),
-                mesh.thisDb(),
+                mesh.db().time().name(),
+                mesh.db(),
                 IOobject::NO_READ,
                 IOobject::NO_WRITE,
                 cacheTmp
@@ -489,7 +489,7 @@ DimensionedField<Type, GeoMesh, PrimitiveField>::New
     const dimensioned<Type>& dt
 )
 {
-    const bool cacheTmp = mesh.thisDb().cacheTemporaryObject(name);
+    const bool cacheTmp = mesh.db().cacheTemporaryObject(name);
 
     return tmp<DimensionedField<Type, GeoMesh, PrimitiveField>>
     (
@@ -498,8 +498,8 @@ DimensionedField<Type, GeoMesh, PrimitiveField>::New
             IOobject
             (
                 name,
-                mesh.thisDb().time().name(),
-                mesh.thisDb(),
+                mesh.db().time().name(),
+                mesh.db(),
                 IOobject::NO_READ,
                 IOobject::NO_WRITE,
                 cacheTmp
@@ -763,7 +763,7 @@ void DimensionedField<Type, GeoMesh, PrimitiveField>::reset
 
     if (tdf.isTmp())
     {
-        PrimitiveField<Type>::transfer(tdf.ref());
+        transfer(tdf.ref());
     }
     else
     {
@@ -864,11 +864,11 @@ void DimensionedField<Type, GeoMesh, PrimitiveField>::operator=
 
     if (tdf.isTmp())
     {
-        primitiveFieldRef().transfer(tdf.ref());
+        transfer(tdf.ref());
     }
     else
     {
-        primitiveFieldRef() = df.primitiveField();
+        PrimitiveField<Type>::operator=(df.primitiveField());
     }
 
     tdf.clear();

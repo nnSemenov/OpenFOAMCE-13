@@ -60,6 +60,16 @@ Foam::SlicedDimensionedField<Type, GeoMesh>::~SlicedDimensionedField()
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 template<class Type, class GeoMesh>
+void Foam::SlicedDimensionedField<Type, GeoMesh>::transfer
+(
+    Field<Type>& f
+)
+{
+    this->primitiveFieldRef() = f;
+}
+
+
+template<class Type, class GeoMesh>
 void Foam::SlicedDimensionedField<Type, GeoMesh>::reset
 (
     const Field<Type>& iField

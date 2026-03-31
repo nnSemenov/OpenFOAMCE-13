@@ -45,7 +45,7 @@ Foam::patchWriter::patchWriter
     os_(fName.c_str())
 {
     const fvMesh& mesh = vMesh_.mesh();
-    const polyBoundaryMesh& patches = mesh.boundaryMesh();
+    const polyBoundaryMesh& patches = mesh.poly().boundary();
 
     // Write header
     if (patchIndices_.size() == 1)
@@ -129,7 +129,7 @@ void Foam::patchWriter::writePatchIndices()
     {
         label patchi = patchIndices_[i];
 
-        const polyPatch& pp = mesh.boundaryMesh()[patchi];
+        const polyPatch& pp = mesh.poly().boundary()[patchi];
 
         if (!isA<emptyPolyPatch>(pp))
         {

@@ -444,7 +444,7 @@ Foam::MomentumCloud<CloudType>::SU(const volVectorField& U) const
         if (solution_.semiImplicit("U"))
         {
             const volScalarField::Internal
-                Vdt(this->mesh().V()*this->db().time().deltaT());
+                Vdt(this->mesh().V()*this->time().deltaT());
 
             return UTrans()/Vdt - fvm::Sp(UCoeff()/Vdt, U) + UCoeff()/Vdt*U;
         }
@@ -453,7 +453,7 @@ Foam::MomentumCloud<CloudType>::SU(const volVectorField& U) const
             tmp<fvVectorMatrix> tfvm(new fvVectorMatrix(U, dimForce));
             fvVectorMatrix& fvm = tfvm.ref();
 
-            fvm.source() = -UTrans()/(this->db().time().deltaT());
+            fvm.source() = -UTrans()/(this->time().deltaT());
 
             return tfvm;
         }

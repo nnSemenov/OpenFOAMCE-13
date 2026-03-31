@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2013-2023 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2013-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -157,19 +157,19 @@ Foam::functionObjects::regionSizeDistribution::findPatchRegions
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     // Count number of patch faces (just for initial sizing)
-    const labelHashSet patchIDs(mesh_.boundaryMesh().patchSet(patchNames_));
+    const labelHashSet patchIDs(mesh_.poly().boundary().patchSet(patchNames_));
 
     label nPatchFaces = 0;
     forAllConstIter(labelHashSet, patchIDs, iter)
     {
-        nPatchFaces += mesh_.boundaryMesh()[iter.key()].size();
+        nPatchFaces += mesh_.poly().boundary()[iter.key()].size();
     }
 
 
     Map<label> patchRegions(nPatchFaces);
     forAllConstIter(labelHashSet, patchIDs, iter)
     {
-        const polyPatch& pp = mesh_.boundaryMesh()[iter.key()];
+        const polyPatch& pp = mesh_.poly().boundary()[iter.key()];
 
         // Collect all regions on the patch
         const labelList& faceCells = pp.faceCells();
@@ -471,7 +471,7 @@ bool Foam::functionObjects::regionSizeDistribution::write()
                 tmp<scalarField> tnbrFld(fvp.patchNeighbourField());
                 const scalarField& nbrFld = tnbrFld();
 
-                label start = fvp.patch().patch().start();
+                label start = fvp.patch().poly().start();
 
                 forAll(ownFld, i)
                 {

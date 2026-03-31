@@ -19,34 +19,34 @@ kStack 1.5;
 
 dimensions      [0 2 -2 0 0 0 0];
 
-internalField   uniform $kWind;
+internalField
+{
+    type            atmosphericBoundaryLayerTurbulentKineticEnergy;
+    libs            ("libatmosphericModels.so");
+}
 
 boundaryField
 {
     inletWind
     {
-        type            atmBoundaryLayerInletK;
-        #include        "${${FOAM_CASE}/system/setAtmBoundaryLayerDict"
-        value           uniform $kWind;
+        $internalField;
     }
 
     inlet
     {
-        type            turbulentIntensityKineticEnergyInlet;
+        type            turbulentKineticEnergy;
         intensity       0.05;
         value           uniform $kStack;
     }
 
     outlet
     {
-        type            inletOutlet;
-        inletValue      uniform $kWind;
+        $internalField;
     }
 
     wall
     {
         type            kqRWallFunction;
-        value           uniform $kWind;
     }
 
     #includeEtc "caseDicts/setConstraintTypes"

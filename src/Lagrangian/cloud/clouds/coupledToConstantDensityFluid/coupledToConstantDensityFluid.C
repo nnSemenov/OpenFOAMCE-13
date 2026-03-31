@@ -24,7 +24,6 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "coupledToConstantDensityFluid.H"
-#include "dimensionSet.H"
 #include "dimensionedScalar.H"
 #include "physicalProperties.H"
 #include "uniformDimensionedFields.H"
@@ -88,7 +87,7 @@ Foam::clouds::coupledToConstantDensityFluid::coupledToConstantDensityFluid
     (
         phaseName() == word::null
       ? NullObjectRef<dimensionedScalar>()
-      : mesh_.mesh().lookupObject<uniformDimensionedScalarField>
+      : mesh_.poly().lookupObject<uniformDimensionedScalarField>
         (
             IOobject::groupName("rho", phaseName())
         )
@@ -97,7 +96,7 @@ Foam::clouds::coupledToConstantDensityFluid::coupledToConstantDensityFluid
     (
         carrierPhaseName() == word::null
       ? NullObjectRef<dimensionedScalar>()
-      : mesh_.mesh().lookupObject<uniformDimensionedScalarField>
+      : mesh_.poly().lookupObject<uniformDimensionedScalarField>
         (
             IOobject::groupName("rho", carrierPhaseName())
         )

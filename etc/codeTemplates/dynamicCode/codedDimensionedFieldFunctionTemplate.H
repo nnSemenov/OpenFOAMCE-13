@@ -35,6 +35,7 @@ SourceFiles
 #define codedDimensionedFieldFunctionTemplate_H
 
 #include "DimensionedFieldFunction.H"
+#include "DimensionedFvPatchFields.H"
 #include "volFields.H"
 
 //{{{ begin codeInclude

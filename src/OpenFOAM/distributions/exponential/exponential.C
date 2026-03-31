@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -63,7 +63,7 @@ Foam::tmp<Foam::scalarField> Foam::distributions::exponential::PhiForZeroQ
 
 Foam::distributions::exponential::exponential
 (
-    const unitConversion& units,
+    const unitSet& units,
     const dictionary& dict,
     const label sampleQ,
     randomGenerator&& rndGen
@@ -79,7 +79,7 @@ Foam::distributions::exponential::exponential
     ),
     min_(dict.lookupBackwardsCompatible<scalar>({"min", "minValue"}, units)),
     max_(dict.lookupBackwardsCompatible<scalar>({"max", "maxValue"}, units)),
-    lambda_(dict.lookup<scalar>("lambda", unitless))
+    lambda_(dict.lookup<scalar>("lambda", units::unitless))
 {
     validateBounds(dict);
     validatePositive(dict);
@@ -132,14 +132,14 @@ Foam::scalar Foam::distributions::exponential::max() const
 void Foam::distributions::exponential::write
 (
     Ostream& os,
-    const unitConversion& units
+    const unitSet& units
 ) const
 {
     FieldDistribution<unintegrableForNonZeroQ, exponential>::write(os, units);
 
     writeEntry(os, "min", units, min_);
     writeEntry(os, "max", units, max_);
-    writeEntry(os, "lambda", unitless, lambda_);
+    writeEntry(os, "lambda", units::unitless, lambda_);
 }
 
 

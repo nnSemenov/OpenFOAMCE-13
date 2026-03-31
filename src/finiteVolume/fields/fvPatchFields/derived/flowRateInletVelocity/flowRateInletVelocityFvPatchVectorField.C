@@ -38,10 +38,10 @@ void Foam::flowRateInletVelocityFvPatchVectorField::setWallDist()
     {
         const labelHashSet otherPatchIDs
         (
-            patch().patch().boundaryMesh().findIndices<wallPolyPatch>()
+            patch().poly().boundaryMesh().findIndices<wallPolyPatch>()
         );
 
-        const patchPatchDist pwd(patch().patch(), otherPatchIDs);
+        const patchPatchDist pwd(patch().poly(), otherPatchIDs);
 
         y_ = pwd/gMax(pwd);
     }
@@ -128,7 +128,7 @@ bool Foam::flowRateInletVelocityFvPatchVectorField::canEvaluate()
 {
     return
         Pstream::parRun()
-     || !patch().boundaryMesh().mesh().time().processorCase();
+     || !patch().mesh().time().processorCase();
 }
 
 
@@ -326,7 +326,7 @@ void Foam::flowRateInletVelocityFvPatchVectorField::updateCoeffs()
 void Foam::flowRateInletVelocityFvPatchVectorField::write(Ostream& os) const
 {
     fvPatchField<vector>::write(os);
-    writeEntry(os, db().time().userUnits(), unitAny, flowRate_());
+    writeEntry(os, db().time().userUnits(), units::any, flowRate_());
     if (profile_.valid())
     {
         writeEntry(os, profile_());

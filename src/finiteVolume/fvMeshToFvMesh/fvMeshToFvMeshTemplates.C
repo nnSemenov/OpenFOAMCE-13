@@ -50,8 +50,8 @@ void Foam::fvMeshToFvMesh::evaluateConstraintTypes(VolField<Type>& fld)
 
             if
             (
-                tgtField.type() == tgtField.patch().patch().type()
-             && polyPatch::constraintType(tgtField.patch().patch().type())
+                tgtField.type() == tgtField.patch().poly().type()
+             && polyPatch::constraintType(tgtField.patch().poly().type())
             )
             {
                 tgtField.initEvaluate(Pstream::defaultCommsType);
@@ -74,8 +74,8 @@ void Foam::fvMeshToFvMesh::evaluateConstraintTypes(VolField<Type>& fld)
 
             if
             (
-                tgtField.type() == tgtField.patch().patch().type()
-             && polyPatch::constraintType(tgtField.patch().patch().type())
+                tgtField.type() == tgtField.patch().poly().type()
+             && polyPatch::constraintType(tgtField.patch().poly().type())
             )
             {
                 tgtField.evaluate(Pstream::defaultCommsType);
@@ -94,8 +94,8 @@ void Foam::fvMeshToFvMesh::evaluateConstraintTypes(VolField<Type>& fld)
 
             if
             (
-                tgtField.type() == tgtField.patch().patch().type()
-             && polyPatch::constraintType(tgtField.patch().patch().type())
+                tgtField.type() == tgtField.patch().poly().type()
+             && polyPatch::constraintType(tgtField.patch().poly().type())
             )
             {
                 if (patchSchedule[patchEvali].init)
@@ -166,7 +166,7 @@ Foam::tmp<Foam::VolField<Type>> Foam::fvMeshToFvMesh::srcToTgt
             tgtPatchFieldIsUnMapped[tgtPatchi] =
                 polyPatch::constraintType
                 (
-                    tgtMesh_.boundary()[tgtPatchi].patch().type()
+                    tgtMesh_.boundary()[tgtPatchi].poly().type()
                 );
         }
     }
@@ -255,7 +255,7 @@ Foam::tmp<Foam::VolField<Type>> Foam::fvMeshToFvMesh::srcToTgt
 
     // Cutting patches. Set values to that of the internal cell field.
     const labelHashSet tgtCuttingPatchIDs =
-        leftOverTgtFld.mesh().boundaryMesh().patchSet(tgtCuttingPatchNames);
+        leftOverTgtFld.mesh().poly().boundary().patchSet(tgtCuttingPatchNames);
     forAllConstIter(labelHashSet, tgtCuttingPatchIDs, iter)
     {
         tgtBfld[iter.key()] == tgtBfld[iter.key()].patchInternalField();

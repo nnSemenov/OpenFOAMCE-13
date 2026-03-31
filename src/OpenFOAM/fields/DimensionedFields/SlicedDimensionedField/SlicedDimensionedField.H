@@ -55,6 +55,7 @@ class SlicedDimensionedField
 :
     public DimensionedField<Type, GeoMesh>
 {
+
 public:
 
     // Public Typedefs
@@ -80,6 +81,9 @@ public:
 
 
     // Member Functions
+
+        //- Override the DimensionedField::transfer with assignment
+        virtual void transfer(Field<Type>&);
 
         //- Reset internalField pointer
         void reset(const Field<Type>& iField);

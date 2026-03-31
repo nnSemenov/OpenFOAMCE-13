@@ -64,13 +64,14 @@ template<class Type>
 Foam::Function1s::Coded<Type>::Coded
 (
     const word& name,
-    const Function1s::unitConversions& units,
+    const Function1s::unitSets& units,
     const dictionary& dict
 )
 :
     Function1<Type>(name),
     codedBase
     (
+        dict.lookup("name"),
         dict,
         codeKeys,
         codeDictVars,
@@ -95,7 +96,7 @@ Foam::Function1s::Coded<Type>::Coded
     redirectDict.set(codeName(), codeName());
 
     redirectFunction1Ptr_ =
-        Function1<Type>::New(codeName(), unitAny, unitAny, redirectDict);
+        Function1<Type>::New(codeName(), units::any, units::any, redirectDict);
 }
 
 
@@ -170,7 +171,7 @@ template<class Type>
 void Foam::Function1s::Coded<Type>::write
 (
     Ostream& os,
-    const unitConversions& units
+    const unitSets& units
 ) const
 {
     codedBase::write(os);

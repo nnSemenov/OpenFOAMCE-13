@@ -66,4 +66,14 @@ Foam::DimensionedField<Type, GeoMesh, PrimitiveField>::primitiveField() const
 }
 
 
+template<class Type, class GeoMesh, template<class> class PrimitiveField>
+inline void Foam::DimensionedField<Type, GeoMesh, PrimitiveField>::transfer
+(
+    PrimitiveField<Type>& f
+)
+{
+    PrimitiveField<Type>::transfer(f);
+}
+
+
 // ************************************************************************* //

@@ -45,7 +45,7 @@ namespace Foam
 
 Foam::fvPatch::fvPatch(const polyPatch& p, const fvBoundaryMesh& bm)
 :
-    polyPatch_(p),
+    poly_(p),
     boundaryMesh_(bm)
 {}
 
@@ -92,26 +92,57 @@ Foam::wordList Foam::fvPatch::constraintTypes()
 
 const Foam::objectRegistry& Foam::fvPatch::db() const
 {
-    return boundaryMesh().mesh();
+    return boundaryMesh_.mesh();
 }
 
 
 const Foam::fvMesh& Foam::fvPatch::mesh() const
 {
-    return boundaryMesh().mesh();
+    return boundaryMesh_.mesh();
 }
 
 
 const Foam::labelUList& Foam::fvPatch::faceCells() const
 {
-    return polyPatch_.faceCells();
+    return poly_.faceCells();
 }
 
 
 const Foam::vectorField& Foam::fvPatch::Cf() const
 {
-    return boundaryMesh().mesh().Cf().boundaryField()[index()];
+    return mesh().Cf().boundaryField()[index()];
 }
+
+
+const Foam::DimensionedField<Foam::vector, Foam::fvPatch>&
+Foam::fvPatch::C() const
+{
+    if (!CPtr_.valid())
+    {
+        CPtr_ = new SlicedDimensionedField<vector, fvPatch>
+        (
+            IOobject
+            (
+                "C",
+                mesh().time().name(),
+                mesh(),
+                IOobject::NO_READ,
+                IOobject::NO_WRITE,
+                false
+            ),
+            *this,
+            dimLength,
+            Cf()
+        );
+    }
+    else
+    {
+        CPtr_->reset(Cf());
+    }
+
+    return *CPtr_;
+}
+
 
 
 Foam::tmp<Foam::vectorField> Foam::fvPatch::Cn() const
@@ -122,7 +153,7 @@ Foam::tmp<Foam::vectorField> Foam::fvPatch::Cn() const
     const labelUList& faceCells = this->faceCells();
 
     // get reference to global cell centres
-    const vectorField& gcc = boundaryMesh().mesh().cellCentres();
+    const vectorField& gcc = mesh().cellCentres();
 
     forAll(faceCells, facei)
     {
@@ -141,13 +172,13 @@ Foam::tmp<Foam::vectorField> Foam::fvPatch::nf() const
 
 const Foam::vectorField& Foam::fvPatch::Sf() const
 {
-    return boundaryMesh().mesh().Sf().boundaryField()[index()];
+    return mesh().Sf().boundaryField()[index()];
 }
 
 
 const Foam::scalarField& Foam::fvPatch::magSf() const
 {
-    return boundaryMesh().mesh().magSf().boundaryField()[index()];
+    return mesh().magSf().boundaryField()[index()];
 }
 
 
@@ -162,13 +193,13 @@ Foam::tmp<Foam::vectorField> Foam::fvPatch::delta() const
 Foam::tmp<Foam::scalarField> Foam::fvPatch::polyFaceFraction() const
 {
     return
-        boundaryMesh().mesh().conformal()
+        mesh().conformal()
       ? tmp<scalarField>(new scalarField(size(), scalar(1)))
       : magSf()
        /scalarField
         (
-            boundaryMesh().mesh().magFaceAreas(),
-            boundaryMesh().mesh().polyFacesBf()[patch().index()]
+            mesh().magFaceAreas(),
+            mesh().polyFacesBf()[index()]
         );
 }
 
@@ -181,13 +212,13 @@ void Foam::fvPatch::makeWeights(scalarField& w) const
 
 const Foam::scalarField& Foam::fvPatch::deltaCoeffs() const
 {
-    return boundaryMesh().mesh().deltaCoeffs().boundaryField()[index()];
+    return mesh().deltaCoeffs().boundaryField()[index()];
 }
 
 
 const Foam::scalarField& Foam::fvPatch::weights() const
 {
-    return boundaryMesh().mesh().weights().boundaryField()[index()];
+    return mesh().weights().boundaryField()[index()];
 }
 
 

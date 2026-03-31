@@ -102,7 +102,7 @@ void Foam::timeVaryingMappedFvPatchField<Type>::checkTable()
             new pointToPointPlanarInterpolation
             (
                 samplePoints,
-                patch_.patch().faceCentres(),
+                patch_.poly().faceCentres(),
                 perturb_,
                 nearestOnly
             )

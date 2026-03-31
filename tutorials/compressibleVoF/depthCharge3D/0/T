@@ -18,18 +18,18 @@ dimensions      [0 0 0 1 0 0 0];
 
 internalField
 {
-    type        zonal;
+    type        surfaces;
 
-    defaultValue    300;
+    defaultValue 300;
 
-    zones
+    surfaces
     {
         bubble
         {
             type        sphere;
 
-            centre (0.5 0.5 0.5);
-            radius 0.1;
+            centre      (0.5 0.5 0.5);
+            radius      0.1;
 
             value       578;
         }

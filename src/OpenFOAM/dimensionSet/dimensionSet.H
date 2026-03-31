@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -40,6 +40,7 @@ SourceFiles
 #define dimensionSet_H
 
 #include "bool.H"
+#include "fieldTypes.H"
 #include "className.H"
 #include "NamedEnum.H"
 #include "InfoProxy.H"
@@ -52,7 +53,7 @@ namespace Foam
 // Forward declaration of friend functions and operators
 
 class dimensionSet;
-class unitConversion;
+class unitSet;
 template<class Type> class dimensioned;
 typedef dimensioned<scalar> dimensionedScalar;
 
@@ -267,6 +268,41 @@ public:
         bool operator*=(const dimensionSet&);
         bool operator/=(const dimensionSet&);
 
+        template<class ... Args>
+        using typeForArgs = typename typeOfNcmpts<sizeof ... (Args)>::type;
+
+        //- Return a dimensionedType with these dimensions
+        //  and rank corresponding to the number of arguments
+        template<class ... Args>
+        dimensioned<typeForArgs<Args ...>> operator()
+        (
+            const Args& ... args
+        ) const
+        {
+            return dimensioned<typeForArgs<Args ...>>
+            (
+                *this,
+                typeForArgs<Args ...>(args ...)
+            );
+        }
+
+        //- Return a named dimensionedType with these dimensions
+        //  and rank corresponding to the number of arguments
+        template<class ... Args>
+        dimensioned<typeForArgs<Args ...>> operator()
+        (
+            const word& name,
+            const Args& ... args
+        ) const
+        {
+            return dimensioned<typeForArgs<Args ...>>
+            (
+                name,
+                *this,
+                typeForArgs<Args ...>(args ...)
+            );
+        }
+
 
     // Friend Functions
 
@@ -379,7 +415,7 @@ void writeEntry(Ostream& os, const dimensionSet& value);
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include "dimensionSets.H"
+#include "dimensions.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

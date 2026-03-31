@@ -162,7 +162,8 @@ Foam::codedBase::codedBase
     const wordList& codeDictVars,
     const word& codeOptionsFileName,
     const wordList& compileFiles,
-    const wordList& copyFiles
+    const wordList& copyFiles,
+    const bool reloadable
 )
 :
     dynamicCode
@@ -175,37 +176,25 @@ Foam::codedBase::codedBase
         codeOptionsFileName,
         compileFiles,
         copyFiles
-    )
-{}
-
-
-Foam::codedBase::codedBase
-(
-    const dictionary& dict,
-    const wordList& codeKeys,
-    const wordList& codeDictVars,
-    const word& codeOptionsFileName,
-    const wordList& compileFiles,
-    const wordList& copyFiles
-)
-:
-    codedBase
-    (
-        dict.lookup("name"),
-        dict,
-        codeKeys,
-        codeDictVars,
-        codeOptionsFileName,
-        compileFiles,
-        copyFiles
-    )
+    ),
+    reloadable_(reloadable)
 {}
 
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
 Foam::codedBase::~codedBase()
-{}
+{
+    if (reloadable_)
+    {
+        unloadLibrary
+        (
+            dictionary(),
+            oldLibPath_,
+            dynamicCode::libraryBaseName(oldLibPath_)
+        );
+    }
+}
 
 
 // * * * * * * * * * * * * * Static Member Functions * * * * * * * * * * * * //

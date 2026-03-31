@@ -88,7 +88,7 @@ void Foam::cellMotionFvPatchField<Type>::updateCoeffs()
     }
 
     const fvPatch& p = this->patch();
-    const polyPatch& pp = p.patch();
+    const polyPatch& pp = p.poly();
     const fvMesh& mesh = this->internalField().mesh();
     const pointField& points = mesh.points();
 

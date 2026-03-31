@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2013-2023 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2013-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -35,7 +35,7 @@ Foam::label Foam::coupleGroupIdentifier::findOtherPatchID
     const polyPatch& thisPatch
 ) const
 {
-    const polyBoundaryMesh& pbm = mesh.boundaryMesh();
+    const polyBoundaryMesh& pbm = mesh.boundary();
 
     if (!valid())
     {
@@ -51,7 +51,7 @@ Foam::label Foam::coupleGroupIdentifier::findOtherPatchID
 
     if (fnd == pbm.groupPatchIndices().end())
     {
-        if (&mesh == &thisPatch.boundaryMesh().mesh())
+        if (&mesh == &thisPatch.mesh())
         {
             // thisPatch should be in patchGroup
             FatalErrorInFunction
@@ -67,7 +67,7 @@ Foam::label Foam::coupleGroupIdentifier::findOtherPatchID
     // Mesh has patch group
     const labelList& patchIDs = fnd();
 
-    if (&mesh == &thisPatch.boundaryMesh().mesh())
+    if (&mesh == &thisPatch.mesh())
     {
         if (patchIDs.size() > 2 || patchIDs.size() == 0)
         {
@@ -76,7 +76,7 @@ Foam::label Foam::coupleGroupIdentifier::findOtherPatchID
                 << " with contents " << patchIDs
                 << " not of size < 2"
                 << " on patch " << thisPatch.name()
-                << " region " << thisPatch.boundaryMesh().mesh().name()
+                << " region " << thisPatch.mesh().name()
                 << exit(FatalError);
 
             return -1;

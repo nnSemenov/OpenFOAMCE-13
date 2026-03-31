@@ -36,7 +36,7 @@ Foam::mappedValueFvPatchField<Type>::mapper() const
     return
         mapperPtr_.valid()
       ? mapperPtr_()
-      : mappedPatchBase::getMap(this->patch().patch());
+      : mappedPatchBase::getMap(this->patch().poly());
 }
 
 
@@ -140,19 +140,19 @@ Foam::mappedValueFvPatchField<Type>::mappedValueFvPatchField
         mappedPatchBase::specified(dict)
       ? new mappedPatchBase
         (
-            p.patch(),
+            p.poly(),
             dict,
             mappedPatchBase::transformType::specified
         )
       : nullptr
     )
 {
-    if (!mapperPtr_.valid() && !isA<mappedPatchBase>(p.patch()))
+    if (!mapperPtr_.valid() && !isA<mappedPatchBase>(p.poly()))
     {
         OStringStream str;
         str << "Field " << this->internalField().name() << " of type "
             << type() << " on patch " << this->patch().name()
-            << " of type " << p.patch().type() << " does not "
+            << " of type " << p.poly().type() << " does not "
             << "have mapping specified (i.e., neighbourPatch, and/or "
             << "neighbourRegion entries) nor is the patch of "
             << mappedPolyPatch::typeName << " type";
@@ -190,7 +190,7 @@ Foam::mappedValueFvPatchField<Type>::mappedValueFvPatchField
     mapperPtr_
     (
         ptf.mapperPtr_.valid()
-      ? new mappedPatchBase(p.patch(), ptf.mapperPtr_())
+      ? new mappedPatchBase(p.poly(), ptf.mapperPtr_())
       : nullptr
     )
 {}
@@ -210,7 +210,7 @@ Foam::mappedValueFvPatchField<Type>::mappedValueFvPatchField
     mapperPtr_
     (
         ptf.mapperPtr_.valid()
-      ? new mappedPatchBase(ptf.patch().patch(), ptf.mapperPtr_())
+      ? new mappedPatchBase(ptf.patch().poly(), ptf.mapperPtr_())
       : nullptr
     )
 {}

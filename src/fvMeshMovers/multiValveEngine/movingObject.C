@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2024-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2024-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -143,9 +143,9 @@ void Foam::fvMeshMovers::multiValveEngine::movingObject::createStaticPatchSet()
 {
     staticPatchSet_.clear();
 
-    forAll(meshMover_.mesh().boundaryMesh(), patchI)
+    forAll(meshMover_.mesh().poly().boundary(), patchI)
     {
-        const polyPatch& pp = meshMover_.mesh().boundaryMesh()[patchI];
+        const polyPatch& pp = meshMover_.mesh().poly().boundary()[patchI];
 
         // Exclude non-static patches
         if
@@ -164,7 +164,7 @@ void Foam::fvMeshMovers::multiValveEngine::movingObject::createStaticPatchSet()
 void Foam::fvMeshMovers::multiValveEngine::movingObject::initPatchSets()
 {
     // Set patch-sets
-    patchSet_ = meshMover_.mesh().boundaryMesh().patchSet(patchNames_);
+    patchSet_ = meshMover_.mesh().poly().boundary().patchSet(patchNames_);
     createStaticPatchSet();
 }
 
@@ -271,7 +271,7 @@ Foam::fvMeshMovers::multiValveEngine::movingObject::movingObject
     meshMover_(engine),
     name(objectName),
     axis(dict.lookup<vector>("axis", dimless)),
-    motion_(Function1<scalar>::New("motion", unitNone, dimLength, dict)),
+    motion_(Function1<scalar>::New("motion", units::none, dimLength, dict)),
     patchNames_(dict.lookup("patches")),
     maxMotionDistance_
     (

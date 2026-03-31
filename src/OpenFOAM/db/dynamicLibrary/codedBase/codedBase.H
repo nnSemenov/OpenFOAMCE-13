@@ -54,6 +54,10 @@ class codedBase
 {
     // Private Data
 
+        //- Optional switch to allow library unloading and reloading
+        //  to support run-time code update
+        const bool reloadable_;
+
         //- Previously loaded library
         mutable fileName oldLibPath_;
 
@@ -113,18 +117,8 @@ public:
             const wordList& codeDictVars,
             const word& codeOptionsFileName,
             const wordList& compileFiles,
-            const wordList& copyFiles
-        );
-
-        //- Construct from dictionary
-        codedBase
-        (
-            const dictionary& dict,
-            const wordList& codeKeys,
-            const wordList& codeDictVars,
-            const word& codeOptionsFileName,
-            const wordList& compileFiles,
-            const wordList& copyFiles
+            const wordList& copyFiles,
+            const bool reloadable = true
         );
 
 

@@ -60,7 +60,7 @@ class pointMesh
         pointBoundaryMesh boundary_;
 
         //- Dimensioned points
-        mutable SlicedDimensionedField<point, pointMesh>* pointsPtr_;
+        mutable autoPtr<SlicedDimensionedField<point, pointMesh>> pointsPtr_;
 
 
 protected:
@@ -128,6 +128,12 @@ public:
 
     // Member Functions
 
+        //- Return reference to polyMesh
+        const polyMesh& poly() const
+        {
+            return mesh_;
+        }
+
         //- Return number of points
         label size() const
         {
@@ -150,9 +156,9 @@ public:
         }
 
         //- Return database. For now is its polyMesh.
-        const objectRegistry& thisDb() const
+        const objectRegistry& db() const
         {
-            return mesh_.thisDb();
+            return mesh_.db();
         }
 
         //- Reset pointMesh with respect to the updated polyMesh

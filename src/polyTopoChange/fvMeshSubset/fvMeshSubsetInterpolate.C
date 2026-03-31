@@ -320,10 +320,10 @@ Foam::fvMeshSubset::interpolate
                 else
                 {
                     const label basePatchi =
-                        mesh.boundaryMesh().patchIndices()
+                        mesh.boundary().patchIndices()
                         [baseFacei - mesh.nInternalFaces()];
                     const label basePatchFacei =
-                        mesh.boundaryMesh()[basePatchi]
+                        mesh.boundary()[basePatchi]
                        .whichFace(baseFacei);
 
                     pfld[i] = sf.boundaryField()[basePatchi][basePatchFacei];
@@ -408,7 +408,7 @@ Foam::fvMeshSubset::interpolate
             (
                 "subset"+pf.name(),
                 sMesh.time().name(),
-                sMesh.thisDb(),
+                sMesh.db(),
                 IOobject::NO_READ,
                 IOobject::NO_WRITE,
                 false

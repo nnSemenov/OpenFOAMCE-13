@@ -42,7 +42,7 @@ void Foam::coupledTemperatureFvPatchScalarField::getThis
 ) const
 {
     const thermophysicalTransportModel& ttm =
-        patch().boundaryMesh().mesh()
+        patch().mesh()
        .lookupType<thermophysicalTransportModel>();
 
     kappa = ttm.kappaEff(patch().index());
@@ -68,7 +68,7 @@ void Foam::coupledTemperatureFvPatchScalarField::getNbr
 ) const
 {
     const thermophysicalTransportModel& ttm =
-        patch().boundaryMesh().mesh()
+        patch().mesh()
        .lookupType<thermophysicalTransportModel>();
 
     sumKappaByDeltaNbr = ttm.kappaEff(patch().index())*patch().deltaCoeffs();
@@ -86,7 +86,7 @@ void Foam::coupledTemperatureFvPatchScalarField::getNbr
 ) const
 {
     const thermophysicalTransportModel& ttm =
-        patch().boundaryMesh().mesh()
+        patch().mesh()
        .lookupType<thermophysicalTransportModel>();
 
     const fvPatchScalarField& Tp =
@@ -139,7 +139,7 @@ coupledTemperatureFvPatchScalarField
     TnbrName_(dict.lookupOrDefault<word>("Tnbr", "T")),
     qrNbrName_(dict.lookupOrDefault<word>("qrNbr", "none")),
     qrName_(dict.lookupOrDefault<word>("qr", "none")),
-    qrRelax_(dict.lookupOrDefault<scalar>("qrRelaxation", unitFraction, 1)),
+    qrRelax_(dict.lookupOrDefault<scalar>("qrRelaxation", units::fraction, 1)),
     qrPrevious_
     (
         qrName_ != word::null
@@ -213,7 +213,7 @@ coupledTemperatureFvPatchScalarField
                 p.size()
             );
         valueFraction() =
-            scalarField("valueFraction", unitFraction, dict, p.size());
+            scalarField("valueFraction", units::fraction, dict, p.size());
     }
     else
     {
@@ -445,7 +445,7 @@ void Foam::coupledTemperatureFvPatchScalarField::updateCoeffs()
     {
         const scalar Q = gSum(kappa()*patch().magSf()*snGrad());
 
-        Info<< patch().boundaryMesh().mesh().name() << ':'
+        Info<< patch().mesh().name() << ':'
             << patch().name() << ':'
             << this->internalField().name() << " <- "
             << mapper.nbrMesh().name() << ':'

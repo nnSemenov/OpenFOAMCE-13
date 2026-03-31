@@ -97,11 +97,14 @@ public:
 
     // Member Functions
 
+        //- Return reference to polyMesh
+        const polyMesh& poly() const;
+
         //- Return size (number of internal faces)
         inline label size() const;
 
         //- Return fvMesh database
-        inline const objectRegistry& thisDb() const;
+        inline const objectRegistry& db() const;
 
         //- Return time
         inline const Time& time() const;

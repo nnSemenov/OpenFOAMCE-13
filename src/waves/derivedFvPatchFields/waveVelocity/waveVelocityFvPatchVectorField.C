@@ -84,7 +84,7 @@ Foam::waveVelocityFvPatchVectorField::waveVelocityFvPatchVectorField
 const Foam::fvMeshSubset&
 Foam::waveVelocityFvPatchVectorField::faceCellSubset() const
 {
-    const fvMesh& mesh = patch().boundaryMesh().mesh();
+    const fvMesh& mesh = patch().mesh();
     const label timeIndex = mesh.time().timeIndex();
 
     if
@@ -117,11 +117,11 @@ Foam::waveVelocityFvPatchVectorField::U(const scalar t) const
         (
             patch(),
             waves.height(t, patch().Cf()),
-            waves.height(t, patch().patch().localPoints()),
+            waves.height(t, patch().poly().localPoints()),
             waves.UGas(t, patch().Cf())(),
-            waves.UGas(t, patch().patch().localPoints())(),
+            waves.UGas(t, patch().poly().localPoints())(),
             waves.ULiquid(t, patch().Cf())(),
-            waves.ULiquid(t, patch().patch().localPoints())()
+            waves.ULiquid(t, patch().poly().localPoints())()
         );
 }
 
@@ -156,10 +156,10 @@ Foam::waveVelocityFvPatchVectorField::Un(const scalar t) const
     {
         forAll(meshs.boundary()[patchis], is)
         {
-            const label fs = is + meshs.boundary()[patchis].patch().start();
+            const label fs = is + meshs.boundary()[patchis].poly().start();
             const label cs = meshs.boundary()[patchis].faceCells()[is];
             const label f = subset.faceMap()[fs];
-            const label i = patch().patch().whichFace(f);
+            const label i = patch().poly().whichFace(f);
             result[i] = Us[cs];
         }
     }

@@ -403,7 +403,7 @@ Foam::Time::Time
                 "DebugSwitches",
                 "DimensionedConstants",
                 "DimensionSets",
-                "UnitConversions"
+                "UnitSets"
             }
         );
 
@@ -868,20 +868,20 @@ Foam::word Foam::Time::userTimeName() const
 }
 
 
-const Foam::unitConversion& Foam::Time::userUnits() const
+const Foam::unitSet& Foam::Time::userUnits() const
 {
     return userTime_->units();
 }
 
 
-const Foam::unitConversion& Foam::Time::writeIntervalUnits() const
+const Foam::unitSet& Foam::Time::writeIntervalUnits() const
 {
-    static const unitConversion unitSeconds(dimTime);
+    static const unitSet unitSeconds(dimTime);
 
     switch (writeControl_)
     {
         case writeControl::timeStep:
-            return unitless;
+            return units::unitless;
         case writeControl::runTime:
         case writeControl::adjustableRunTime:
             return userUnits();
@@ -890,7 +890,7 @@ const Foam::unitConversion& Foam::Time::writeIntervalUnits() const
             return unitSeconds;
     }
 
-    return unitNone;
+    return units::none;
 }
 
 

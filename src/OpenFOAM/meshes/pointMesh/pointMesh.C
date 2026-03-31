@@ -48,8 +48,7 @@ Foam::pointMesh::pointMesh(const polyMesh& pMesh)
 :
     DemandDrivenMeshObject<polyMesh, PermanentMeshObject, pointMesh>(pMesh),
     mesh_(pMesh),
-    boundary_(*this, pMesh.boundaryMesh()),
-    pointsPtr_(nullptr)
+    boundary_(*this, pMesh.boundary())
 {
     if (debug)
     {
@@ -73,8 +72,6 @@ Foam::pointMesh::~pointMesh()
             << endl;
         error::printStack(Pout);
     }
-
-    deleteDemandDrivenData(pointsPtr_);
 }
 
 
@@ -83,7 +80,7 @@ Foam::pointMesh::~pointMesh()
 const Foam::DimensionedField<Foam::vector, Foam::pointMesh>&
 Foam::pointMesh::C() const
 {
-    if (!pointsPtr_)
+    if (!pointsPtr_.valid())
     {
         pointsPtr_ = new SlicedDimensionedField<vector, pointMesh>
         (
@@ -127,6 +124,8 @@ void Foam::pointMesh::topoChange(const polyTopoChangeMap& map)
         Pout<< "pointMesh::topoChange(const polyTopoChangeMap&): "
             << "Topology change." << endl;
     }
+
+    pointsPtr_.clear();
     boundary_.topoChange();
 }
 
@@ -138,6 +137,8 @@ void Foam::pointMesh::mapMesh(const polyMeshMap& map)
         Pout<< "pointMesh::mapMesh(const polyMeshMap&): "
             << "Mesh mapping." << endl;
     }
+
+    pointsPtr_.clear();
     boundary_.topoChange();
 }
 
@@ -149,6 +150,8 @@ void Foam::pointMesh::distribute(const polyDistributionMap& map)
         Pout<< "pointMesh::distribute(const polyDistributionMap&): "
             << "Distribute." << endl;
     }
+
+    pointsPtr_.clear();
     boundary_.topoChange();
 }
 
@@ -170,7 +173,7 @@ void Foam::pointMesh::reorderPatches
     #define ReorderPatchFieldsType(Type, nullArg)                              \
         ReorderPatchFields<PointField<Type>>                                   \
         (                                                                      \
-            const_cast<objectRegistry&>(thisDb()),                             \
+            const_cast<objectRegistry&>(db()),                             \
             newToOld                                                           \
         );
     FOR_ALL_FIELD_TYPES(ReorderPatchFieldsType);
@@ -186,7 +189,7 @@ void Foam::pointMesh::addPatch(const label patchi)
             << "Adding patch at " << patchi << endl;
     }
 
-    const polyBoundaryMesh& pbm = mesh().boundaryMesh();
+    const polyBoundaryMesh& pbm = poly().boundary();
 
     if (pbm.size() != boundary_.size())
     {
@@ -201,7 +204,7 @@ void Foam::pointMesh::addPatch(const label patchi)
     #define AddPatchFieldsType(Type, nullArg)                                  \
         AddPatchFields<PointField<Type>>                                       \
         (                                                                      \
-            const_cast<objectRegistry&>(thisDb()),                             \
+            const_cast<objectRegistry&>(db()),                             \
             patchi,                                                            \
             calculatedPointPatchField<scalar>::typeName                        \
         );

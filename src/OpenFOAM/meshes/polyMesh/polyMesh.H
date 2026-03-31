@@ -386,7 +386,7 @@ public:
 
 
             //- Return boundary mesh
-            const polyBoundaryMesh& boundaryMesh() const
+            const polyBoundaryMesh& boundary() const
             {
                 return boundary_;
             }
@@ -446,7 +446,7 @@ public:
             label& comm();
 
             //- Return the object registry
-            const objectRegistry& thisDb() const
+            const objectRegistry& db() const
             {
                 return *this;
             }

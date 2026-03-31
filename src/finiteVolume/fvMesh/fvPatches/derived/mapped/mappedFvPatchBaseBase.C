@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2023 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2023-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -39,7 +39,7 @@ namespace Foam
 Foam::mappedFvPatchBaseBase::mappedFvPatchBaseBase(const fvPatch& patch)
 :
     patch_(patch),
-    mapper_(refCast<const mappedPatchBaseBase>(patch.patch()))
+    mapper_(refCast<const mappedPatchBaseBase>(patch.poly()))
 {}
 
 
@@ -69,7 +69,7 @@ const Foam::mappedFvPatchBaseBase& Foam::mappedFvPatchBaseBase::getMap
 
 bool Foam::mappedFvPatchBaseBase::haveNbr() const
 {
-    const fvMesh& mesh = patch_.boundaryMesh().mesh();
+    const fvMesh& mesh = patch_.mesh();
 
     return mesh.time().foundObject<fvMesh>(mapper_.nbrRegionName());
 }
@@ -77,7 +77,7 @@ bool Foam::mappedFvPatchBaseBase::haveNbr() const
 
 const Foam::fvMesh& Foam::mappedFvPatchBaseBase::nbrMesh() const
 {
-    const fvMesh& mesh = patch_.boundaryMesh().mesh();
+    const fvMesh& mesh = patch_.mesh();
 
     return mesh.time().lookupObject<fvMesh>(mapper_.nbrRegionName());
 }
@@ -88,14 +88,14 @@ const Foam::fvPatch& Foam::mappedFvPatchBaseBase::nbrFvPatch() const
     const fvMesh& nbrMesh = this->nbrMesh();
 
     const label patchi =
-        nbrMesh.boundaryMesh().findIndex(mapper_.nbrPatchName());
+        nbrMesh.poly().boundary().findIndex(mapper_.nbrPatchName());
 
     if (patchi == -1)
     {
         FatalErrorInFunction
             << "Cannot find patch " << mapper_.nbrPatchName()
             << " in region " << mapper_.nbrRegionName() << endl
-            << "Valid patches are " << nbrMesh.boundaryMesh().names()
+            << "Valid patches are " << nbrMesh.poly().boundary().names()
             << exit(FatalError);
     }
 

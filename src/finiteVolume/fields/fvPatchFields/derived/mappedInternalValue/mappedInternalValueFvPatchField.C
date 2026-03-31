@@ -38,9 +38,9 @@ Foam::mappedInternalValueFvPatchField<Type>::mapper() const
         return mapperPtr_();
     }
 
-    if (isA<mappedInternalPatchBase>(this->patch().patch()))
+    if (isA<mappedInternalPatchBase>(this->patch().poly()))
     {
-        return refCast<const mappedInternalPatchBase>(this->patch().patch());
+        return refCast<const mappedInternalPatchBase>(this->patch().poly());
     }
 
     FatalErrorInFunction
@@ -82,7 +82,7 @@ mappedInternalValueFvPatchField
     mapperPtr_
     (
         mappedInternalPatchBase::specified(dict)
-      ? new mappedInternalPatchBase(p.patch(), dict)
+      ? new mappedInternalPatchBase(p.poly(), dict)
       : nullptr
     )
 {}
@@ -106,7 +106,7 @@ mappedInternalValueFvPatchField
     mapperPtr_
     (
         ptf.mapperPtr_.valid()
-      ? new mappedInternalPatchBase(p.patch(), ptf.mapperPtr_())
+      ? new mappedInternalPatchBase(p.poly(), ptf.mapperPtr_())
       : nullptr
     )
 {}
@@ -128,7 +128,7 @@ mappedInternalValueFvPatchField
     mapperPtr_
     (
         ptf.mapperPtr_.valid()
-      ? new mappedInternalPatchBase(ptf.patch().patch(), ptf.mapperPtr_())
+      ? new mappedInternalPatchBase(ptf.patch().poly(), ptf.mapperPtr_())
       : nullptr
     )
 {}

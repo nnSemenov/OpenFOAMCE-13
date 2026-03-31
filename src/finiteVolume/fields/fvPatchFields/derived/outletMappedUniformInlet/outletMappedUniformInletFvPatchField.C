@@ -94,7 +94,7 @@ void Foam::outletMappedUniformInletFvPatchField<Type>::updateCoeffs()
 
     const fvPatch& p = this->patch();
     label outletPatchID =
-        p.patch().boundaryMesh().findIndex(outletPatchName_);
+        p.poly().boundaryMesh().findIndex(outletPatchName_);
 
     if (outletPatchID < 0)
     {

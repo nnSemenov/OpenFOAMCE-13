@@ -132,7 +132,7 @@ void Foam::waveInletOutletFvPatchField<Type>::updateCoeffs()
 
     const waveSuperposition& waves = waveSuperposition::New(this->db());
 
-    const pointField& localPoints = this->patch().patch().localPoints();
+    const pointField& localPoints = this->patch().poly().localPoints();
 
     this->refValue() =
         levelSetAverage

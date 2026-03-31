@@ -31,6 +31,7 @@ License
 #include "Zonal_DimensionedFieldFunction.H"
 #include "Function1_DimensionedFieldFunction.H"
 #include "Coded_DimensionedFieldFunction.H"
+#include "Surfaces_DimensionedFieldFunction.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -57,6 +58,11 @@ License
         addDimensionedFieldFunction                                            \
         (                                                                      \
             Coded,                                                             \
+            DimensionedField##Type##fvMesh##Field                              \
+        );                                                                     \
+        addDimensionedFieldFunction                                            \
+        (                                                                      \
+            Surfaces,                                                          \
             DimensionedField##Type##fvMesh##Field                              \
         );                                                                     \
     }

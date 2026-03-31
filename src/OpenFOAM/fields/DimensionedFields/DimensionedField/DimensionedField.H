@@ -363,6 +363,9 @@ public:
         //- Return a const-reference to the primitive field
         inline const PrimitiveField<Type>& primitiveField() const;
 
+        //- Transfer the list pointer from the given PrimitiveField
+        inline virtual void transfer(PrimitiveField<Type>&);
+
         //- Use old-time methods from the base class
         USING_OLD_TIME_FIELD(DimensionedField);
 
