@@ -17,8 +17,6 @@ add_library(surfMesh SHARED
     surfMesh/surfMesh.C
     surfMesh/surfMeshClear.C
     surfMesh/surfMeshIO.C
-    surfFields/surfFields/surfFields.C
-    surfFields/surfPointFields/surfPointFields.C
 
     surfaceFormats/surfaceFormatsCore.C
 

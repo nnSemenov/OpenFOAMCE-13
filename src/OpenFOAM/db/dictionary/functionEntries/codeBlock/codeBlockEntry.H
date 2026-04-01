@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2025-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -45,7 +45,8 @@ namespace functionEntries
 {
 
 // Forward declaration of friend classes
-class codeBlockCalcEntry;
+class codeBlockStreamEntry;
+class codeBlockDictEntry;
 
 /*---------------------------------------------------------------------------*\
                            Class codeBlockEntry Declaration
@@ -55,7 +56,7 @@ class codeBlockEntry
 :
     public functionEntry
 {
-    // Private member data
+    // Private Data
 
         //- Unique name of the code block
         //  containing the #calc and #codeStream functions
@@ -65,16 +66,20 @@ class codeBlockEntry
         //  containing the #calc and #codeStream functions
         void* lib_;
 
+        //- Name of the code options file to be used
+        static const word codeOptions;
+
         //- Name of the C code template to be used
-        static const word codeTemplateC;
+        static const wordList compileFiles;
 
 
 public:
 
     // Related types
 
-        //- Declare friendship with the calcEntry class
-        friend class codeBlockCalcEntry;
+        //- Declare friendship with the codeBlock classes
+        friend class codeBlockStreamEntry;
+        friend class codeBlockDictEntry;
 
 
     //- Runtime type information

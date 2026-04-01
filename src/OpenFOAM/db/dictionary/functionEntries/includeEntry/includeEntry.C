@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,6 +24,7 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "includeEntry.H"
+#include "includeIfPresentEntry.H"
 #include "stringOps.H"
 #include "IOobject.H"
 #include "addToRunTimeSelectionTable.H"
@@ -131,35 +132,10 @@ void Foam::functionEntries::includeEntry::removeInsertNamedArgs
 
 Foam::fileName Foam::functionEntries::includeEntry::includeFileName
 (
-    const Istream& is,
-    const fileName& f,
-    const dictionary& dict
-)
-{
-    fileName fName(f);
-
-    // Substitute dictionary and environment variables. Allow empty
-    // substitutions.
-    stringOps::inplaceExpandEntry(fName, dict, true, true);
-
-    if (fName.empty() || fName.isAbsolute())
-    {
-        return fName;
-    }
-    else
-    {
-        // relative name
-        return fileName(is.name()).path()/fName;
-    }
-}
-
-
-Foam::fileName Foam::functionEntries::includeEntry::includeFileName
-(
     const fileName& dir,
     const fileName& f,
     const dictionary& dict
-)
+) const
 {
     fileName fName(f);
 
@@ -176,6 +152,73 @@ Foam::fileName Foam::functionEntries::includeEntry::includeFileName
         // relative name
         return dir/fName;
     }
+}
+
+
+bool Foam::functionEntries::includeEntry::virtualExecute
+(
+    const dictionary& contextDict,
+    primitiveEntry& contextEntry,
+    Istream& is
+)
+{
+    const fileName fName
+    (
+        includeFileName(is.name().path(), this->fName(), contextDict)
+    );
+
+    if (!fileHandler().exists(fName))
+    {
+        if (includeIfPresent())
+        {
+            return true;
+        }
+        else
+        {
+            FatalIOErrorInFunction
+            (
+                is
+            )   << "Cannot find include file " << fName
+                << " while reading dictionary " << contextDict.name()
+                << exit(FatalIOError);
+        }
+    }
+
+    // Cache the optional named arguments
+    // temporarily inserted into contextDict
+    List<Tuple3<word, string, label>> namedArgs
+    (
+        insertNamedArgs(const_cast<dictionary&>(contextDict), args())
+    );
+
+    autoPtr<ISstream> ifsPtr(fileHandler().NewIFstream(fName));
+    ISstream& ifs = ifsPtr();
+
+    if (ifs)
+    {
+        if (Foam::functionEntries::includeEntry::log)
+        {
+            Info<< fName << endl;
+        }
+
+        contextEntry.read(contextDict, ifs);
+    }
+    else
+    {
+        FatalIOErrorInFunction
+        (
+            is
+        )   << "Cannot open include file "
+            << (ifs.name().size() ? ifs.name() : this->fName())
+            << " while reading dictionary " << contextDict.name()
+            << exit(FatalIOError);
+    }
+
+    // Remove named argument entries from contextDict
+    // renaming any existing entries which had the same name
+    removeInsertNamedArgs(const_cast<dictionary&>(contextDict), namedArgs);
+
+    return true;
 }
 
 
@@ -223,6 +266,23 @@ bool Foam::functionEntries::includeEntry::execute
     (
         includeFileName(is.name().path(), this->fName(), contextDict)
     );
+
+    if (!fileHandler().exists(fName))
+    {
+        if (includeIfPresent())
+        {
+            return true;
+        }
+        else
+        {
+            FatalIOErrorInFunction
+            (
+                is
+            )   << "Cannot find include file " << fName
+                << " while reading dictionary " << contextDict.name()
+                << exit(FatalIOError);
+        }
+    }
 
     // Cache the optional named arguments
     // temporarily inserted into contextDict
@@ -289,48 +349,9 @@ bool Foam::functionEntries::includeEntry::execute
     Istream& is
 )
 {
-    const includeEntry ie(is.lineNumber(), contextDict, is);
-
-    const fileName fName
-    (
-        includeFileName(is.name().path(), ie.fName(), contextDict)
-    );
-
-    // Cache the optional named arguments
-    // temporarily inserted into contextDict
-    List<Tuple3<word, string, label>> namedArgs
-    (
-        ie.insertNamedArgs(const_cast<dictionary&>(contextDict), ie.args())
-    );
-
-    autoPtr<ISstream> ifsPtr(fileHandler().NewIFstream(fName));
-    ISstream& ifs = ifsPtr();
-
-    if (ifs)
-    {
-        if (Foam::functionEntries::includeEntry::log)
-        {
-            Info<< fName << endl;
-        }
-
-        contextEntry.read(contextDict, ifs);
-    }
-    else
-    {
-        FatalIOErrorInFunction
-        (
-            is
-        )   << "Cannot open include file "
-            << (ifs.name().size() ? ifs.name() : ie.fName())
-            << " while reading dictionary " << contextDict.name()
-            << exit(FatalIOError);
-    }
-
-    // Remove named argument entries from contextDict
-    // renaming any existing entries which had the same name
-    ie.removeInsertNamedArgs(const_cast<dictionary&>(contextDict), namedArgs);
-
-    return true;
+    return
+        includeEntry(is.lineNumber(), contextDict, is)
+       .virtualExecute(contextDict, contextEntry, is);
 }
 
 

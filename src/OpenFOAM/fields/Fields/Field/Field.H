@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -69,7 +69,7 @@ Ostream& operator<<(Ostream&, const Field<Type>&);
 template<class Type>
 Ostream& operator<<(Ostream&, const tmp<Field<Type>>&);
 
-class unitConversion;
+class unitSet;
 class dictionary;
 
 /*---------------------------------------------------------------------------*\
@@ -193,7 +193,7 @@ public:
         Field
         (
             const word& keyword,
-            const unitConversion&,
+            const unitSet&,
             const dictionary&,
             const label size
         );
@@ -351,6 +351,8 @@ public:
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 #include "FieldFunctions.H"
+#include "FieldReductionFunctions.H"
+#include "scalarField.H"
 
 #ifdef NoRepository
     #include "Field.C"

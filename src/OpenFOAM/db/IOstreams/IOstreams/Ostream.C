@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -127,6 +127,20 @@ Foam::Ostream& Foam::Ostream::write(const token& t)
 
     // Check state of stream
     check("Ostream& Ostream::write(const token&)");
+
+    return *this;
+}
+
+
+Foam::Ostream& Foam::Ostream::writeCompoundTag(const word& typeName)
+{
+    if (token::compound::isCompound(typeName))
+    {
+        write(typeName);
+        // Cast to char required to work around a bug in gcc versions < 10
+        write(static_cast<char>(token::SPACE));
+        // write(token::SPACE);
+    }
 
     return *this;
 }

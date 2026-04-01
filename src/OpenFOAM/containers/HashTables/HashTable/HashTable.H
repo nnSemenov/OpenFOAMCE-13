@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -412,7 +412,7 @@ public:
                 bool erase();
 
                 //- Return non-const access to referenced object
-                inline T& object();
+                inline T& object() const;
 
                 //- Return const access to referenced object
                 inline const T& cobject() const;
@@ -475,12 +475,8 @@ public:
             // Member Operators
 
                 //- Return referenced hash value
-                inline T& operator*();
-                inline T& operator()();
-
-                //- Return referenced hash value
-                inline const T& operator*() const;
-                inline const T& operator()() const;
+                inline T& operator*() const;
+                inline T& operator()() const;
 
                 inline iterator& operator++();
                 inline iterator operator++(int);
@@ -571,7 +567,7 @@ public:
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-    #include "HashTableI.H"
+#include "HashTableI.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

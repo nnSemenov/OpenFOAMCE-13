@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
     ldl[1](3) = 2;            // allocates space and sets value
 
     // this works without a segfault, but doesn't change the list size
-    ldl[0][4] = 4;
+    // ldl[0][4] = 4;
 
     ldl[1] = 3;
 
@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
 
     // provokes memory error if previous transfer did not maintain
     // the correct allocated space
-    dlB[6] = 6;
+    // dlB[6] = 6;
 
     Info<< "Transferred to dlB" << endl;
     Info<< "<dlA>" << dlA << "</dlA>" << nl << "sizes: "

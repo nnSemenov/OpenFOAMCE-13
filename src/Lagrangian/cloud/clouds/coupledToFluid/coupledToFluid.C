@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2025-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -44,17 +44,17 @@ Foam::clouds::coupledToFluid::getRhocVf(const word& phaseName) const
 {
     const word rhocName = IOobject::groupName("rho", phaseName);
 
-    if (mesh_.mesh().foundObject<volScalarField>(rhocName))
+    if (mesh_.poly().foundObject<volScalarField>(rhocName))
     {
-        return mesh_.mesh().lookupObject<volScalarField>(rhocName);
+        return mesh_.poly().lookupObject<volScalarField>(rhocName);
     }
 
     const word thermocName =
         IOobject::groupName(physicalProperties::typeName, phaseName);
 
-    if (mesh_.mesh().foundObject<basicThermo>(thermocName))
+    if (mesh_.poly().foundObject<basicThermo>(thermocName))
     {
-        return mesh_.mesh().lookupObject<basicThermo>(thermocName).rho();
+        return mesh_.poly().lookupObject<basicThermo>(thermocName).rho();
     }
 
     FatalErrorInFunction
@@ -70,17 +70,17 @@ Foam::clouds::coupledToFluid::getMucVf(const word& phaseName) const
 {
     const word mucName = IOobject::groupName("mu", phaseName);
 
-    if (mesh_.mesh().foundObject<volScalarField>(mucName))
+    if (mesh_.poly().foundObject<volScalarField>(mucName))
     {
-        return mesh_.mesh().lookupObject<volScalarField>(mucName);
+        return mesh_.poly().lookupObject<volScalarField>(mucName);
     }
 
     const word thermocName =
         IOobject::groupName(physicalProperties::typeName, phaseName);
 
-    if (mesh_.mesh().foundObject<fluidThermo>(thermocName))
+    if (mesh_.poly().foundObject<fluidThermo>(thermocName))
     {
-        return mesh_.mesh().lookupObject<fluidThermo>(thermocName).mu();
+        return mesh_.poly().lookupObject<fluidThermo>(thermocName).mu();
     }
 
     return NullObjectRef<volScalarField>();
@@ -123,7 +123,6 @@ Foam::clouds::coupledToFluid::coupledToFluid
     const cloud& c,
     const dictionary& dict
 )
-
 :
     coupled(c, dict),
     mesh_(c.mesh()),
@@ -142,7 +141,7 @@ Foam::clouds::coupledToFluid::coupledToFluid
       ? carrierField<scalar>(trhocPhaseVf_())
       : carrierField<scalar>
         (
-            "rhocPhase",
+            IOobject::groupName("rhoc", phaseName()),
             [&]()
             {
                 FatalErrorInFunction
@@ -175,9 +174,6 @@ Foam::clouds::coupledToFluid::coupledToFluid
 
 Foam::clouds::coupledToFluid::~coupledToFluid()
 {}
-
-
-// * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
 
 // ************************************************************************* //

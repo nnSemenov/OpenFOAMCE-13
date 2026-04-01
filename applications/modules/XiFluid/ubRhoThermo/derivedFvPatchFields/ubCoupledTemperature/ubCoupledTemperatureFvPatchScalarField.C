@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2025-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -40,14 +40,14 @@ void Foam::ubCoupledTemperatureFvPatchScalarField::getThis
 {
     const solvers::XiFluid& XiFluid
     (
-        patch().boundaryMesh().mesh()
+        patch().mesh()
        .lookupObject<solvers::XiFluid>(solver::typeName)
     );
 
     const ubRhoThermo& thermo = XiFluid.thermo;
 
-    const ubRhoMulticomponentThermo& uThermo = thermo.uThermo();
-    const ubRhoMulticomponentThermo& bThermo = thermo.bThermo();
+    const uRhoMulticomponentThermo& uThermo = thermo.uThermo();
+    const bRhoMulticomponentThermo& bThermo = thermo.bThermo();
 
     const scalarField& alphau =
         thermo.alphau().boundaryField()[patch().index()];
@@ -123,14 +123,14 @@ void Foam::ubCoupledTemperatureFvPatchScalarField::getNbr
 {
     const solvers::XiFluid& XiFluid
     (
-        patch().boundaryMesh().mesh()
+        patch().mesh()
        .lookupObject<solvers::XiFluid>(solver::typeName)
     );
 
     const ubRhoThermo& thermo = XiFluid.thermo;
 
-    const ubRhoMulticomponentThermo& uThermo = thermo.uThermo();
-    const ubRhoMulticomponentThermo& bThermo = thermo.bThermo();
+    const uRhoMulticomponentThermo& uThermo = thermo.uThermo();
+    const bRhoMulticomponentThermo& bThermo = thermo.bThermo();
 
     const scalarField& alphau =
         thermo.alphau().boundaryField()[patch().index()];
@@ -174,13 +174,13 @@ void Foam::ubCoupledTemperatureFvPatchScalarField::getNbr
 {
     const solvers::XiFluid& XiFluid
     (
-        patch().boundaryMesh().mesh()
+        patch().mesh()
        .lookupObject<solvers::XiFluid>(solver::typeName)
     );
 
     const ubRhoThermo& thermo = XiFluid.thermo;
-    const ubRhoMulticomponentThermo& uThermo = thermo.uThermo();
-    const ubRhoMulticomponentThermo& bThermo = thermo.bThermo();
+    const uRhoMulticomponentThermo& uThermo = thermo.uThermo();
+    const bRhoMulticomponentThermo& bThermo = thermo.bThermo();
 
     const scalarField& alphau =
         thermo.alphau().boundaryField()[patch().index()];
@@ -199,7 +199,7 @@ Foam::ubCoupledTemperatureFvPatchScalarField::
 ubCoupledTemperatureFvPatchScalarField
 (
     const fvPatch& p,
-    const DimensionedField<scalar, volMesh>& iF,
+    const DimensionedField<scalar, fvMesh>& iF,
     const dictionary& dict
 )
 :
@@ -212,7 +212,7 @@ ubCoupledTemperatureFvPatchScalarField
 (
     const ubCoupledTemperatureFvPatchScalarField& psf,
     const fvPatch& p,
-    const DimensionedField<scalar, volMesh>& iF,
+    const DimensionedField<scalar, fvMesh>& iF,
     const fieldMapper& mapper
 )
 :
@@ -224,7 +224,7 @@ Foam::ubCoupledTemperatureFvPatchScalarField::
 ubCoupledTemperatureFvPatchScalarField
 (
     const ubCoupledTemperatureFvPatchScalarField& psf,
-    const DimensionedField<scalar, volMesh>& iF
+    const DimensionedField<scalar, fvMesh>& iF
 )
 :
     coupledTemperatureFvPatchScalarField(psf, iF)

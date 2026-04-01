@@ -7,19 +7,26 @@ add_library(${target_name} SHARED
     cloud/cloud.C
 
     # Cloud Mix-ins
+    clouds/grouped/grouped.C
     clouds/shaped/shaped.C
     clouds/spherical/spherical.C
+    clouds/carried/carried.C
     clouds/coupled/coupled.C
     clouds/coupledToConstantDensityFluid/coupledToConstantDensityFluid.C
     clouds/coupledToFluid/coupledToFluid.C
-    clouds/sphericalCoupled/sphericalCoupled.C
+    clouds/coupledToThermalFluid/coupledToThermalFluid.C
     clouds/massive/massive.C
+    clouds/dense/dense.C
+    clouds/thermal/thermal.C
+    clouds/sphericalCoupled/sphericalCoupled.C
     clouds/massiveCoupledToFluid/massiveCoupledToFluid.C
-    clouds/grouped/grouped.C
 
     # Derived Clouds
+    clouds/tracer/tracer.C
     clouds/kinematicParticle/kinematicParticle.C
     clouds/kinematicParcel/kinematicParcel.C
+    clouds/dynamicParticle/dynamicParticle.C
+    clouds/dynamicParcel/dynamicParcel.C
     clouds/particle/particle.C
     clouds/parcel/parcel.C
 
@@ -36,14 +43,22 @@ add_library(${target_name} SHARED
     fields/derivedLagrangianFieldSources/mass/massLagrangianScalarFieldSource.C
     fields/derivedLagrangianFieldSources/volume/volumeLagrangianScalarFieldSource.C
     fields/derivedLagrangianFieldSources/surfaceArea/surfaceAreaLagrangianScalarFieldSource.C
+    fields/derivedLagrangianFieldSources/coneDirection/coneDirectionLagrangianVectorFieldSource.C
+    fields/derivedLagrangianFieldSources/coneDiskDirection/coneDiskDirectionLagrangianVectorFieldSource.C
+    fields/derivedLagrangianFieldSources/fanDirection/fanDirectionLagrangianVectorFieldSource.C
     fields/derivedLagrangianFieldSources/coneVelocity/coneVelocityLagrangianVectorFieldSource.C
     fields/derivedLagrangianFieldSources/coneDiskVelocity/coneDiskVelocityLagrangianVectorFieldSource.C
+    fields/derivedLagrangianFieldSources/fanVelocity/fanVelocityLagrangianVectorFieldSource.C
     fields/derivedLagrangianFieldSources/uniformSizeNumber/uniformSizeNumberLagrangianScalarFieldSource.C
     fields/derivedLagrangianFieldSources/flowRateNumber/flowRateNumberLagrangianScalarFieldSource.C
     fields/derivedLagrangianFieldSources/totalNumber/totalNumberLagrangianScalarFieldSource.C
     fields/derivedLagrangianFieldSources/distributionDiameter/distributionDiameterLagrangianScalarFieldSource.C
+    fields/derivedLagrangianFieldSources/totalPressureVelocityMagnitude/totalPressureVelocityMagnitudeLagrangianScalarFieldSource.C
     fields/derivedLagrangianFieldSources/totalPressureVelocity/totalPressureVelocityLagrangianVectorFieldSource.C
+    fields/derivedLagrangianFieldSources/totalPressureConeVelocity/totalPressureConeVelocityLagrangianVectorFieldSource.C
+    fields/derivedLagrangianFieldSources/flowRateConeDiskVelocity/flowRateConeDiskVelocityLagrangianVectorFieldSource.C
     fields/derivedLagrangianFieldSources/carrier/carrierLagrangianFieldSources.C
+    fields/derivedLagrangianFieldSources/LaplacePressure/LaplacePressureLagrangianScalarFieldSource.C
 
     # Models
     LagrangianModels/cloudLagrangianModel/cloudLagrangianModel.C
@@ -54,6 +69,9 @@ add_library(${target_name} SHARED
     LagrangianModels/pressureGradientForce/pressureGradientForce.C
     LagrangianModels/SaffmanMeiLift/SaffmanMeiLift.C
     LagrangianModels/SchillerNaumannDrag/SchillerNaumannDrag.C
+    LagrangianModels/heatTransfer/heatTransfer.C
+    LagrangianModels/RanzMarshallHeatTransfer/RanzMarshallHeatTransfer.C
+    LagrangianModels/pressureWork/pressureWork.C
     LagrangianModels/turbulentDispersion/turbulentDispersion.C
     LagrangianModels/collisionPhaseTransfer/collisionPhaseTransfer.C
     LagrangianModels/constantFluxCarrierTransfer/constantFluxCarrierTransfer.C
@@ -95,6 +113,7 @@ target_link_libraries(${target_name} PRIVATE
     finiteVolume 
     meshTools 
     Lagrangian
+    LagrangianThermo
 )
 
 target_compile_definitions(${target_name} PRIVATE

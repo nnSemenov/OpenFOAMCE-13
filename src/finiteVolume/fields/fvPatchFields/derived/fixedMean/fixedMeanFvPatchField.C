@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2012-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2012-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -32,7 +32,7 @@ template<class Type>
 Foam::fixedMeanFvPatchField<Type>::fixedMeanFvPatchField
 (
     const fvPatch& p,
-    const DimensionedField<Type, volMesh>& iF,
+    const DimensionedField<Type, fvMesh>& iF,
     const dictionary& dict
 )
 :
@@ -41,7 +41,7 @@ Foam::fixedMeanFvPatchField<Type>::fixedMeanFvPatchField
         p,
         iF,
         dict,
-        !Pstream::parRun() && p.boundaryMesh().mesh().time().processorCase()
+        !Pstream::parRun() && p.mesh().time().processorCase()
     ),
     meanValue_
     (
@@ -54,7 +54,7 @@ Foam::fixedMeanFvPatchField<Type>::fixedMeanFvPatchField
         )
     )
 {
-    if (Pstream::parRun() || !p.boundaryMesh().mesh().time().processorCase())
+    if (Pstream::parRun() || !p.mesh().time().processorCase())
     {
         this->evaluate();
     }
@@ -66,7 +66,7 @@ Foam::fixedMeanFvPatchField<Type>::fixedMeanFvPatchField
 (
     const fixedMeanFvPatchField<Type>& ptf,
     const fvPatch& p,
-    const DimensionedField<Type, volMesh>& iF,
+    const DimensionedField<Type, fvMesh>& iF,
     const fieldMapper& mapper
 )
 :
@@ -79,7 +79,7 @@ template<class Type>
 Foam::fixedMeanFvPatchField<Type>::fixedMeanFvPatchField
 (
     const fixedMeanFvPatchField<Type>& ptf,
-    const DimensionedField<Type, volMesh>& iF
+    const DimensionedField<Type, fvMesh>& iF
 )
 :
     fixedValueFvPatchField<Type>(ptf, iF),

@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2012-2023 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2012-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -208,8 +208,8 @@ int main(int argc, char *argv[])
     #include "createMesh.H"
 
     const word patchName = args[1];
-    label patchi = mesh.boundaryMesh().findIndex(patchName);
-    const polyPatch& pp = mesh.boundaryMesh()[patchi];
+    label patchi = mesh.poly().boundary().findIndex(patchName);
+    const polyPatch& pp = mesh.poly().boundary()[patchi];
 
     const indirectPrimitivePatch& cpp = mesh.globalData().coupledPatch();
 
@@ -261,7 +261,7 @@ int main(int argc, char *argv[])
 //            (
 //                mesh,
 //                pp,
-//                identityMap(pp.size())+pp.start()
+//                identityMap(pp.start(), pp.size())
 //            )
 //        );
 //        forAll(pn, pointi)
@@ -278,7 +278,7 @@ int main(int argc, char *argv[])
 //            (
 //                mesh,
 //                pp,
-//                identityMap(pp.size())+pp.start()
+//                identityMap(pp.start(), pp.size())
 //            )
 //        );
 //        forAll(pn, pointi)

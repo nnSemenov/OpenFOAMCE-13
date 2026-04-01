@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -80,7 +80,7 @@ void Foam::externalTemperatureFvPatchScalarField::getKappa
 ) const
 {
     const thermophysicalTransportModel& ttm =
-        patch().boundaryMesh().mesh()
+        patch().mesh()
        .lookupType<thermophysicalTransportModel>();
 
     kappa = ttm.kappaEff(patch().index());
@@ -97,7 +97,7 @@ Foam::externalTemperatureFvPatchScalarField::
 externalTemperatureFvPatchScalarField
 (
     const fvPatch& p,
-    const DimensionedField<scalar, volMesh>& iF,
+    const DimensionedField<scalar, fvMesh>& iF,
     const dictionary& dict
 )
 :
@@ -139,7 +139,7 @@ externalTemperatureFvPatchScalarField
     emissivity_
     (
         haveEmissivity_
-      ? dict.lookup<scalar>("emissivity", unitFraction)
+      ? dict.lookup<scalar>("emissivity", units::fraction)
       : NaN
     ),
     haveLayers_(dict.found("thicknessLayers") || dict.found("kappaLayers")),
@@ -167,9 +167,9 @@ externalTemperatureFvPatchScalarField
         ).ptr()
       : nullptr
     ),
-    relax_(dict.lookupOrDefault<scalar>("relaxation", unitFraction, 1)),
+    relax_(dict.lookupOrDefault<scalar>("relaxation", units::fraction, 1)),
     qrName_(dict.lookupOrDefault<word>("qr", word::null)),
-    qrRelax_(dict.lookupOrDefault<scalar>("qrRelaxation", unitFraction, 1)),
+    qrRelax_(dict.lookupOrDefault<scalar>("qrRelaxation", units::fraction, 1)),
     qrPrevious_
     (
         qrName_ != word::null
@@ -219,7 +219,7 @@ externalTemperatureFvPatchScalarField
                 p.size()
             );
         valueFraction() =
-            scalarField("valueFraction", unitFraction, dict, p.size());
+            scalarField("valueFraction", units::fraction, dict, p.size());
     }
     else
     {
@@ -236,7 +236,7 @@ externalTemperatureFvPatchScalarField
 (
     const externalTemperatureFvPatchScalarField& ptf,
     const fvPatch& p,
-    const DimensionedField<scalar, volMesh>& iF,
+    const DimensionedField<scalar, fvMesh>& iF,
     const fieldMapper& mapper
 )
 :
@@ -269,7 +269,7 @@ Foam::externalTemperatureFvPatchScalarField::
 externalTemperatureFvPatchScalarField
 (
     const externalTemperatureFvPatchScalarField& tppsf,
-    const DimensionedField<scalar, volMesh>& iF
+    const DimensionedField<scalar, fvMesh>& iF
 )
 :
     mixedFvPatchScalarField(tppsf, iF),
@@ -482,7 +482,7 @@ void Foam::externalTemperatureFvPatchScalarField::updateCoeffs()
     {
         const scalar Q = gSum(kappa*patch().magSf()*snGrad());
 
-        Info<< patch().boundaryMesh().mesh().name() << ':'
+        Info<< patch().mesh().name() << ':'
             << patch().name() << ':'
             << this->internalField().name() << " :"
             << " heat transfer rate:" << Q

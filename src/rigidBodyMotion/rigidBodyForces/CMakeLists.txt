@@ -4,7 +4,11 @@ lnInclude(${CMAKE_CURRENT_SOURCE_DIR})
 set(target_name rigidBodyForces)
 
 add_library(${target_name} SHARED
-    rigidBodyForces.C
+    rigidBodyForces/rigidBodyForces.C
+
+    rigidBodySectionalForcesBase/rigidBodySectionalForcesBase.C
+    rigidBodySectionalForceGraph/rigidBodySectionalForceGraph.C
+    rigidBodySectionalForceProbes/rigidBodySectionalForceProbes.C
 )
 
 target_include_directories(${target_name} PUBLIC
@@ -20,6 +24,7 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM
     OSspecific
 
+    sampling
     forces 
     finiteVolume 
     motionSolvers 

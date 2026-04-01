@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2025-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -65,12 +65,12 @@ namespace Foam
 
 Foam::nonConformalCyclicLagrangianPatch::nonConformalCyclicLagrangianPatch
 (
-    const polyPatch& patch,
+    const polyPatch& poly,
     const LagrangianBoundaryMesh& boundaryMesh
 )
 :
-    LagrangianPatch(patch, boundaryMesh),
-    nonConformalCyclicPatch_(refCast<const nonConformalCyclicPolyPatch>(patch)),
+    LagrangianPatch(poly, boundaryMesh),
+    nonConformalCyclicPoly_(refCast<const nonConformalCyclicPolyPatch>(poly)),
     isNbrPatchMesh_(false),
     nPositionalErrors_(0),
     maxPositionalErrorSqr_(-vGreat),
@@ -93,8 +93,8 @@ Foam::nonConformalCyclicLagrangianPatch::mesh() const
         boundaryMesh()
         [
             isNbrPatchMesh_
-          ? nonConformalCyclicPatch_.nbrPatchIndex()
-          : patch().index()
+          ? nonConformalCyclicPoly_.nbrPatchIndex()
+          : poly().index()
         ].LagrangianPatch::mesh();
 }
 
@@ -108,7 +108,7 @@ void Foam::nonConformalCyclicLagrangianPatch::evaluate
 {
     const LagrangianSubMesh& patchMesh = this->mesh();
 
-    const meshSearch& searchEngine = meshSearch::New(mesh.mesh());
+    const meshSearch& searchEngine = meshSearch::New(mesh.poly());
 
     // Sub-set the geometry and topology of the elements
     SubField<barycentric> patchCoordinates = patchMesh.sub(mesh.coordinates());
@@ -124,13 +124,13 @@ void Foam::nonConformalCyclicLagrangianPatch::evaluate
 
     // Get a reference to the receiving original patch
     const polyPatch& receivePp =
-        nonConformalCyclicPatch_.nbrPatch().origPatch();
+        nonConformalCyclicPoly_.nbrPatch().origPatch();
 
     // Search for the elements on the receiving side
     forAll(patchMesh, i)
     {
         patchCelli[i] =
-            mesh.mesh().faceOwner()[receivePatchFace[i] + receivePp.start()];
+            mesh.poly().faceOwner()[receivePatchFace[i] + receivePp.start()];
 
         if
         (
@@ -153,7 +153,7 @@ void Foam::nonConformalCyclicLagrangianPatch::evaluate
                     receivePosition[i]
                   - tracking::position
                     (
-                        mesh.mesh(),
+                        mesh.poly(),
                         patchCoordinates[i],
                         patchCelli[i],
                         patchFacei[i],
@@ -226,7 +226,7 @@ void Foam::nonConformalCyclicLagrangianPatch::partition() const
         WarningInFunction
             << nPositionalErrors << "/" << nTransfers << " elements "
             << "transferring to patch "
-            << nonConformalCyclicPatch_.nbrPatch().name()
+            << nonConformalCyclicPoly_.nbrPatch().name()
             << " were not accurately located. The largest positional error "
             << "was " << sqrt(maxPositionalErrorSqr_)
             << " from " << maxPositionalErrorReceivePosition_ << "."

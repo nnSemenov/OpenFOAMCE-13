@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -42,7 +42,7 @@ void Foam::coupledTemperatureFvPatchScalarField::getThis
 ) const
 {
     const thermophysicalTransportModel& ttm =
-        patch().boundaryMesh().mesh()
+        patch().mesh()
        .lookupType<thermophysicalTransportModel>();
 
     kappa = ttm.kappaEff(patch().index());
@@ -68,7 +68,7 @@ void Foam::coupledTemperatureFvPatchScalarField::getNbr
 ) const
 {
     const thermophysicalTransportModel& ttm =
-        patch().boundaryMesh().mesh()
+        patch().mesh()
        .lookupType<thermophysicalTransportModel>();
 
     sumKappaByDeltaNbr = ttm.kappaEff(patch().index())*patch().deltaCoeffs();
@@ -86,7 +86,7 @@ void Foam::coupledTemperatureFvPatchScalarField::getNbr
 ) const
 {
     const thermophysicalTransportModel& ttm =
-        patch().boundaryMesh().mesh()
+        patch().mesh()
        .lookupType<thermophysicalTransportModel>();
 
     const fvPatchScalarField& Tp =
@@ -131,7 +131,7 @@ Foam::coupledTemperatureFvPatchScalarField::
 coupledTemperatureFvPatchScalarField
 (
     const fvPatch& p,
-    const DimensionedField<scalar, volMesh>& iF,
+    const DimensionedField<scalar, fvMesh>& iF,
     const dictionary& dict
 )
 :
@@ -139,7 +139,7 @@ coupledTemperatureFvPatchScalarField
     TnbrName_(dict.lookupOrDefault<word>("Tnbr", "T")),
     qrNbrName_(dict.lookupOrDefault<word>("qrNbr", "none")),
     qrName_(dict.lookupOrDefault<word>("qr", "none")),
-    qrRelax_(dict.lookupOrDefault<scalar>("qrRelaxation", unitFraction, 1)),
+    qrRelax_(dict.lookupOrDefault<scalar>("qrRelaxation", units::fraction, 1)),
     qrPrevious_
     (
         qrName_ != word::null
@@ -213,7 +213,7 @@ coupledTemperatureFvPatchScalarField
                 p.size()
             );
         valueFraction() =
-            scalarField("valueFraction", unitFraction, dict, p.size());
+            scalarField("valueFraction", units::fraction, dict, p.size());
     }
     else
     {
@@ -230,7 +230,7 @@ coupledTemperatureFvPatchScalarField
 (
     const coupledTemperatureFvPatchScalarField& psf,
     const fvPatch& p,
-    const DimensionedField<scalar, volMesh>& iF,
+    const DimensionedField<scalar, fvMesh>& iF,
     const fieldMapper& mapper
 )
 :
@@ -259,7 +259,7 @@ Foam::coupledTemperatureFvPatchScalarField::
 coupledTemperatureFvPatchScalarField
 (
     const coupledTemperatureFvPatchScalarField& psf,
-    const DimensionedField<scalar, volMesh>& iF
+    const DimensionedField<scalar, fvMesh>& iF
 )
 :
     mixedFvPatchScalarField(psf, iF),
@@ -445,7 +445,7 @@ void Foam::coupledTemperatureFvPatchScalarField::updateCoeffs()
     {
         const scalar Q = gSum(kappa()*patch().magSf()*snGrad());
 
-        Info<< patch().boundaryMesh().mesh().name() << ':'
+        Info<< patch().mesh().name() << ':'
             << patch().name() << ':'
             << this->internalField().name() << " <- "
             << mapper.nbrMesh().name() << ':'

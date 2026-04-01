@@ -17,11 +17,12 @@ int main()
         delete[] ptrs[i];
     }
 
-    for (;;);
+    // for (;;);
 
     cerr << "allocating double\n";
 
     new double[500000];
 
-    for (;;);
+    // for (;;);
+    return 0;
 }

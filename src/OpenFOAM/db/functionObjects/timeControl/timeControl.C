@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -130,15 +130,8 @@ void Foam::timeControl::read(const dictionary& dict)
             break;
         }
 
-        case timeControls::clockTime:
-        case timeControls::runTime:
-        case timeControls::cpuTime:
-        {
-            interval_ = dict.lookup<scalar>(intervalName, time_.userUnits());
-            break;
-        }
-
         case timeControls::adjustableRunTime:
+        case timeControls::runTime:
         {
             interval_ = dict.lookup<scalar>(intervalName, time_.userUnits());
             executionIndex_ =
@@ -164,13 +157,13 @@ void Foam::timeControl::read(const dictionary& dict)
                 dict.lookupOrDefault
                 (
                     "timeDelta",
-                    unitNone,
+                    units::none,
                     1e-3*time_.userDeltaTValue()
                 );
 
             if (dict.found(timesName))
             {
-                times_ = dict.lookup<scalarList>(timesName, unitNone);
+                times_ = dict.lookup<scalarList>(timesName, units::none);
             }
             else if (dict.found(frequenciesName))
             {
@@ -234,8 +227,24 @@ void Foam::timeControl::read(const dictionary& dict)
             break;
         }
 
+        case timeControls::clockTime:
+        case timeControls::cpuTime:
+        {
+            interval_ = dict.lookup<scalar>(intervalName, time_.userUnits());
+            break;
+        }
+
+        case timeControls::none:
+        {
+            break;
+        }
+
         default:
         {
+            FatalErrorInFunction
+                << "Undefined output control: "
+                << timeControlNames_[timeControl_] << nl
+                << exit(FatalError);
             break;
         }
     }
@@ -314,11 +323,11 @@ bool Foam::timeControl::execute()
             );
         }
 
-        case timeControls::cpuTime:
+        case timeControls::clockTime:
         {
             const label executionIndex = label
             (
-                returnReduce(time_.elapsedCpuTime(), maxOp<double>())
+                returnReduce(label(time_.elapsedClockTime()), maxOp<label>())
                /interval_
             );
             if (executionIndex > executionIndex_)
@@ -329,11 +338,11 @@ bool Foam::timeControl::execute()
             break;
         }
 
-        case timeControls::clockTime:
+        case timeControls::cpuTime:
         {
             const label executionIndex = label
             (
-                returnReduce(label(time_.elapsedClockTime()), maxOp<label>())
+                returnReduce(time_.elapsedCpuTime(), maxOp<double>())
                /interval_
             );
             if (executionIndex > executionIndex_)
@@ -373,8 +382,8 @@ Foam::scalar Foam::timeControl::timeToNextAction()
         case timeControls::writeTime:
         case timeControls::outputTime:
         case timeControls::runTime:
-        case timeControls::cpuTime:
         case timeControls::clockTime:
+        case timeControls::cpuTime:
         case timeControls::none:
         {
             return vGreat;

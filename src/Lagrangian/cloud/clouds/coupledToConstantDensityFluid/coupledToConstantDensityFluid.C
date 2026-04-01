@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2025-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,7 +24,6 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "coupledToConstantDensityFluid.H"
-#include "dimensionSet.H"
 #include "dimensionedScalar.H"
 #include "physicalProperties.H"
 #include "uniformDimensionedFields.H"
@@ -60,14 +59,13 @@ Foam::clouds::coupledToConstantDensityFluid::physicalProperties() const
 Foam::tmp<Foam::LagrangianSubScalarField>
 Foam::clouds::coupledToConstantDensityFluid::one
 (
-    const LagrangianSubMesh& subMesh,
-    const word& phaseName
+    const LagrangianSubMesh& subMesh
 )
 {
     return
         LagrangianSubScalarField::New
         (
-            subMesh.sub(IOobject::groupName(nameToCarrierName("1"), phaseName)),
+            subMesh.sub("1"),
             subMesh,
             dimensionedScalar(dimless, scalar(1))
         );
@@ -89,7 +87,7 @@ Foam::clouds::coupledToConstantDensityFluid::coupledToConstantDensityFluid
     (
         phaseName() == word::null
       ? NullObjectRef<dimensionedScalar>()
-      : mesh_.mesh().lookupObject<uniformDimensionedScalarField>
+      : mesh_.poly().lookupObject<uniformDimensionedScalarField>
         (
             IOobject::groupName("rho", phaseName())
         )
@@ -98,7 +96,7 @@ Foam::clouds::coupledToConstantDensityFluid::coupledToConstantDensityFluid
     (
         carrierPhaseName() == word::null
       ? NullObjectRef<dimensionedScalar>()
-      : mesh_.mesh().lookupObject<uniformDimensionedScalarField>
+      : mesh_.poly().lookupObject<uniformDimensionedScalarField>
         (
             IOobject::groupName("rho", carrierPhaseName())
         )
@@ -107,9 +105,10 @@ Foam::clouds::coupledToConstantDensityFluid::coupledToConstantDensityFluid
     (
         c.derivedField<scalar>
         (
+            IOobject::groupName(nameToCarrierName("1"), carrierPhaseName()),
             [&](const LagrangianModelRef&, const LagrangianSubMesh& subMesh)
             {
-                return one(subMesh, carrierPhaseName());
+                return one(subMesh);
             }
         )
     ),
@@ -117,9 +116,10 @@ Foam::clouds::coupledToConstantDensityFluid::coupledToConstantDensityFluid
     (
         c.derivedField<scalar>
         (
+            IOobject::groupName(nameToCarrierName("1"), phaseName()),
             [&](const LagrangianModelRef&, const LagrangianSubMesh& subMesh)
             {
-                return one(subMesh, phaseName());
+                return one(subMesh);
             }
         )
     ),

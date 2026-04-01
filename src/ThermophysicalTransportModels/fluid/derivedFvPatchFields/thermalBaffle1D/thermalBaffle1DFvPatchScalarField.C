@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -43,7 +43,7 @@ thermalBaffle1DFvPatchScalarField<solidType>::
 thermalBaffle1DFvPatchScalarField
 (
     const fvPatch& p,
-    const DimensionedField<scalar, volMesh>& iF,
+    const DimensionedField<scalar, fvMesh>& iF,
     const dictionary& dict
 )
 :
@@ -105,7 +105,7 @@ thermalBaffle1DFvPatchScalarField
                 p.size()
             );
         valueFraction() =
-            scalarField("valueFraction", unitFraction, dict, p.size());
+            scalarField("valueFraction", units::fraction, dict, p.size());
     }
     else
     {
@@ -123,7 +123,7 @@ thermalBaffle1DFvPatchScalarField
 (
     const thermalBaffle1DFvPatchScalarField& ptf,
     const fvPatch& p,
-    const DimensionedField<scalar, volMesh>& iF,
+    const DimensionedField<scalar, fvMesh>& iF,
     const fieldMapper& mapper
 )
 :
@@ -144,7 +144,7 @@ thermalBaffle1DFvPatchScalarField<solidType>::
 thermalBaffle1DFvPatchScalarField
 (
     const thermalBaffle1DFvPatchScalarField& ptf,
-    const DimensionedField<scalar, volMesh>& iF
+    const DimensionedField<scalar, fvMesh>& iF
 )
 :
     mixedFvPatchScalarField(ptf, iF),
@@ -363,7 +363,7 @@ void thermalBaffle1DFvPatchScalarField<solidType>::updateCoeffs()
         if (debug)
         {
             scalar Q = gAverage(kappap*snGrad());
-            Info<< patch().boundaryMesh().mesh().name() << ':'
+            Info<< patch().mesh().name() << ':'
                 << patch().name() << ':'
                 << this->internalField().name() << " <- "
                 << nbrField().patch().name() << ':'

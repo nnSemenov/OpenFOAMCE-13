@@ -30,6 +30,7 @@ divSchemes
     default         none;
 
     div(phi,U)      bounded Gauss linearUpwind limited;
+    div(U)          Gauss linear;
 
     div(phi,k)      bounded Gauss upwind;
     div(phi,omega)  bounded Gauss upwind;

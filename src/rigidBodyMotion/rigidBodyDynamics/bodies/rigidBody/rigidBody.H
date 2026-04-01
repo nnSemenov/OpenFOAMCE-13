@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2016-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2016-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -36,6 +36,7 @@ SourceFiles
 
 #include "rigidBodyInertia.H"
 #include "dictionary.H"
+#include "primitiveFieldsFwd.H"
 #include "runTimeSelectionTables.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -47,12 +48,10 @@ namespace RBD
 
 // Forward declaration of classes
 class subBody;
-
-// Forward declaration of friend functions and operators
 class rigidBody;
 
+// Forward declaration of friend functions and operators
 inline Ostream& operator<<(Ostream&, const rigidBody&);
-
 
 /*---------------------------------------------------------------------------*\
                           Class rigidBody Declaration
@@ -149,6 +148,30 @@ public:
 
         //- Merge a body into this parent body
         void merge(const subBody&);
+
+        //- Return the zeroth moments of the sections of the body between
+        //  planes defined by distances along the given axis
+        virtual tmp<scalarField> sectionMu0s
+        (
+            const direction axis,
+            const scalarField& distances
+        ) const;
+
+        //- Return the first moments of the sections of the body between
+        //  planes defined by distances along the given axis
+        virtual tmp<vectorField> sectionMu1s
+        (
+            const direction axis,
+            const scalarField& distances
+        ) const;
+
+        //- Return the second moments of the sections of the body between
+        //  planes defined by distances along the given axis
+        virtual tmp<symmTensorField> sectionMu2s
+        (
+            const direction axis,
+            const scalarField& distances
+        ) const;
 
         //- Write
         virtual void write(Ostream&) const;

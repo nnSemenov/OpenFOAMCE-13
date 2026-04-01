@@ -1,6 +1,8 @@
 lnInclude(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(Lagrangian SHARED
+    fields/makeLagrangianFieldFunctions.C
+
     fields/labelIODynamicField.C
     fields/barycentricIODynamicField.C
 

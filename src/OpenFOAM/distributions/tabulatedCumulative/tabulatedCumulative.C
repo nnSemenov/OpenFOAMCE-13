@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -44,7 +44,7 @@ namespace distributions
 
 Foam::distributions::tabulatedCumulative::tabulatedCumulative
 (
-    const unitConversion& defaultUnits,
+    const unitSet& defaultUnits,
     const dictionary& dict,
     const label sampleQ,
     randomGenerator&& rndGen
@@ -60,11 +60,16 @@ Foam::distributions::tabulatedCumulative::tabulatedCumulative
     ),
     reader_
     (
-        TableReader<scalar>::New(word::null, {defaultUnits, unitAny}, dict)
+        TableReader<scalar, scalar>::New
+        (
+            word::null,
+            {defaultUnits, units::any},
+            dict
+        )
     )
 {
     List<Tuple2<scalar, scalar>> values =
-        reader_->read({defaultUnits, unitAny}, dict, "distribution");
+        reader_->read({defaultUnits, units::any}, dict, "distribution");
 
     // Checks
     if (values.first().second() != 0)
@@ -256,7 +261,7 @@ Foam::distributions::tabulatedCumulative::integralPDFxPow
 void Foam::distributions::tabulatedCumulative::write
 (
     Ostream& os,
-    const unitConversion& units
+    const unitSet& units
 ) const
 {
     FieldDistribution<distribution, tabulatedCumulative>::write(os, units);
@@ -282,7 +287,7 @@ void Foam::distributions::tabulatedCumulative::write
         values[i].first() = x_[i];
         values[i].second() = CDF[i];
     }
-    reader_->write(os, {units, unitAny}, values, "distribution");
+    reader_->write(os, {units, units::any}, values, "distribution");
 }
 
 

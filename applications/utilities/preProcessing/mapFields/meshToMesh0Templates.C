@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -239,7 +239,7 @@ void Foam::meshToMesh0::interpolate
     typename VolField<Type>::
         Boundary& toVfBf = toVf.boundaryFieldRef();
 
-    forAll(toMesh_.boundaryMesh(), patchi)
+    forAll(toMesh_.poly().boundary(), patchi)
     {
         const fvPatch& toPatch = toMesh_.boundary()[patchi];
 
@@ -370,7 +370,7 @@ Foam::meshToMesh0::interpolate
             (
                 fromVf.boundaryField()[patchi],
                 toMesh_.boundary()[patchi],
-                DimensionedField<Type, volMesh>::null(),
+                DimensionedField<Type, fvMesh>::null(),
                 forwardFieldMapper(boundaryAddressing_[patchi])
             )
         );

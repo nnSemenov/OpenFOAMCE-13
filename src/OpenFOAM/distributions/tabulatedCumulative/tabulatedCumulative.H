@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -83,7 +83,7 @@ private:
     // Private Data
 
         //- Table reader
-        const autoPtr<TableReader<scalar>> reader_;
+        const autoPtr<TableReader<scalar, scalar>> reader_;
 
         //- X-coordinates
         scalarField x_;
@@ -106,7 +106,7 @@ public:
         //- Construct from a dictionary
         tabulatedCumulative
         (
-            const unitConversion& units,
+            const unitSet& units,
             const dictionary& dict,
             const label sampleQ,
             randomGenerator&& rndGen
@@ -155,7 +155,7 @@ public:
         ) const;
 
         //- Write to a stream
-        virtual void write(Ostream& os, const unitConversion& units) const;
+        virtual void write(Ostream& os, const unitSet& units) const;
 
         //- Return coordinates to plot across the range of the distribution
         virtual tmp<scalarField> plotX(const label n) const;

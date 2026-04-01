@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2025-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -52,8 +52,9 @@ Foam::ubRhoThermo::ubRhoThermo(const fvMesh& mesh)
         mesh
     ),
     c_("c", scalar(1) - b_),
-    uThermo_(ubRhoMulticomponentThermo::New(mesh, unburntPhaseName_)),
-    bThermo_(ubRhoMulticomponentThermo::New(mesh, burntPhaseName_)),
+    uThermo_(uRhoMulticomponentThermo::New(mesh, unburntPhaseName_)),
+    bThermo_(bRhoMulticomponentThermo::New(mesh, burntPhaseName_)),
+    ubMixtureMap_(ubMixtureMap::New(uThermo_, bThermo_)),
     rho_("rho", 1.0/(b_/uThermo_->rho() + c_/bThermo_->rho())),
     psi_("psi", 1.0/(b_/uThermo_->psi() + c_/bThermo_->psi())),
     mu_("mu", b_*uThermo_->mu() + c_*bThermo_->mu()),
@@ -130,9 +131,17 @@ const Foam::word& Foam::ubRhoThermo::phaseName() const
 }
 
 
+Foam::word Foam::ubRhoThermo::mixtureName() const
+{
+    NotImplemented;
+    return word::null;
+}
+
+
 Foam::word Foam::ubRhoThermo::thermoName() const
 {
-    return type();
+    NotImplemented;
+    return word::null;
 }
 
 
@@ -151,16 +160,42 @@ void Foam::ubRhoThermo::correct()
 }
 
 
+Foam::PtrList<Foam::volScalarField::Internal> Foam::ubRhoThermo::prompt() const
+{
+    return ubMixtureMap_->prompt(uThermo_->Y());
+}
+
+
 void Foam::ubRhoThermo::reset()
 {
-    if (uThermo_->containsSpecie("egr"))
+    PtrList<volScalarField>& Yu = uThermo_->Y();
+    const PtrList<volScalarField>& Yb = bThermo_->Y();
+
+    if (Yu.size())
     {
-        uThermo_->reset(b_, c_, bThermo_->Y(), bThermo_->he());
+        for (label n=0; n<=Yu[0].nOldTimes(); n++)
+        {
+            UPtrList<volScalarField> Yu0(Yu.size());
+            forAll(Yu0, i)
+            {
+                Yu0.set(i, &Yu[i].oldTimeRef(n));
+            }
+
+            UPtrList<const volScalarField> Yb0(Yb.size());
+            forAll(Yb0, i)
+            {
+                Yb0.set(i, &Yb[i].oldTime(n));
+            }
+
+            ubMixtureMap_->reset(b_.oldTime(n), Yu0, c_.oldTime(n), Yb0);
+        }
+
+        uThermo_->reset(b_, c_, bThermo_->he());
     }
     else
     {
         FatalErrorInFunction
-            << "EGR not supported by " << uThermo_->type()
+            << "Reset (EGR) not supported by " << uThermo_->type()
             << exit(FatalError);
     }
 }

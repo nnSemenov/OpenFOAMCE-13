@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2020-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2020-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -95,17 +95,20 @@ class Coded
         //- Name of the dictionary variables in the source code
         static const wordList codeDictVars;
 
+        // Name of the code options template file
+        static const word codeOptions;
+
+        // Names of the source files to compile
+        static const wordList compileFiles;
+
+        // Names of the source files to copy (header files)
+        static const wordList copyFiles;
+
         //- Cache of the unit conversions
-        const unitConversions units_;
+        const unitSets units_;
 
         //- The dynamically generated Function1 pointer
         mutable autoPtr<Function1<Type>> redirectFunction1Ptr_;
-
-
-    // Private Member Functions
-
-        //- Adapt the context for the current object
-        virtual void prepare(dynamicCode&, const dynamicCodeContext&) const;
 
 
 public:
@@ -120,7 +123,7 @@ public:
         Coded
         (
             const word& name,
-            const Function1s::unitConversions& units,
+            const Function1s::unitSets& units,
             const dictionary& dict
         );
 
@@ -154,7 +157,7 @@ public:
         ) const;
 
         //- Write data to dictionary stream
-        virtual void write(Ostream& os, const unitConversions& units) const;
+        virtual void write(Ostream& os, const unitSets& units) const;
 
 
     // Member Operators

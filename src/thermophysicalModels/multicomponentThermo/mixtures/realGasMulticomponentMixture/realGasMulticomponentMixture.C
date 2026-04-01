@@ -82,7 +82,7 @@ Foam::realGasMulticomponentMixture<ThermoType>::realGasMulticomponentMixture
         transportMixture_(this->specieThermos()) {
     static_assert(Foam::is_cubic_EOS<ThermoType>::value, "Only cubic EOS is supported now.");
 
-    this->thermoMixture_.mixer_=new typename ThermoType::EOSMixer{this->specieNames(), dict};
+    this->thermoMixture_.mixer_=new typename ThermoType::EOSMixer{this->species(), dict};
 }
 
 

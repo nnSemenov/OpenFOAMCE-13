@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2022 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -44,7 +44,6 @@ SourceFiles
 #include "pointField.H"
 #include "volFieldsFwd.H"
 #include "surfaceFieldsFwd.H"
-#include "surfaceMesh.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -64,8 +63,7 @@ class polyTopoChangeMap;
 
 class probes
 :
-    public functionObject,
-    public pointField
+    public functionObject
 {
 protected:
 
@@ -78,6 +76,7 @@ protected:
             public DynamicList<word>
         {
         public:
+
             //- Construct null
             fieldGroup()
             :
@@ -86,13 +85,16 @@ protected:
         };
 
 
-    // Protected member data
+    // Protected Data
 
         //- Const reference to fvMesh
         const fvMesh& mesh_;
 
 
         // Read from dictionary
+
+            //- Probe locations
+            pointField locations_;
 
             //- Names of fields to probe
             wordList fields_;
@@ -124,7 +126,7 @@ protected:
             fieldGroup<tensor> surfaceTensorFields_;
 
             // Cells to be probed (obtained from the locations)
-            labelList elementList_;
+            labelList cellList_;
 
             // Faces to be probed
             labelList faceList_;
@@ -156,18 +158,11 @@ private:
 
         //- Sample and write a particular volume field
         template<class Type>
-        void sampleAndWrite
-        (
-            const VolField<Type>&
-        );
-
+        void sampleAndWrite(const VolField<Type>&);
 
         //- Sample and write a particular surface field
         template<class Type>
-        void sampleAndWrite
-        (
-            const SurfaceField<Type>&
-        );
+        void sampleAndWrite(const SurfaceField<Type>&);
 
         //- Sample and write all the fields of the given type
         template<class Type>
@@ -176,6 +171,22 @@ private:
         //- Sample and write all the surface fields of the given type
         template<class Type>
         void sampleAndWriteSurfaceFields(const fieldGroup<Type>&);
+
+        //- Sample a volume field at all locations
+        template<class Type>
+        tmp<Field<Type>> sample(const VolField<Type>&) const;
+
+        //- Sample a surface field at all locations
+        template<class Type>
+        tmp<Field<Type>> sample(const SurfaceField<Type>&) const;
+
+        //- Sample a single vol field on all sample locations
+        template<class Type>
+        tmp<Field<Type>> sample(const word& fieldName) const;
+
+        //- Sample a single surface field on all sample locations
+        template<class Type>
+        tmp<Field<Type>> sampleSurfaceFields(const word& fieldName) const;
 
 
 public:
@@ -191,7 +202,8 @@ public:
         (
             const word& name,
             const Time& time,
-            const dictionary& dict
+            const dictionary& dict,
+            const bool initialise = true
         );
 
         //- Disallow default bitwise copy construction
@@ -207,23 +219,8 @@ public:
         //- Return the list of fields required
         virtual wordList fields() const;
 
-        //- Return locations to probe
-        virtual const pointField& probeLocations() const
-        {
-            return *this;
-        }
-
-        //- Return location for probe i
-        virtual const point& probe(const label i) const
-        {
-            return operator[](i);
-        }
-
-        //- Cells to be probed (obtained from the locations)
-        const labelList& elements() const
-        {
-            return elementList_;
-        }
+        //- Read the probes
+        bool read(const dictionary&, const bool initialise);
 
         //- Read the probes
         virtual bool read(const dictionary&);
@@ -243,31 +240,8 @@ public:
         //- Update from another mesh using the given map
         virtual void mapMesh(const polyMeshMap&);
 
-        //- Update topology using the given map due to readUpdate
-        virtual void readUpdate(const polyMesh::readUpdateState state)
-        {}
-
-        //- Sample a volume field at all locations
-        template<class Type>
-        tmp<Field<Type>> sample
-        (
-            const VolField<Type>&
-        ) const;
-
-        //- Sample a single vol field on all sample locations
-        template<class Type>
-        tmp<Field<Type>> sample(const word& fieldName) const;
-
-        //- Sample a single scalar field on all sample locations
-        template<class Type>
-        tmp<Field<Type>> sampleSurfaceFields(const word& fieldName) const;
-
-        //- Sample a surface field at all locations
-        template<class Type>
-        tmp<Field<Type>> sample
-        (
-            const SurfaceField<Type>&
-        ) const;
+        //- Update using the given distribution map
+        virtual void distribute(const polyDistributionMap&);
 
 
     // Member Operators

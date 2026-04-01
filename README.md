@@ -61,7 +61,7 @@ Mikeno 是 OpenFOAM 的魔改版（分支），面向化工应用。
 1. 修复输运性质为`AndradeTransport`时不能加载化学反应的`dynamicCode`的bug。补上了缺失的函数模板`operator+`和`operator*`的实现
 2. 修复`foamPostProcess`运行一些指定cellZone的后处理函数时崩溃（segfault）的bug。
    - `3caf09d88b95092a1f4a6047cf498d47d5e86a7a` 意外引入这个bug，本意是优化性能
-   - 目前没有找到完美方案修复，暂时revert。
+   - 目前没有找到完美方案修复，暂时回退到旧逻辑
 
 ## 计划添加的
 1. 更多状态方程：Patel-Teja、Martin-Hou等
@@ -69,5 +69,5 @@ Mikeno 是 OpenFOAM 的魔改版（分支），面向化工应用。
 3. 改进`porousMediaFluidSolver`的热非平衡模型，使它在大比表面积、高传热系数时更加稳定
 
 
-## 现存bug(截至20251230):
-1. 算例包含拉格朗日场时，`decomposePar`崩溃（`test/Largrangian`的一些算例测试不通过）
+## 现存bug(截至2026-04-01):
+1. 算例包含拉格朗日场时，`foamRun`崩溃（测试`test/Lagrangian/boundaries`不通过）

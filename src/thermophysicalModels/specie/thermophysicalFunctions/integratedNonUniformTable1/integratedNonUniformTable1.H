@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2020-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2020-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -75,7 +75,7 @@ class integratedNonUniformTable
 :
     public NonUniformTable<scalar>
 {
-    // Private member data
+    // Private Data
 
         List<scalar> intf_;
 
@@ -94,7 +94,7 @@ public:
         integratedNonUniformTable
         (
             const word& name,
-            const unitConversions& units,
+            const unitSets& units,
             const dictionary& dict
         );
 
@@ -108,7 +108,7 @@ public:
         scalar intfByTdT(scalar T) const;
 
         //- Write the function coefficients
-        void write(Ostream& os, const unitConversions& units) const;
+        void write(Ostream& os, const unitSets& units) const;
 };
 
 

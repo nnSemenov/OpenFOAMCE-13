@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2024-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -30,7 +30,7 @@ License
 template<class Type, Foam::direction rank>
 Foam::Function2s::ProductFunction1s<Type, rank>::ProductFunction1s
 (
-    const unitConversions& units,
+    const unitSets& units,
     const dictionary& dict,
     const Pair<Tuple2<word, label>>& typeAndRanks
 )
@@ -45,7 +45,7 @@ Foam::Function2s::ProductFunction1s<Type, rank>::ProductFunction1s
                 function1Type::New
                 (
                     valueName(i, typeAndRanks[i]),
-                    {i ? units.y : units.x, unitAny},
+                    {i ? units.y : units.x, units::any},
                     dict
                 );
         }
@@ -56,7 +56,7 @@ Foam::Function2s::ProductFunction1s<Type, rank>::ProductFunction1s
 template<class Type>
 Foam::Function2s::ProductFunction1s<Type, 0>::ProductFunction1s
 (
-    const unitConversions& units,
+    const unitSets& units,
     const dictionary& dict,
     const Pair<Tuple2<word, label>>& typeAndRanks
 )
@@ -69,7 +69,7 @@ Foam::Function2s::ProductFunction1s<Type, 0>::ProductFunction1s
                 Function1<scalar>::New
                 (
                     valueName(i, typeAndRanks[i]),
-                    {i ? units.y : units.x, unitAny},
+                    {i ? units.y : units.x, units::any},
                     dict
                 );
         }
@@ -110,7 +110,7 @@ template<class Type>
 Foam::Function2s::Product<Type>::Product
 (
     const word& name,
-    const unitConversions& units,
+    const unitSets& units,
     const dictionary& dict
 )
 :
@@ -140,7 +140,7 @@ template<class Type, Foam::direction rank>
 void Foam::Function2s::ProductFunction1s<Type, rank>::write
 (
     Ostream& os,
-    const unitConversions& units
+    const unitSets& units
 ) const
 {
     ProductFunction1s<Type, rank - 1>::write(os, units);
@@ -149,7 +149,7 @@ void Foam::Function2s::ProductFunction1s<Type, rank>::write
     {
         if (fs[i].valid())
         {
-            writeEntry(os, {i ? units.y : units.x, unitAny}, fs[i]());
+            writeEntry(os, {i ? units.y : units.x, units::any}, fs[i]());
         }
     }
 }
@@ -159,14 +159,14 @@ template<class Type>
 void Foam::Function2s::ProductFunction1s<Type, 0>::write
 (
     Ostream& os,
-    const unitConversions& units
+    const unitSets& units
 ) const
 {
     forAll(fs, i)
     {
         if (fs[i].valid())
         {
-            writeEntry(os, {i ? units.y : units.x, unitAny}, fs[i]());
+            writeEntry(os, {i ? units.y : units.x, units::any}, fs[i]());
         }
     }
 }
@@ -176,7 +176,7 @@ template<class Type>
 void Foam::Function2s::Product<Type>::write
 (
     Ostream& os,
-    const unitConversions& units
+    const unitSets& units
 ) const
 {
     fs_.write(os, units);

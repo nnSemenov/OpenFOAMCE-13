@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -27,7 +27,7 @@ License
 #include "dictionaryEntry.H"
 #include "regExp.H"
 #include "OSHA1stream.H"
-#include "unitConversion.H"
+#include "unitSet.H"
 #include "stringOps.H"
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
@@ -228,7 +228,7 @@ void Foam::dictionary::assertNoConvertUnits
 (
     const char* typeName,
     const word& keyword,
-    const unitConversion& defaultUnits,
+    const unitSet& defaultUnits,
     ITstream& is
 ) const
 {
@@ -245,12 +245,12 @@ template<class T>
 T Foam::dictionary::readTypeAndConvertUnits
 (
     const word& keyword,
-    const unitConversion& defaultUnits,
+    const unitSet& defaultUnits,
     ITstream& is
 ) const
 {
     // Read the units if they are before the value
-    unitConversion units(defaultUnits);
+    unitSet units(defaultUnits);
     const bool haveUnits = units.readIfPresent(keyword, *this, is);
 
     // Read the value
@@ -275,7 +275,7 @@ T Foam::dictionary::readTypeAndConvertUnits
     Foam::T Foam::dictionary::readType                                         \
     (                                                                          \
         const word& keyword,                                                   \
-        const unitConversion& defaultUnits,                                    \
+        const unitSet& defaultUnits,                                    \
         ITstream& is                                                           \
     ) const                                                                    \
     {                                                                          \
@@ -289,7 +289,7 @@ T Foam::dictionary::readTypeAndConvertUnits
         ITstream& is                                                           \
     ) const                                                                    \
     {                                                                          \
-        return readTypeAndConvertUnits<T>(keyword, unitAny, is);               \
+        return readTypeAndConvertUnits<T>(keyword, units::any, is);            \
     }
 
 #define IMPLEMENT_SPECIALISED_READ_PAIR_TYPE(T, nullArg)                       \
@@ -511,7 +511,7 @@ Foam::tokenList Foam::dictionary::tokens() const
     // Parse string as tokens
     DynamicList<token> tokens;
     token t;
-    while (is.read(t))
+    while (!is.eof() && !is.read(t).bad() && t.good())
     {
         tokens.append(t);
     }

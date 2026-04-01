@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -80,20 +80,20 @@ void Foam::polyMesh::calcDirections() const
     vector emptyDirVec = Zero;
     vector wedgeDirVec = Zero;
 
-    forAll(boundaryMesh(), patchi)
+    forAll(boundary(), patchi)
     {
-        if (boundaryMesh()[patchi].size())
+        if (boundary()[patchi].size())
         {
-            if (isA<emptyPolyPatch>(boundaryMesh()[patchi]))
+            if (isA<emptyPolyPatch>(boundary()[patchi]))
             {
                 nEmptyPatches++;
-                emptyDirVec += sum(cmptMag(boundaryMesh()[patchi].faceAreas()));
+                emptyDirVec += sum(cmptMag(boundary()[patchi].faceAreas()));
             }
-            else if (isA<wedgePolyPatch>(boundaryMesh()[patchi]))
+            else if (isA<wedgePolyPatch>(boundary()[patchi]))
             {
                 const wedgePolyPatch& wpp = refCast<const wedgePolyPatch>
                 (
-                    boundaryMesh()[patchi]
+                    boundary()[patchi]
                 );
 
                 nWedgePatches++;
@@ -1073,7 +1073,7 @@ void Foam::polyMesh::addPatches
     const bool validBoundary
 )
 {
-    if (boundaryMesh().size())
+    if (boundary().size())
     {
         FatalErrorInFunction
             << "boundary already exists"
@@ -1503,7 +1503,7 @@ Foam::label& Foam::polyMesh::comm()
 
 void Foam::polyMesh::removeFiles(const fileName& instanceDir) const
 {
-    fileName meshFilesPath = thisDb().time().path()/instanceDir/meshDir();
+    fileName meshFilesPath = db().time().path()/instanceDir/meshDir();
 
     rm(meshFilesPath/"points");
     rm(meshFilesPath/"faces");

@@ -51,7 +51,7 @@ add_subdirectory(multiphaseModels)
 add_subdirectory(MomentumTransportModels)
 add_subdirectory(ThermophysicalTransportModels)
 add_subdirectory(radiationModels)
-add_subdirectory(combustionModels)
+add_subdirectory(reactionModels)
 
 
 add_subdirectory(renumber)

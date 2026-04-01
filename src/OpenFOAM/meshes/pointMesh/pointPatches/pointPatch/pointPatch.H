@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2022 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -46,9 +46,11 @@ namespace Foam
 
 // Forward declaration of classes
 
+class pointMesh;
 class pointBoundaryMesh;
 class pointConstraint;
 class PstreamBuffers;
+class polyPatch;
 
 /*---------------------------------------------------------------------------*\
                          Class pointPatch Declaration
@@ -102,10 +104,7 @@ public:
 
     // Constructor
 
-        pointPatch
-        (
-            const pointBoundaryMesh& bm
-        )
+        pointPatch(const pointBoundaryMesh& bm)
         :
             boundaryMesh_(bm)
         {}
@@ -121,6 +120,9 @@ public:
 
     // Member Functions
 
+        //- Return the polyPatch
+        const polyPatch& poly() const;
+
         //- Return name
         virtual const word& name() const = 0;
 
@@ -129,6 +131,9 @@ public:
 
         //- Return the index of this patch in the pointBoundaryMesh
         virtual label index() const = 0;
+
+        //- Return mesh reference
+        const pointMesh& mesh() const;
 
         //- Return boundaryMesh reference
         const pointBoundaryMesh& boundaryMesh() const

@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2025-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -55,7 +55,7 @@ class LagrangianModel;
 
 class Function1LagrangianFieldSource
 {
-    // Private Member Data
+    // Private Data
 
         //- Reference to the field source
         const LagrangianFieldSourceBase& field_;
@@ -69,7 +69,6 @@ protected:
         template<class Type>
         tmp<LagrangianSubField<Type>> value
         (
-            const LagrangianModel& model,
             const LagrangianSubMesh& subMesh,
             const Function1<Type>& function
         ) const;
@@ -83,7 +82,6 @@ public:
         template<class OtherType>
         static tmp<LagrangianSubField<OtherType>> value
         (
-            const LagrangianModel& model,
             const LagrangianSubMesh& subMesh,
             const dimensionSet& dims,
             const Function1<OtherType>& function

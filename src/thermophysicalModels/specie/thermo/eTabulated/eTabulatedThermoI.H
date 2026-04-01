@@ -131,7 +131,7 @@ inline Foam::scalar Foam::eTabulatedThermo<EquationOfState>::ideal_hs(
     const scalar p, 
     const scalar T
 ) const {
-    return ideal_hs(p, T) + p/EquationOfState::rho(p, T);
+    return ideal_es(p, T) + p/EquationOfState::rho(p, T);
 }
 
 template<class EquationOfState>
@@ -141,7 +141,7 @@ inline Foam::scalar Foam::eTabulatedThermo<EquationOfState>::hs
     const scalar T
 ) const
 {
-    return hs(p, T) + p/EquationOfState::rho(p, T);
+    return es(p, T) + p/EquationOfState::rho(p, T);
 }
 
 template<class EquationOfState>

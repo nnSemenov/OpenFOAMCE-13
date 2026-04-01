@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -130,7 +130,7 @@ class Table
         const word interpolationScheme_;
 
         //- Table reader
-        const autoPtr<TableReader<Type>> reader_;
+        const autoPtr<TableReader<scalar, Type>> reader_;
 
         //- Table data
         const List<Tuple2<scalar, Type>> values_;
@@ -174,7 +174,7 @@ public:
             const word& name,
             const tableBase::boundsHandling boundsHandling,
             const word& interpolationScheme,
-            const autoPtr<TableReader<Type>>& reader,
+            const autoPtr<TableReader<scalar, Type>>& reader,
             const List<Tuple2<scalar, Type>>& table
         );
 
@@ -182,7 +182,7 @@ public:
         Table
         (
             const word& name,
-            const unitConversions& units,
+            const unitSets& units,
             const dictionary& dict
         );
 
@@ -190,8 +190,8 @@ public:
         Table
         (
             const word& name,
-            const unitConversion& xUnits,
-            const unitConversion& valueUnits,
+            const unitSet& xUnits,
+            const unitSet& valueUnits,
             const dictionary& dict
         );
 
@@ -199,7 +199,7 @@ public:
         Table
         (
             const word& name,
-            const unitConversions& units,
+            const unitSets& units,
             Istream& dict
         );
 
@@ -244,7 +244,7 @@ public:
         virtual tmp<Field<Type>> y() const;
 
         //- Write data to dictionary stream
-        virtual void write(Ostream& os, const unitConversions& units) const;
+        virtual void write(Ostream& os, const unitSets& units) const;
 
 
     // Member Operators

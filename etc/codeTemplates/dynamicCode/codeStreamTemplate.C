@@ -31,7 +31,7 @@ Description
 #include "Ostream.H"
 #include "Pstream.H"
 #include "read.H"
-#include "unitConversion.H"
+#include "unitSet.H"
 
 //{{{ begin codeInclude
 ${codeInclude}
@@ -53,7 +53,7 @@ ${localCode}
 
 extern "C"
 {
-    void ${typeName}
+    void ${uniqueFunctionName}
     (
         Ostream& os,
         const dictionary& dict

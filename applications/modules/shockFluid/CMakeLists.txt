@@ -40,6 +40,7 @@ target_link_libraries(${target_name} PRIVATE
     basicFluidSolver
 
     fluidThermophysicalModels
+    fluidThermoThermophysicalTransportModels
     momentumTransportModels
     compressibleMomentumTransportModels
     coupledThermophysicalTransportModels

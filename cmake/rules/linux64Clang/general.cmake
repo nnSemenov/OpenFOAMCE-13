@@ -13,6 +13,9 @@ target_compile_options(OpenFOAM_Defines INTERFACE
     -ffp-exception-behavior=maytrap
 )
 
+set(CMAKE_LINKER_TYPE LLD)
+set(LTO_option ON)
+
 list(APPEND Mikeno_less_warn_options
         -Wno-old-style-cast
         -Wno-unused-local-typedefs

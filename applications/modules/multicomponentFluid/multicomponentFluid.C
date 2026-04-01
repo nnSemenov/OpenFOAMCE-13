@@ -48,8 +48,7 @@ Foam::solvers::multicomponentFluid::multicomponentFluid(fvMesh& mesh)
         mesh,
         autoPtr<fluidThermo>(fluidMulticomponentThermo::New(mesh).ptr())
     ),
-
-    reaction(combustionModel::New(thermo_(), momentumTransport())),
+    reaction(reactionModel::New(thermo_(), momentumTransport())),
 
     thermophysicalTransport
     (
@@ -61,12 +60,11 @@ Foam::solvers::multicomponentFluid::multicomponentFluid(fvMesh& mesh)
     )
 
 {
-    thermo().validate(type(), "h", "e");
+    thermo().validate(multicomponentFluid::type(), "h", "e");
 
-    auto & Y=this->Y();
-    forAll(Y, i)
+    forAll(Y(), i)
     {
-        fields.add(Y[i]);
+        fields.add(Y()[i]);
     }
     fields.add(thermo().he());
 }

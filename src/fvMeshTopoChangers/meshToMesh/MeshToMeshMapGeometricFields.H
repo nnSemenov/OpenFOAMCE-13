@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2022-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2022-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -123,16 +123,16 @@ void NaNGeometricFields(const fvMesh& mesh)
                 << endl;
         }
 
-        const typename GField::Mesh& mesh = field.mesh();
+        const GeoMesh& mesh = field.mesh();
 
-        field.primitiveFieldRef().setSize(GeoMesh::size(mesh));
+        field.primitiveFieldRef().setSize(mesh.size());
         field.primitiveFieldRef() = pTraits<Type>::nan;
 
         field.boundaryFieldRef().setSize(mesh.boundary().size());
 
         forAll(mesh.boundary(), patchi)
         {
-            if (isA<processorPolyPatch>(mesh().boundaryMesh()[patchi]))
+            if (isA<processorPolyPatch>(mesh.poly().boundary()[patchi]))
             {
                 field.boundaryFieldRef().set
                 (

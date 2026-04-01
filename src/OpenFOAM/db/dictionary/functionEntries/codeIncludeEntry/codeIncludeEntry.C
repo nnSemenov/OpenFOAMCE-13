@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2023-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2023-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -35,21 +35,8 @@ namespace functionEntries
 {
     defineFunctionTypeNameAndDebug(codeIncludeEntry, 0);
     addToRunTimeSelectionTable(functionEntry, codeIncludeEntry, dictionary);
-
-    addBackwardCompatibleToRunTimeSelectionTable
-    (
-        functionEntry,
-        codeIncludeEntry,
-        dictionary,
-        calcIncludeEntry,
-        "#calcInclude"
-    );
 }
 }
-
-// Construct the static include file name cache
-Foam::DynamicList<Foam::fileName>
-    Foam::functionEntries::codeIncludeEntry::includeFiles_;
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -61,58 +48,57 @@ Foam::functionEntries::codeIncludeEntry::codeIncludeEntry
     Istream& is
 )
 :
-    functionEntry(typeName, lineNumber, parentDict, is, token(is))
-{
-    if (!operator[](0).isString())
-    {
-        FatalIOErrorInFunction(is)
-            << "Expected a file name string, found " << operator[](0)
-            << " while reading function " << typeName
-            << exit(FatalIOError);
-    }
-}
+    functionEntry
+    (
+        typeName,
+        lineNumber,
+        parentDict,
+        is,
+        readArgOrList(typeName, is)
+    ),
+    fNames_(readList<fileName>(stream()))
+{}
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 bool Foam::functionEntries::codeIncludeEntry::execute
 (
-    dictionary& contextDict,
+    dictionary& parentDict,
     Istream& is
 )
 {
-    // Read the include file name
-    fileName expandedFname(fName());
-
-    // Substitute dictionary and environment variables. Allow empty
-    // substitutions.
-    stringOps::inplaceExpandEntry(expandedFname, contextDict, true, true);
-
-    // Add the file name to the cache
-    includeFiles_.append(expandedFname);
-
-    return true;
+    FatalIOErrorInFunction(is)
+        << typeName
+        << " can only be used within #codeBlock...#endCodeBlock"
+        << exit(FatalIOError);
+    return false;
 }
 
 
-void Foam::functionEntries::codeIncludeEntry::clear()
+void Foam::functionEntries::codeIncludeEntry::addCodeInclude
+(
+    const List<fileName>& fileNames,
+    const dictionary& contextDict,
+    dictionary& codeDict
+)
 {
-    includeFiles_.clear();
-}
+    verbatimString codeInclude;
 
-
-void Foam::functionEntries::codeIncludeEntry::codeInclude(dictionary& codeDict)
-{
-    if (includeFiles_.size())
+    forAll(fileNames, i)
     {
-        verbatimString codeInclude;
-        forAll(includeFiles_, i)
-        {
-            codeInclude += "#include \"" + includeFiles_[i] + '"' + '\n';
-        }
+        // Copy the file name for inplace expansion
+        fileName expandedFname(fileNames[i]);
 
-        codeDict.add("codeInclude", codeInclude);
+        // Substitute dictionary and environment variables. Allow empty
+        // substitutions.
+        stringOps::inplaceExpandEntry(expandedFname, contextDict, true, true);
+
+        codeInclude +=
+            "#include \"" + expandedFname + '"' + '\n';
     }
+
+    codeDict.add("codeInclude", codeInclude);
 }
 
 

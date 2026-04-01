@@ -1,3 +1,5 @@
+set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ${LTO_option})
+
 add_subdirectory(mesh)
 add_subdirectory(miscellaneous)
 add_subdirectory(parallelProcessing)

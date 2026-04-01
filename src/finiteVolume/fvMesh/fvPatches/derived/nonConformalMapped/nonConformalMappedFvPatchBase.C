@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2023-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2023-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -42,7 +42,7 @@ Foam::tmp<Foam::Field<Type>> Foam::nonConformalMappedFvPatchBase::fromNeighbour
     const Field<Type>& nbrFld
 ) const
 {
-    const fvMesh& mesh = patch().boundaryMesh().mesh();
+    const fvMesh& mesh = patch().mesh();
 
     return
         map
@@ -60,7 +60,7 @@ Foam::tmp<Foam::Field<Type>> Foam::nonConformalMappedFvPatchBase::toNeighbour
     const Field<Type>& fld
 ) const
 {
-    const fvMesh& mesh = patch().boundaryMesh().mesh();
+    const fvMesh& mesh = patch().mesh();
 
     return
         map
@@ -80,7 +80,7 @@ Foam::nonConformalMappedFvPatchBase::nonConformalMappedFvPatchBase
 )
 :
     mappedFvPatchBaseBase(patch),
-    mapper_(refCast<const nonConformalMappedPatchBase>(patch.patch()))
+    mapper_(refCast<const nonConformalMappedPatchBase>(patch.poly()))
 {}
 
 

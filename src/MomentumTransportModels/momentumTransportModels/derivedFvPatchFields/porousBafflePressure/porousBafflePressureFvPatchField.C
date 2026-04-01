@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -33,7 +33,7 @@ License
 Foam::porousBafflePressureFvPatchField::porousBafflePressureFvPatchField
 (
     const fvPatch& p,
-    const DimensionedField<scalar, volMesh>& iF,
+    const DimensionedField<scalar, fvMesh>& iF,
     const dictionary& dict
 )
 :
@@ -71,7 +71,7 @@ Foam::porousBafflePressureFvPatchField::porousBafflePressureFvPatchField
     relaxation_
     (
         cyclicPatch().owner()
-      ? dict.lookupOrDefault<scalar>("relaxation", unitFraction, 1)
+      ? dict.lookupOrDefault<scalar>("relaxation", units::fraction, 1)
       : NaN
     ),
     jump0_(cyclicPatch().owner() ? jump()() : scalarField(p.size()))
@@ -82,7 +82,7 @@ Foam::porousBafflePressureFvPatchField::porousBafflePressureFvPatchField
 (
     const porousBafflePressureFvPatchField& ptf,
     const fvPatch& p,
-    const DimensionedField<scalar, volMesh>& iF,
+    const DimensionedField<scalar, fvMesh>& iF,
     const fieldMapper& mapper
 )
 :
@@ -100,7 +100,7 @@ Foam::porousBafflePressureFvPatchField::porousBafflePressureFvPatchField
 Foam::porousBafflePressureFvPatchField::porousBafflePressureFvPatchField
 (
     const porousBafflePressureFvPatchField& ptf,
-    const DimensionedField<scalar, volMesh>& iF
+    const DimensionedField<scalar, fvMesh>& iF
 )
 :
     fixedJumpFvPatchScalarField(ptf, iF),
@@ -126,7 +126,7 @@ void Foam::porousBafflePressureFvPatchField::updateCoeffs()
     if (cyclicPatch().owner())
     {
         const surfaceScalarField& phi =
-                db().lookupObject<surfaceScalarField>(phiName_);
+            db().lookupObject<surfaceScalarField>(phiName_);
 
         const fvsPatchField<scalar>& phip =
             patch().patchField<surfaceScalarField, scalar>(phi);
@@ -141,7 +141,7 @@ void Foam::porousBafflePressureFvPatchField::updateCoeffs()
         const scalarField magUn(mag(Un));
 
         const momentumTransportModel& turbModel =
-            db().lookupType<momentumTransportModel>(internalField().group());
+            db().lookupType<momentumTransportModel>(IOobject::group(phiName_));
 
         jumpRef() =
             -sign(Un)
@@ -168,7 +168,7 @@ void Foam::porousBafflePressureFvPatchField::updateCoeffs()
             scalar avePressureJump = gAverage(jumpRef());
             scalar aveVelocity = gAverage(mag(Un));
 
-            Info<< patch().boundaryMesh().mesh().name() << ':'
+            Info<< patch().mesh().name() << ':'
                 << patch().name() << ':'
                 << " Average pressure drop :" << avePressureJump
                 << " Average velocity :" << aveVelocity

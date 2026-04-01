@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2024-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -30,7 +30,7 @@ License
 template<class Type>
 Foam::scalar Foam::Function1s::Repeat<Type>::readPeriod
 (
-    const unitConversions& units,
+    const unitSets& units,
     const dictionary& dict
 )
 {
@@ -49,7 +49,7 @@ Foam::scalar Foam::Function1s::Repeat<Type>::readPeriod
     return
         havePeriod
       ? dict.lookupOrDefault<scalar>("period", units.x, 0)
-      : 1/dict.lookupOrDefault<scalar>("frequency", unitless/units.x, 0);
+    : 1/dict.lookupOrDefault<scalar>("frequency", units::unitless/units.x, 0);
 }
 
 
@@ -59,7 +59,7 @@ template<class Type>
 Foam::Function1s::Repeat<Type>::Repeat
 (
     const word& name,
-    const unitConversions& units,
+    const unitSets& units,
     const dictionary& dict
 )
 :
@@ -93,7 +93,7 @@ template<class Type>
 void Foam::Function1s::Repeat<Type>::write
 (
     Ostream& os,
-    const unitConversions& units
+    const unitSets& units
 ) const
 {
     writeEntry(os, "period", units.x, period_);

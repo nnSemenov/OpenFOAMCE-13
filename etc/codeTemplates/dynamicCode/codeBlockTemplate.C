@@ -31,7 +31,7 @@ Description
 #include "Ostream.H"
 #include "Pstream.H"
 #include "read.H"
-#include "unitConversion.H"
+#include "unitSet.H"
 
 //{{{ begin codeInclude
 ${codeInclude}
@@ -53,11 +53,18 @@ ${localCode}
 
 extern "C"
 {
-    #define CODE_BLOCK_FUNCTION(index)                                         \
-        void CAT3(${typeName}, _, index)                                       \
+    #define CODE_BLOCK_STREAM_FUNCTION(index)                                  \
+        void CAT3(${uniqueFunctionName}, _, index)                             \
         (                                                                      \
             Ostream& os,                                                       \
             const dictionary& dict                                             \
+        )
+
+    #define CODE_BLOCK_DICT_FUNCTION(index)                                    \
+        void CAT3(${uniqueFunctionName}, _, index)                             \
+        (                                                                      \
+            dictionary& dict,                                                  \
+            Istream& is                                                        \
         )
 
 //{{{ begin code

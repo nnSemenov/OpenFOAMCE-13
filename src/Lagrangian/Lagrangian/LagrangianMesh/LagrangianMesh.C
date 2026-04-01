@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2025-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -812,7 +812,7 @@ void Foam::LagrangianMesh::changer::constructNonConformal() const
 
     forAll(mesh_.boundary(), patchi)
     {
-        const polyPatch& pp = mesh_.mesh().boundaryMesh()[patchi];
+        const polyPatch& pp = mesh_.poly().boundary()[patchi];
 
         if (isA<nonConformalCyclicPolyPatch>(pp))
         {
@@ -850,7 +850,7 @@ void Foam::LagrangianMesh::changer::constructNonConformal() const
 
     forAll(mesh_.boundary(), patchi)
     {
-        const polyPatch& pp = mesh_.mesh().boundaryMesh()[patchi];
+        const polyPatch& pp = mesh_.poly().boundary()[patchi];
 
         if (isA<nonConformalCyclicPolyPatch>(pp))
         {
@@ -969,7 +969,7 @@ Foam::LagrangianMesh::LagrangianMesh
     (
         mesh,
         name,
-        mesh.boundaryMesh().types(),
+        mesh.boundary().types(),
         readOption,
         writeOption
     )
@@ -997,7 +997,6 @@ Foam::LagrangianMesh::LagrangianMesh
             IOobject::AUTO_WRITE
         )
     ),
-    GeoMesh<polyMesh>(mesh),
     mesh_(mesh),
     coordinates_
     (
@@ -1043,7 +1042,7 @@ Foam::LagrangianMesh::LagrangianMesh
             IOobject::AUTO_WRITE
         )
     ),
-    boundary_(*this, mesh.boundaryMesh(), wantedPatchTypes),
+    boundary_(*this, mesh.boundary(), wantedPatchTypes),
     subAll_
     (
         LagrangianSubMesh
@@ -1264,7 +1263,7 @@ Foam::labelList Foam::LagrangianMesh::subMeshGlobalSizes() const
     label nGlobalGroups = static_cast<label>(LagrangianGroup::onPatchZero);
     forAll(boundary(), patchi)
     {
-        const polyPatch& pp = boundary()[patchi].patch();
+        const polyPatch& pp = boundary()[patchi].poly();
         if (isA<processorPolyPatch>(pp)) break;
         nGlobalGroups ++;
     }
@@ -1285,7 +1284,7 @@ Foam::labelList Foam::LagrangianMesh::subMeshGlobalSizes() const
     sizes[inInternalMeshi] = sub(LagrangianGroup::inInternalMesh).size();
     forAll(boundary(), patchi)
     {
-        const polyPatch& pp = boundary()[patchi].patch();
+        const polyPatch& pp = boundary()[patchi].poly();
         if (isA<processorPolyPatch>(pp)) break;
         sizes[onPatchZeroi + patchi] = boundary()[patchi].mesh().size();
     }
@@ -1376,7 +1375,7 @@ Foam::LagrangianMesh::location Foam::LagrangianMesh::locate
     const scalar fraction
 ) const
 {
-    const meshSearch& searchEngine = meshSearch::New(mesh());
+    const meshSearch& searchEngine = meshSearch::New(poly());
 
     // Look for a containing cell and set the process if found
     remote procCelli;
@@ -1417,7 +1416,7 @@ Foam::List<Foam::LagrangianMesh::location> Foam::LagrangianMesh::locate
     const scalarList& fraction
 ) const
 {
-    const meshSearch& searchEngine = meshSearch::New(mesh());
+    const meshSearch& searchEngine = meshSearch::New(poly());
 
     // Look for containing cells and set the process if found
     List<remote> procCelli(position.size());
@@ -1593,7 +1592,7 @@ void Foam::LagrangianMesh::track
         {
             // Determine the index of the patch that was tracked to
             label patchi =
-                mesh_.boundaryMesh().patchIndices()
+                mesh_.boundary().patchIndices()
                 [
                     facei_[i] - mesh_.nInternalFaces()
                 ];

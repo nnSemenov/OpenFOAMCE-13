@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -48,13 +48,13 @@ namespace radiationModels
 
 void Foam::radiationModels::viewFactor::initialise()
 {
-    const polyBoundaryMesh& coarsePatches = coarseMesh_.boundaryMesh();
+    const polyBoundaryMesh& coarsePatches = coarseMesh_.poly().boundary();
     const volScalarField::Boundary& qrp = qr_.boundaryField();
 
     label count = 0;
     forAll(qrp, patchi)
     {
-        // const polyPatch& pp = mesh_.boundaryMesh()[patchi];
+        // const polyPatch& pp = mesh_.poly().boundary()[patchi];
         const fvPatchScalarField& qrPatchi = qrp[patchi];
 
         if ((isA<fixedValueFvPatchScalarField>(qrPatchi)))
@@ -429,7 +429,7 @@ void Foam::radiationModels::viewFactor::calculate()
 
         const scalarList& Hoi = qrp.qro();
 
-        const polyPatch& pp = coarseMesh_.boundaryMesh()[patchID];
+        const polyPatch& pp = coarseMesh_.poly().boundary()[patchID];
         const labelList& coarsePatchFace = coarseMesh_.patchFaceMap()[patchID];
 
         scalarList T4ave(pp.size(), 0.0);
@@ -623,7 +623,7 @@ void Foam::radiationModels::viewFactor::calculate()
     forAll(selectedPatches_, i)
     {
         const label patchID = selectedPatches_[i];
-        const polyPatch& pp = mesh_.boundaryMesh()[patchID];
+        const polyPatch& pp = mesh_.poly().boundary()[patchID];
         if (pp.size() > 0)
         {
             scalarField& qrp = qrBf[patchID];
@@ -687,7 +687,7 @@ Foam::tmp<Foam::volScalarField> Foam::radiationModels::viewFactor::Rp() const
 }
 
 
-Foam::tmp<Foam::DimensionedField<Foam::scalar, Foam::volMesh>>
+Foam::tmp<Foam::DimensionedField<Foam::scalar, Foam::fvMesh>>
 Foam::radiationModels::viewFactor::Ru() const
 {
     return volScalarField::Internal::New

@@ -241,34 +241,33 @@ public:
 
         //- Return isobaric expansion coeff [m^3/mol/K]
         inline scalar dVdT_p(const scalar p, const scalar T, const scalar z) const {
-            const scalar V = z*RR*T/p;
-            const scalar dVdT_p = 
-                (
-                    RR*sqr(V)/p + V*(a/(2*p*sqrt(T)) + RR*b/p) + a*b/(2*p*T*sqrt(T))
-                ) / 
-                (
-                    3*sqr(V) - 2 *RR*T/p*V + a/(p*sqrt(T)) - sqr(b) - b*RR*T/p
-                );
-            return dVdT_p;
+            return - dpdT_V(p, T, z) / dpdV_T(p, T, z);
+        }
+
+        inline scalar dTdV_p(const scalar p, const scalar T, const scalar z) const {
+            return 1./dVdT_p(p, T, z);
         }
 
         //- Return isothermal compress coeff [m^3/mol/Pa]
         inline scalar dVdp_T(const scalar p, const scalar T, const scalar z) const {
+            return 1./dpdV_T(p, T, z);
+        }
+
+        inline scalar dpdV_T(const scalar p, const scalar T, const scalar z) const {
+            // return 1./dVdp_T(p, T, z);
             const scalar V = z*RR*T/p;
-            const scalar dVdp_T = 
-            (
-                -RR*T/sqr(p)*sqr(V) - (b*RR*T/p - a/sqr(p)/sqrt(T))*V + a*b/(sqr(p)*sqrt(T))
-            ) / 
-            (
-                3*sqr(V) - 2*RR*T/p*V + a/p/sqrt(T) - b*RR*T/p - sqr(b)
-            );
-            return dVdp_T;
+            const scalar result = -RR*T/sqr(V-b) + a*(2*V+b)/(sqrt(T)*sqr(V*(V+b)));
+            return result;
         }
 
         inline scalar dpdT_V(const scalar p, const scalar T, const scalar z) const {
             const scalar V = z*RR*T/p;
             const scalar result = RR/(V-b) + a/(2*T*sqrt(T) * V*(V+b));
             return result;
+        }
+
+        inline scalar dTdp_V(const scalar p, const scalar T, const scalar z) const {
+            return 1./dpdT_V(p, T, z);
         }
 
         inline scalar dd2p_dT2_V(const scalar p, const scalar T, const scalar z) const {

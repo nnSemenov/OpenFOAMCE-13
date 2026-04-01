@@ -3,8 +3,29 @@ lnInclude(${CMAKE_CURRENT_SOURCE_DIR})
 set(target_name XiFluidSolver)
 
 add_library(${target_name} SHARED
-    ubRhoMulticomponentThermo/ubRhoMulticomponentThermo.C
-    ubRhoMulticomponentThermo/ubRhoMulticomponentThermos.C
+    uRhoMulticomponentThermo/mixtures/uMixture/uMixture.C
+    uRhoMulticomponentThermo/mixtures/uHomogeneousMixture/uHomogeneousMixture.C
+    uRhoMulticomponentThermo/mixtures/uInhomogeneousMixture/uInhomogeneousMixture.C
+    uRhoMulticomponentThermo/mixtures/uInhomogeneousEGRMixture/uInhomogeneousEGRMixture.C
+    uRhoMulticomponentThermo/mixtures/uMulticomponentMixture/uMulticomponentMixture.C
+
+    bRhoMulticomponentThermo/mixtures/bMixture/bMixture.C
+    bRhoMulticomponentThermo/mixtures/bHomogeneousMixture/bHomogeneousMixture.C
+    bRhoMulticomponentThermo/mixtures/bInhomogeneousMixture/bInhomogeneousMixture.C
+    bRhoMulticomponentThermo/mixtures/bMulticomponentMixture/bMulticomponentMixture.C
+
+    ubMixtureMaps/ubMixtureMap/ubMixtureMap.C
+    ubMixtureMaps/uHomogeneousbHomogeneous/uHomogeneousbHomogeneous.C
+    ubMixtureMaps/uInhomogeneousbInhomogeneous/uInhomogeneousbInhomogeneous.C
+    ubMixtureMaps/uInhomogeneousEGRbInhomogeneous/uInhomogeneousEGRbInhomogeneous.C
+    ubMixtureMaps/uMulticomponentbInhomogeneous/uMulticomponentbInhomogeneous.C
+    ubMixtureMaps/uInhomogeneousbMulticomponent/uInhomogeneousbMulticomponent.C
+
+    uRhoMulticomponentThermo/uRhoMulticomponentThermo.C
+    uRhoMulticomponentThermo/uRhoMulticomponentThermos.C
+
+    bRhoMulticomponentThermo/bRhoMulticomponentThermo.C
+    bRhoMulticomponentThermo/bRhoMulticomponentThermos.C
 
     ubRhoThermo/ubRhoThermo.C
     ubRhoThermo/derivedFvPatchFields/ubCoupledTemperature/ubCoupledTemperatureFvPatchScalarField.C
@@ -90,12 +111,14 @@ target_link_libraries(${target_name} PRIVATE
     basicFluidSolver 
     isothermalFluidSolver
 
+    fluidThermophysicalTransportModel
     momentumTransportModels 
     compressibleMomentumTransportModels 
     phaseCompressibleMomentumTransportModels 
     phaseFluidThermophysicalTransportModels 
     coupledThermophysicalTransportModels 
-    multicomponentThermophysicalModels 
+    multicomponentThermophysicalModels
+    reactionModels
     specie 
     finiteVolume 
     fvModels 

@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2025-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -26,7 +26,6 @@ License
 #include "streamEntry.H"
 #include "codeIncludeEntry.H"
 #include "dictionary.H"
-#include "dynamicCode.H"
 #include "codeStream.H"
 #include "addToRunTimeSelectionTable.H"
 #include "addToMemberFunctionSelectionTable.H"
@@ -70,7 +69,7 @@ Foam::string Foam::functionEntries::streamEntry::codeString
     {
         return
         (
-            "CODE_BLOCK_FUNCTION(" + Foam::name(index) + ")\n"
+            "CODE_BLOCK_STREAM_FUNCTION(" + Foam::name(index) + ")\n"
             "{\n"
             "    #line " + Foam::name(t.lineNumber())
                + " \"" + codeDict.name() + "\"\n"
@@ -105,12 +104,6 @@ Foam::OTstream Foam::functionEntries::streamEntry::resultStream
             << " in file " <<  dict.name() << endl;
     }
 
-    dynamicCode::checkSecurity
-    (
-        "functionEntries::streamEntry::execute(..)",
-        dict
-    );
-
     // Construct codeDict for codeStream with the parent dictionary provided for
     // string expansion and variable substitution and the same name as the
     // parent for consistent error messaging
@@ -121,7 +114,6 @@ Foam::OTstream Foam::functionEntries::streamEntry::resultStream
 
     if (t.isString() || t.isVerbatimString())
     {
-        codeIncludeEntry::codeInclude(codeDict);
         codeDict.add
         (
             primitiveEntry
@@ -141,17 +133,6 @@ Foam::OTstream Foam::functionEntries::streamEntry::resultStream
             << "    found token " << t
             << exit(FatalIOError);
     }
-
-    // Add compilation options to simplify compilation error messages
-    codeDict.add
-    (
-        primitiveEntry
-        (
-            "codeOptions",
-            R"(#{ -fno-show-column $<$<STREQUAL:${CMAKE_CXX_COMPILER_ID},"GNU">:-fno-diagnostics-show-caret,""> #})",
-            0
-        )
-    );
 
     codeStream::streamingFunctionType function = codeStream::getFunction
     (

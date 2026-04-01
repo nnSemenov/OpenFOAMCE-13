@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2022-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2022-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -160,7 +160,7 @@ void Foam::solvers::XiFluid::burn()
 
     const volScalarField::Internal& Sp = tSp();
 
-    const word divbName("div(phi(),b)");
+    const word divbName("div(phi,b)");
 
     // Higher-order face interpolate of b
     const surfaceScalarField bf
@@ -248,19 +248,28 @@ void Foam::solvers::XiFluid::uSolve
     const volScalarField::Internal& bSource
 )
 {
-    PtrList<volScalarField>& Y = thermo_.uThermo().Y();
+    PtrList<volScalarField>& Yu = thermo_.uThermo().Y();
 
-    forAll(Y, i)
+    uReaction_->correct();
+
+    forAll(Yu, i)
     {
-        volScalarField& Yi = Y[i];
+        volScalarField& Yui = Yu[i];
 
         if (uThermo.solveSpecie(i))
         {
-            uSolve(Yi, bStab, phib, fvm::Sp(bSource, Yi));
+            uSolve
+            (
+                Yui,
+                Yu.size() > 2 ? "Yi" : Yui.name(),
+                bStab,
+                phib,
+                fvm::Sp(bSource, Yui)
+            );
         }
         else
         {
-            Yi.correctBoundaryConditions();
+            Yui.correctBoundaryConditions();
         }
     }
 
@@ -277,24 +286,37 @@ void Foam::solvers::XiFluid::bSolve
     const volScalarField::Internal& bSource
 )
 {
-    PtrList<volScalarField>& Y = thermo_.bThermo().Y();
+    PtrList<volScalarField>& Yb = thermo_.bThermo().Y();
 
-    forAll(Y, i)
+    if (Yb.size())
     {
-        volScalarField& Yi = Y[i];
+        bReaction_->correct();
 
-        if (bThermo.solveSpecie(i))
+        const PtrList<volScalarField::Internal> Yp(thermo_.prompt());
+
+        forAll(Yb, i)
         {
-            //***HGW uThermo.Y(0) is the prompt bThermo.Y(0)
-            bSolve(Yi, cStab, phic, fvm::Su(-bSource*uThermo.Y(0)(), Yi));
+            volScalarField& Ybi = Yb[i];
+
+            if (bThermo.solveSpecie(i))
+            {
+                bSolve
+                (
+                    Ybi,
+                    Yb.size() > 2 ? "Yi" : Ybi.name(),
+                    cStab,
+                    phic,
+                    fvm::Su(-bSource*Yp[i], Ybi)
+                );
+            }
+            else
+            {
+                Ybi.correctBoundaryConditions();
+            }
         }
-        else
-        {
-            Yi.correctBoundaryConditions();
-        }
+
+        thermo_.bThermo().normaliseY();
     }
-
-    thermo_.bThermo().normaliseY();
 
     HbSolve(cStab, phic, bSource);
 }
@@ -331,17 +353,21 @@ Foam::tmp<Foam::fvScalarMatrix> Foam::solvers::XiFluid::fvmStab
 void Foam::solvers::XiFluid::ubSolve
 (
     volScalarField& f,
+    const word& fName,
+    const volScalarField& alpha,
     const volScalarField& bc,
     const volScalarField::Internal& bcStab,
     const surfaceScalarField& phibc,
     const volScalarField& D,
     const thermophysicalTransportModel& thermophysicalTransport,
-    const fvScalarMatrix& combustionRate
+    const fvScalarMatrix& combustionRate,
+    const reactionModel& reaction
 )
 {
     fvScalarMatrix fEqn
     (
-        fvm::ddt(bc, rho(), f) + fvm::div(phibc, f)
+        fvm::ddt(bc, rho(), f)
+      + fvm::div(phibc, f, "div(" + phibc.name() + ',' + fName + ')')
 
         // Advective-diffusive stabilisation for bc -> 0
       + fvmStab(bc, bcStab, D, f)
@@ -352,13 +378,16 @@ void Foam::solvers::XiFluid::ubSolve
         // Combustion source
         combustionRate
 
+        // Reaction rate within the unburnt/burnt gas
+      + alpha*reaction.R(f)
+
         // Other sources
       + fvModels().source(bc, rho(), f)
     );
 
     fEqn.relax();
     fvConstraints().constrain(fEqn);
-    fEqn.solve();
+    fEqn.solve(fName);
     fvConstraints().constrain(f);
 }
 
@@ -366,26 +395,52 @@ void Foam::solvers::XiFluid::ubSolve
 void Foam::solvers::XiFluid::uSolve
 (
     volScalarField& fu,
+    const word& fuName,
     const volScalarField::Internal& bStab,
     const surfaceScalarField& phib,
     const fvScalarMatrix& source
 )
 {
     const volScalarField Du("Du", rho()*(momentumTransport.nut() + uThermo.nu()));
-    ubSolve(fu, b, bStab, phib, Du, uThermophysicalTransport_(),source);
+    ubSolve
+    (
+        fu,
+        fuName,
+        thermo_.alphau(),
+        b,
+        bStab,
+        phib,
+        Du,
+        uThermophysicalTransport_(),
+        source,
+        uReaction_()
+    );
 }
 
 
 void Foam::solvers::XiFluid::bSolve
 (
     volScalarField& fb,
+    const word& fbName,
     const volScalarField::Internal& cStab,
     const surfaceScalarField& phic,
     const fvScalarMatrix& source
 )
 {
     const volScalarField Db("Db", rho()*(momentumTransport.nut() + bThermo.nu()));
-    ubSolve(fb, c, cStab, phic, Db, bThermophysicalTransport_(), source);
+    ubSolve
+    (
+        fb,
+        fbName,
+        thermo_.alphab(),
+        c,
+        cStab,
+        phic,
+        Db,
+        bThermophysicalTransport_(),
+        source,
+        bReaction_()
+    );
 }
 
 
@@ -489,14 +544,24 @@ void Foam::solvers::XiFluid::thermophysicalPredictor()
         }
     }
 
+    // At the point of ignition initialise the burnt gas
+    // thermophysical properties
     if (ignited && !ignited_)
     {
         ignited_ = ignited;
 
-        if (uThermo.containsSpecie("fu"))
+        if (thermo_.bThermo().Y().size())
         {
-            //***HGW uThermo.Y("fu") is the prompt bThermo.Y("ft")
-            thermo_.bThermo().Y("ft") = uThermo.Y("fu");
+            const PtrList<volScalarField::Internal> Yp(thermo_.prompt());
+
+            // Approximate phic for Ybi boundary condition correction
+            const surfaceScalarField phic("phic", phi());
+
+            forAll(Yp, i)
+            {
+                thermo_.bThermo().Y(i).internalFieldRef() = Yp[i];
+                thermo_.bThermo().Y(i).correctBoundaryConditions();
+            }
         }
 
         thermo_.bThermo().he() = uThermo.ha() - bThermo.hf();

@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -75,24 +75,7 @@ bool Foam::functionEntries::includeIfPresentEntry::execute
     Istream& is
 )
 {
-    const fileName fName
-    (
-        includeFileName(is, includeEntry::fName(), contextDict)
-    );
-
-    autoPtr<ISstream> ifsPtr(fileHandler().NewIFstream(fName));
-    ISstream& ifs = ifsPtr();
-
-    if (ifs)
-    {
-        if (Foam::functionEntries::includeEntry::log)
-        {
-            Info<< fName << endl;
-        }
-        contextDict.read(ifs);
-    }
-
-    return true;
+    return includeEntry::execute(contextDict, is);
 }
 
 
@@ -103,21 +86,10 @@ bool Foam::functionEntries::includeIfPresentEntry::execute
     Istream& is
 )
 {
-    const fileName fName(includeFileName(is, fileName(is), contextDict));
-
-    autoPtr<ISstream> ifsPtr(fileHandler().NewIFstream(fName));
-    ISstream& ifs = ifsPtr();
-
-    if (ifs)
-    {
-        if (Foam::functionEntries::includeEntry::log)
-        {
-            Info<< fName << endl;
-        }
-        contextEntry.read(contextDict, ifs);
-    }
-
-    return true;
+    return
+        includeIfPresentEntry(is.lineNumber(), contextDict, is)
+       .virtualExecute(contextDict, contextEntry, is);
 }
+
 
 // ************************************************************************* //

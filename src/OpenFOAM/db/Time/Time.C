@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -403,7 +403,7 @@ Foam::Time::Time
                 "DebugSwitches",
                 "DimensionedConstants",
                 "DimensionSets",
-                "UnitConversions"
+                "UnitSets"
             }
         );
 
@@ -626,6 +626,19 @@ Foam::Time::~Time()
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
+
+Foam::wordList Foam::Time::regionNames() const
+{
+    if (controlDict_.found("regionSolvers"))
+    {
+        return controlDict_.subDict("regionSolvers").toc();
+    }
+    else
+    {
+        return wordList::null();
+    }
+}
+
 
 Foam::word Foam::Time::timeName(const scalar t, const int precision)
 {
@@ -855,20 +868,20 @@ Foam::word Foam::Time::userTimeName() const
 }
 
 
-const Foam::unitConversion& Foam::Time::userUnits() const
+const Foam::unitSet& Foam::Time::userUnits() const
 {
     return userTime_->units();
 }
 
 
-const Foam::unitConversion& Foam::Time::writeIntervalUnits() const
+const Foam::unitSet& Foam::Time::writeIntervalUnits() const
 {
-    static const unitConversion unitSeconds(dimTime);
+    static const unitSet unitSeconds(dimTime);
 
     switch (writeControl_)
     {
         case writeControl::timeStep:
-            return unitless;
+            return units::unitless;
         case writeControl::runTime:
         case writeControl::adjustableRunTime:
             return userUnits();
@@ -877,7 +890,7 @@ const Foam::unitConversion& Foam::Time::writeIntervalUnits() const
             return unitSeconds;
     }
 
-    return unitNone;
+    return units::none;
 }
 
 

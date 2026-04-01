@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2023 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -132,12 +132,8 @@ Foam::treeDataFace::treeDataFace
     const polyPatch& patch
 )
 :
-    mesh_(patch.boundaryMesh().mesh()),
-    faceLabels_
-    (
-        identityMap(patch.size())
-      + patch.start()
-    ),
+    mesh_(patch.mesh()),
+    faceLabels_(identityMap(patch.start(), patch.size())),
     isTreeFace_(mesh_.nFaces(), 0),
     cacheBb_(cacheBb)
 {

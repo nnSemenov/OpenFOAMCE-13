@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2019-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2019-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -77,7 +77,7 @@ class UniformTable
 :
     public FieldFunction1<Type, UniformTable<Type>>
 {
-    // Private member data
+    // Private Data
 
         //- Name of dictionary from which this function is instantiated
         fileName dictName_;
@@ -107,7 +107,7 @@ public:
         UniformTable
         (
             const word& name,
-            const unitConversions& units,
+            const unitSets& units,
             const dictionary& dict
         );
 
@@ -121,7 +121,7 @@ public:
         virtual Type integral(const scalar x1, const scalar x2) const;
 
         //- Write the function coefficients
-        void write(Ostream& os, const unitConversions& units) const;
+        void write(Ostream& os, const unitSets& units) const;
 };
 
 

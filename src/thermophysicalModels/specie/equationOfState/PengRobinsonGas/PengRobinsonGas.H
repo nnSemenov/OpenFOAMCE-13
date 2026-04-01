@@ -188,7 +188,7 @@ namespace Foam {
                         /(Z+(sqrt(2.0)+1)*B)
                 );
                 const scalar V = Z*RR*T/p;
-                const scalar VVBbbVb=V*(V+b)+b*(V-b);
+                [[maybe_unused]] const scalar VVBbbVb=V*(V+b)+b*(V-b);
                 const scalar pB_part = p/(2*sqrt(2.0)*sqr(RR)*B);
 
                 const scalar Cv_dimless = -this->dd2a_dT2*pB_part*log_part;
@@ -285,6 +285,10 @@ namespace Foam {
                 return result;
             }
 
+            inline scalar dTdp_V(const scalar p, const scalar T, const scalar Z) const {
+                return 1./dpdT_V(p,T,Z);
+            }
+
             inline scalar dVdT_p(const scalar p, const scalar T,
                                  const scalar z) const {
               const scalar V = z * RR * T / p;
@@ -293,6 +297,10 @@ namespace Foam {
                                     (3 * p * sqr(V) + 2 * V * (p * b - RR * T) +
                                      a - 2 * b * RR * T - 3 * p * sqr(b));
               return dVdT_p;
+            }
+
+            inline scalar dTdV_p(const scalar p, const scalar T, const scalar Z) const {
+                return 1./dVdT_p(p,T,Z);
             }
 
             inline scalar dVdp_T(const scalar p, const scalar T,

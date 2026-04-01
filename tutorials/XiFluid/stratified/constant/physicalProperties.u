@@ -16,9 +16,9 @@ FoamFile
 
 thermoType
 {
-    type            ubRhoThermo;
-    mixture         uInhomogeneousMixture;
-    // mixture         uInhomogeneousEGRMixture;
+    type            uRhoThermo;
+    mixture         uInhomogeneous;
+    // mixture         uInhomogeneousEGR;
     transport       const;
     thermo          janaf;
     equationOfState perfectGas;

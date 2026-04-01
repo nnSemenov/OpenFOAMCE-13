@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2023 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -45,7 +45,7 @@ Foam::patchWriter::patchWriter
     os_(fName.c_str())
 {
     const fvMesh& mesh = vMesh_.mesh();
-    const polyBoundaryMesh& patches = mesh.boundaryMesh();
+    const polyBoundaryMesh& patches = mesh.poly().boundary();
 
     // Write header
     if (patchIndices_.size() == 1)
@@ -107,7 +107,7 @@ Foam::patchWriter::patchWriter
             const face& f = pp.localFaces()[facei];
 
             vertLabels.append(f.size());
-            vtkWriteOps::insert(f + offset, vertLabels);
+            vtkWriteOps::insert(SubField<label>(f) + offset, vertLabels);
         }
         offset += pp.nPoints();
     }
@@ -129,7 +129,7 @@ void Foam::patchWriter::writePatchIndices()
     {
         label patchi = patchIndices_[i];
 
-        const polyPatch& pp = mesh.boundaryMesh()[patchi];
+        const polyPatch& pp = mesh.poly().boundary()[patchi];
 
         if (!isA<emptyPolyPatch>(pp))
         {

@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -38,10 +38,10 @@ void Foam::flowRateInletVelocityFvPatchVectorField::setWallDist()
     {
         const labelHashSet otherPatchIDs
         (
-            patch().patch().boundaryMesh().findIndices<wallPolyPatch>()
+            patch().poly().boundaryMesh().findIndices<wallPolyPatch>()
         );
 
-        const patchPatchDist pwd(patch().patch(), otherPatchIDs);
+        const patchPatchDist pwd(patch().poly(), otherPatchIDs);
 
         y_ = pwd/gMax(pwd);
     }
@@ -128,7 +128,7 @@ bool Foam::flowRateInletVelocityFvPatchVectorField::canEvaluate()
 {
     return
         Pstream::parRun()
-     || !patch().boundaryMesh().mesh().time().processorCase();
+     || !patch().mesh().time().processorCase();
 }
 
 
@@ -138,7 +138,7 @@ Foam::flowRateInletVelocityFvPatchVectorField::
 flowRateInletVelocityFvPatchVectorField
 (
     const fvPatch& p,
-    const DimensionedField<vector, volMesh>& iF,
+    const DimensionedField<vector, fvMesh>& iF,
     const dictionary& dict
 )
 :
@@ -224,7 +224,7 @@ flowRateInletVelocityFvPatchVectorField
 (
     const flowRateInletVelocityFvPatchVectorField& ptf,
     const fvPatch& p,
-    const DimensionedField<vector, volMesh>& iF,
+    const DimensionedField<vector, fvMesh>& iF,
     const fieldMapper& mapper
 )
 :
@@ -245,7 +245,7 @@ Foam::flowRateInletVelocityFvPatchVectorField::
 flowRateInletVelocityFvPatchVectorField
 (
     const flowRateInletVelocityFvPatchVectorField& ptf,
-    const DimensionedField<vector, volMesh>& iF
+    const DimensionedField<vector, fvMesh>& iF
 )
 :
     fixedValueFvPatchField<vector>(ptf, iF),
@@ -326,7 +326,7 @@ void Foam::flowRateInletVelocityFvPatchVectorField::updateCoeffs()
 void Foam::flowRateInletVelocityFvPatchVectorField::write(Ostream& os) const
 {
     fvPatchField<vector>::write(os);
-    writeEntry(os, db().time().userUnits(), unitAny, flowRate_());
+    writeEntry(os, db().time().userUnits(), units::any, flowRate_());
     if (profile_.valid())
     {
         writeEntry(os, profile_());

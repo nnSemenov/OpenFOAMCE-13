@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2021-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2021-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -178,12 +178,12 @@ void Foam::fvMeshStitchers::moving::createNonConformalCorrectMeshPhiGeometry
     forAll(errorPatchIndices, i)
     {
         const label origPatchi = origPatchIndices[i];
-        const polyPatch& origPp = mesh().boundaryMesh()[origPatchi];
+        const polyPatch& origPp = mesh().poly().boundary()[origPatchi];
 
         const label errorPatchi = errorPatchIndices[i];
 
         polyFacesBf[errorPatchi] =
-            repeat((identityMap(origPp.size()) + origPp.start())());
+            repeat(identityMap(origPp.start(), origPp.size()));
 
         SfSf.boundaryFieldRef()[errorPatchi] =
             repeat
@@ -550,7 +550,7 @@ void Foam::fvMeshStitchers::moving::unconformInternalFaceCorrectMeshPhi
         subMesh,
         dimensionedScalar(dimArea, 0),
         MeshPhiPatchTypes,
-        subMesh.boundaryMesh().types()
+        subMesh.poly().boundary().types()
     );
 
     subMesh.schemes().setFluxRequired(MeshPhi.name());
@@ -894,7 +894,7 @@ void Foam::fvMeshStitchers::moving::unconformErrorFaceCorrectMeshPhi
                 refCast<const nonConformalCoupledFvPatch>(fvp);
 
             const label origPatchi = nccFvp.origPatchIndex();
-            const polyPatch& origPp = mesh().boundaryMesh()[origPatchi];
+            const polyPatch& origPp = mesh().poly().boundary()[origPatchi];
 
             const label errorPatchi = nccFvp.errorPatchIndex();
 
@@ -945,7 +945,7 @@ void Foam::fvMeshStitchers::moving::unconformErrorFaceCorrectMeshPhi
             const fvPatch& origFvp = nccFvp.origPatch();
 
             const pointField::subField origPpFaceCentres =
-                origFvp.patch().faceCentres();
+                origFvp.poly().faceCentres();
 
             forAll(nccFvp, nccPatchFacei)
             {
@@ -955,7 +955,7 @@ void Foam::fvMeshStitchers::moving::unconformErrorFaceCorrectMeshPhi
 
                 const point& origC = origPpFaceCentres[origPatchFacei];
                 const point origC0 =
-                    origFvp.patch()[origPatchFacei].centre(mesh().oldPoints());
+                    origFvp.poly()[origPatchFacei].centre(mesh().oldPoints());
 
                 tnccMeshMagUfb[nccPatchi][nccPatchFacei] =
                     mag(origC - origC0)/mesh().time().deltaTValue();
@@ -981,7 +981,7 @@ void Foam::fvMeshStitchers::moving::unconformErrorFaceCorrectMeshPhi
     forAll(errorPatchIndices, i)
     {
         const label origPatchi = origPatchIndices[i];
-        const polyPatch& origPp = mesh().boundaryMesh()[origPatchi];
+        const polyPatch& origPp = mesh().poly().boundary()[origPatchi];
 
         const label errorPatchi = errorPatchIndices[i];
 

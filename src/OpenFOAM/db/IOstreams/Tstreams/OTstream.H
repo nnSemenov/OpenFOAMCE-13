@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2025-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -107,10 +107,16 @@ public:
             //- Write token
             virtual Ostream& write(const token&);
 
+            //- No need to write the compound token tag for an OTstream
+            virtual Ostream& writeCompoundTag(const word& typeName)
+            {
+                return *this;
+            }
+
             //- Write character
             virtual Ostream& write(const char);
 
-            //- Write character string
+            //- Parse raw C-string and append tokens
             virtual Ostream& write(const char*);
 
             //- Write word

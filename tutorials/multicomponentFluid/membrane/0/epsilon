@@ -22,7 +22,7 @@ boundaryField
 {
     inlet
     {
-        type            turbulentMixingLengthDissipationRateInlet;
+        type            turbulentEpsilon;
         mixingLength    0.1;
         value           $internalField;
     }
@@ -30,7 +30,6 @@ boundaryField
     {
         type            inletOutlet;
         inletValue      $internalField;
-        value           $internalField;
     }
     "(wall|membrane).*"
     {

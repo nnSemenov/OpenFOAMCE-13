@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.28)
 set(linking_tool "ldd" CACHE STRING "Tool for link examination")
 set(search_dirs "" CACHE PATH "Directories to be searched")
 
-set(root_lib_names "libfiniteVolume;libOpenFOAM;libparallel;libODE;libtracking;libspecie;libsampling;libDSMC;libchemistryModel;libparallel;libDSMC" CACHE STRING "whitelist of root libs")
+set(root_lib_names "libfiniteVolume;libOpenFOAM;libparallel;libODE;libtracking;libspecie;libsampling;libDSMC;libchemistryModel;libDSMC" CACHE STRING "whitelist of root libs")
 
 function(try_linking exe_loc working_dir)
     execute_process(

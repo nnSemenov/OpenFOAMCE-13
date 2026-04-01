@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2017-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2017-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -90,10 +90,10 @@ public:
             return "pureMixture<" + ThermoType::typeName() + '>';
         }
 
-        //- Return the specie names
-        wordList specieNames() const
+        //- Return the table of species
+        const speciesTable& species() const
         {
-            return wordList::null();
+            return speciesTable::null;
         }
 
         //- Access the specie active flags

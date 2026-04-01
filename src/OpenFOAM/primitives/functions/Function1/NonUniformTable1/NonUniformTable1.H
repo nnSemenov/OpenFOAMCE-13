@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2020-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2020-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -78,7 +78,7 @@ class NonUniformTable
 :
     public FieldFunction1<Type, NonUniformTable<Type>>
 {
-    // Private member data
+    // Private Data
 
         //- Lowest value in the NonUniformTable
         scalar low_;
@@ -96,7 +96,7 @@ class NonUniformTable
         List<label> jumpTable_;
 
         //- Table reader
-        autoPtr<TableReader<Type>> reader_;
+        autoPtr<TableReader<scalar, Type>> reader_;
 
 
 protected:
@@ -118,7 +118,7 @@ public:
         NonUniformTable
         (
             const word& name,
-            const Function1s::unitConversions& units,
+            const Function1s::unitSets& units,
             const dictionary& dict
         );
 
@@ -144,7 +144,7 @@ public:
         Type dfdT(scalar T) const;
 
         //- Write the function coefficients
-        void write(Ostream& os, const unitConversions& units) const;
+        void write(Ostream& os, const unitSets& units) const;
 
 
     // Member Operators

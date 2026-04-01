@@ -52,7 +52,8 @@ target_link_libraries(${target_name} PRIVATE
     sampling 
     meshTools 
     momentumTransportModels 
-    compressibleMomentumTransportModels 
+    compressibleMomentumTransportModels
+    fluidThermophysicalTransportModel
     fluidThermoThermophysicalTransportModels 
     physicalProperties 
     solidThermo 

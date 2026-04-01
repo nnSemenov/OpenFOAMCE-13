@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2019-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2019-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -67,7 +67,7 @@ Foam::specieTransferMassFractionFvPatchScalarField::
 specieTransferMassFractionFvPatchScalarField
 (
     const fvPatch& p,
-    const DimensionedField<scalar, volMesh>& iF,
+    const DimensionedField<scalar, fvMesh>& iF,
     const dictionary& dict
 )
 :
@@ -76,7 +76,7 @@ specieTransferMassFractionFvPatchScalarField
     UName_(dict.lookupOrDefault<word>("U", "U")),
     phiYp_(p.size(), 0),
     timeIndex_(-1),
-    c_(dict.lookupOrDefault<scalar>("c", unitAny, scalar(0))),
+    c_(dict.lookupOrDefault<scalar>("c", units::any, scalar(0))),
     property_
     (
         c_ == scalar(0)
@@ -100,7 +100,7 @@ specieTransferMassFractionFvPatchScalarField
 (
     const specieTransferMassFractionFvPatchScalarField& ptf,
     const fvPatch& p,
-    const DimensionedField<scalar, volMesh>& iF,
+    const DimensionedField<scalar, fvMesh>& iF,
     const fieldMapper& mapper
 )
 :
@@ -118,7 +118,7 @@ Foam::specieTransferMassFractionFvPatchScalarField::
 specieTransferMassFractionFvPatchScalarField
 (
     const specieTransferMassFractionFvPatchScalarField& ptf,
-    const DimensionedField<scalar, volMesh>& iF
+    const DimensionedField<scalar, fvMesh>& iF
 )
 :
     mixedFvPatchScalarField(ptf, iF),

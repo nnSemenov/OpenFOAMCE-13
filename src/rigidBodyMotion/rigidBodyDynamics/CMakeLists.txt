@@ -10,6 +10,7 @@ add_library(${target_name} SHARED
     bodies/subBody/subBody.C
     bodies/sphere/sphere.C
     bodies/cuboid/cuboid.C
+    bodies/pointMasses/pointMasses.C
 
     joints/joint/joint.C
     joints/null/nullJoint.C

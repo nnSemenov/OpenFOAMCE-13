@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2024-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -41,13 +41,13 @@ namespace Function1s
 Foam::Function1s::normalise::normalise
 (
     const word& name,
-    const unitConversions& units,
+    const unitSets& units,
     const dictionary& dict
 )
 :
     FieldFunction1<scalar, normalise>(name),
     bounds_(dict.lookup<Pair<scalar>>("bounds", units.x)),
-    value_(Function1<scalar>::New("value", {units.x, unitAny}, dict)),
+    value_(Function1<scalar>::New("value", {units.x, units::any}, dict)),
     scale_(1/value_->integral(bounds_[0], bounds_[1]))
 {}
 
@@ -72,7 +72,7 @@ Foam::Function1s::normalise::~normalise()
 void Foam::Function1s::normalise::write
 (
     Ostream& os,
-    const unitConversions& units
+    const unitSets& units
 ) const
 {
     writeEntry(os, units.x, bounds_);

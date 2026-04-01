@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2023 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -451,7 +451,7 @@ Foam::localPointRegion::localPointRegion(const polyMesh& mesh)
     meshFaceMap_(0),
     faceRegions_(0)
 {
-    const polyBoundaryMesh& patches = mesh.boundaryMesh();
+    const polyBoundaryMesh& patches = mesh.boundary();
 
     // Get any point on the outside which is on a non-coupled boundary
     boolList candidatePoint(mesh.nPoints(), false);
@@ -582,13 +582,16 @@ Foam::List<Foam::labelPair> Foam::localPointRegion::findDuplicateFacePairs
     const polyMesh& mesh
 )
 {
-    const polyBoundaryMesh& patches = mesh.boundaryMesh();
+    const polyBoundaryMesh& patches = mesh.boundary();
 
     // Faces to test: all boundary faces
     labelList testFaces
     (
-        identityMap(mesh.nFaces()-mesh.nInternalFaces())
-      + mesh.nInternalFaces()
+        identityMap
+        (
+            mesh.nInternalFaces(),
+            mesh.nFaces() - mesh.nInternalFaces()
+        )
     );
 
     // Find corresponding baffle face (or -1)

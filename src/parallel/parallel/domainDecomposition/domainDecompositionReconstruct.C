@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -42,8 +42,8 @@ Foam::domainDecomposition::determineCoupledFaces
     const polyMesh& meshToAdd
 )
 {
-    const polyBoundaryMesh& masterPatches = masterMesh.boundaryMesh();
-    const polyBoundaryMesh& addPatches = meshToAdd.boundaryMesh();
+    const polyBoundaryMesh& masterPatches = masterMesh.boundary();
+    const polyBoundaryMesh& addPatches = meshToAdd.boundary();
 
     DynamicList<label> masterFaces
     (
@@ -296,7 +296,7 @@ void Foam::domainDecomposition::reconstruct()
         }
     }
 
-    const polyBoundaryMesh& patches = masterMeshes[0].boundaryMesh();
+    const polyBoundaryMesh& patches = masterMeshes[0].poly().boundary();
 
     // Move all faces of processor cyclic patches into the associated cyclics
     if (!patches.findIndices<processorCyclicPolyPatch>().empty())
@@ -378,7 +378,7 @@ void Foam::domainDecomposition::reconstruct()
                     newToOldFace,
                     pp.size(),
                     newPatchStarts[patchi] + newPatchSizes[patchi]
-                ) = pp.start() + identityMap(pp.size());
+                ) = identityMap(pp.start(), pp.size());
 
                 newPatchSizes[patchi] += pp.size();
             }

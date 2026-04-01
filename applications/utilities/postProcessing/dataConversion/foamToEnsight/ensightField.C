@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -496,8 +496,8 @@ void ensightField
                 {
                     if (eMesh.faceToBeIncluded(facei))
                     {
-                        label patchi = mesh.boundaryMesh().whichPatch(facei);
-                        const polyPatch& pp = mesh.boundaryMesh()[patchi];
+                        label patchi = mesh.poly().boundary().whichPatch(facei);
+                        const polyPatch& pp = mesh.poly().boundary()[patchi];
                         label patchFacei = pp.whichFace(facei);
                         Type value = sf.boundaryField()[patchi][patchFacei];
                         values[j] = value;
@@ -636,8 +636,8 @@ void ensightPointField
                 autoPtr<globalIndex> globalPointsPtr =
                 mesh.globalData().mergePoints
                 (
-                    p.patch().meshPoints(),
-                    p.patch().meshPointMap(),
+                    p.poly().meshPoints(),
+                    p.poly().meshPointMap(),
                     pointToGlobal,
                     uniqueMeshPointLabels
                 );

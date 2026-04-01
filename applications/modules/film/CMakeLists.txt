@@ -29,6 +29,8 @@ target_link_libraries(${target_name} PRIVATE
 
     isothermalFilmSolver
 
+    fluidThermophysicalTransportModel
+    thermophysicalTransportModel
     filmThermophysicalTransportModels
     coupledThermophysicalTransportModels
     momentumTransportModels

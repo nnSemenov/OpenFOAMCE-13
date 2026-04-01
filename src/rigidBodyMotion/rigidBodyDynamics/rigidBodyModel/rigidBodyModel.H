@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2016-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2016-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -189,7 +189,7 @@ protected:
         mutable DynamicList<vector> u_;
 
 
-    // Protected member functions
+    // Protected Member Functions
 
         //- Join the given body to the parent with ID parentID via the given
         //  joint with transform from the parent frame to the joint frame XT.
@@ -227,7 +227,7 @@ public:
         inline label nBodies() const;
 
         //- Return the list of the bodies in the model
-        inline PtrList<rigidBody> bodies() const;
+        inline const PtrList<rigidBody>& bodies() const;
 
         //- List of indices of the parent of each body
         inline const DynamicList<label>& lambda() const;
@@ -258,8 +258,11 @@ public:
         //- Return the inertia of body i
         inline const rigidBodyInertia& I(const label i) const;
 
-        //- Return the spatial velocity of the bodies
+        //- Return the spatial velocity of body i
         inline const spatialVector& v(const label i) const;
+
+        //- Return the spatial acceleration of body i
+        inline const spatialVector& a(const label i) const;
 
         //- Join the given body to the parent with ID parentID via the given
         //  joint with transform from the parent frame to the joint frame XT.

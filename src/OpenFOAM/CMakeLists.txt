@@ -107,12 +107,14 @@ target_sources(OpenFOAM PRIVATE
     primitives/triad/triad.C
 
     primitives/omega/omega.C
+
+    primitives/Tuple2/Tuple2s.C
 )
 
 
 # Run-time selectable functions
 target_sources(OpenFOAM PRIVATE
-    primitives/functions/Function1/Function1/Function1UnitConversions.C
+    primitives/functions/Function1/Function1/Function1UnitSets.C
     primitives/functions/Function1/makeFunction1s.C
     primitives/functions/Function1/reverseRamp/reverseRamp.C
     primitives/functions/Function1/linearRamp/linearRamp.C
@@ -129,7 +131,7 @@ target_sources(OpenFOAM PRIVATE
     primitives/functions/Function1/omega1/omega1.C
     primitives/functions/Function1/Table/TableReader/Foam/tokenTupleN.C
 
-    primitives/functions/Function2/Function2/Function2UnitConversions.C
+    primitives/functions/Function2/Function2/Function2UnitSets.C
     primitives/functions/Function2/makeFunction2s.C
 )
 
@@ -189,7 +191,6 @@ target_sources(OpenFOAM PRIVATE
     primitives/Barycentric2D/barycentric2D/barycentric2D.C
 
     containers/HashTables/HashTable/HashTableCore.C
-    containers/HashTables/ListHashTable/ListHashTableCore.C
     containers/Lists/SortableList/ParSortableListName.C
     containers/Lists/PackedList/PackedListCore.C
     containers/Lists/PackedList/PackedBoolList.C
@@ -292,13 +293,17 @@ target_sources(OpenFOAM PRIVATE
 set(functionEntries ${dictionary}/functionEntries)
 target_sources(OpenFOAM PRIVATE
     ${functionEntries}/functionEntry/functionEntry.C
+    ${functionEntries}/exitEntry/exitEntry.C
+    ${functionEntries}/printEntry/printEntry.C
     ${functionEntries}/negEntry/negEntry.C
     ${functionEntries}/codeIncludeEntry/codeIncludeEntry.C
     ${functionEntries}/calcEntry/calcEntry.C
     ${functionEntries}/streamEntry/streamEntry.C
     ${functionEntries}/codeStream/codeStream.C
+    ${functionEntries}/codeDict/codeDict.C
     ${functionEntries}/codeBlock/codeBlockEntry.C
-    ${functionEntries}/codeBlockCalc/codeBlockCalcEntry.C
+    ${functionEntries}/codeBlockStream/codeBlockStreamEntry.C
+    ${functionEntries}/codeBlockDict/codeBlockDictEntry.C
     ${functionEntries}/endCodeBlock/endCodeBlockEntry.C
     ${functionEntries}/includeEntry/includeEntry.C
     ${functionEntries}/includeEtcEntry/includeEtcEntry.C
@@ -347,7 +352,6 @@ set(dll db/dynamicLibrary)
 target_sources(OpenFOAM PRIVATE
     ${dll}/dlLibraryTable/dlLibraryTable.C
     ${dll}/dynamicCode/dynamicCode.C
-    ${dll}/dynamicCode/dynamicCodeContext.C
     ${dll}/codedBase/codedBase.C
     ${dll}/compileTemplate/compileTemplate.C
 
@@ -390,12 +394,12 @@ target_sources(OpenFOAM PRIVATE
     symbols/symbols.C
     dimensionSet/dimensionSet.C
     dimensionSet/dimensionSetIO.C
-    dimensionSet/dimensionSets.C
-    unitConversion/unitConversion.C
-    unitConversion/unitConversionIO.C
-    unitConversion/unitConversions.C
-    unitConversion/namedUnitConversion.C
-    unitConversion/namedUnitConversionIO.C
+    dimensionSet/dimensions.C
+    unitSet/unitSet.C
+    unitSet/unitSetIO.C
+    unitSet/units.C
+    unitSet/namedUnitSet.C
+    unitSet/namedUnitSetIO.C
     dimensionedTypes/dimensionedScalar/dimensionedScalar.C
     dimensionedTypes/dimensionedSphericalTensor/dimensionedSphericalTensor.C
     dimensionedTypes/dimensionedSymmTensor/dimensionedSymmTensor.C
@@ -435,6 +439,7 @@ target_sources(OpenFOAM PRIVATE
     ${lduMatrix}/solvers/PBiCG/PBiCG.C
     ${lduMatrix}/solvers/PBiCGStab/PBiCGStab.C
 
+    ${lduMatrix}/smoothers/noSmoother/noSmoother.C
     ${lduMatrix}/smoothers/GaussSeidel/GaussSeidelSmoother.C
     ${lduMatrix}/smoothers/symGaussSeidel/symGaussSeidelSmoother.C
     ${lduMatrix}/smoothers/nonBlockingGaussSeidel/nonBlockingGaussSeidelSmoother.C
@@ -528,8 +533,18 @@ target_sources(OpenFOAM PRIVATE
     ${GAMGProcAgglomerations}/pair/pairGAMGProcAgglomeration.C
 )
 
+target_sources(OpenFOAM PRIVATE
+    fields/GeometricFields/pointFields/pointFields.C
+
+    fields/DimensionedFields/DimensionedFieldFunctions/makeDimensionedPointFieldFunctions.C
+
+    fields/UniformDimensionedFields/uniformDimensionedFields.C
+
+    fields/UniformGeometricFields/uniformGeometricFields.C
+)
 
 target_sources(OpenFOAM PRIVATE
+
     meshes/lduMesh/lduMesh.C
     meshes/lduMesh/lduPrimitiveMesh.C
 )
@@ -806,12 +821,6 @@ target_sources(OpenFOAM PRIVATE
     ${meshTools}/matchPoints.C
 )
 
-target_sources(OpenFOAM PRIVATE
-    fields/UniformDimensionedFields/uniformDimensionedFields.C
-
-    fields/UniformGeometricFields/uniformGeometricFields.C
-)
-
 set(Fields fields/Fields)
 target_sources(OpenFOAM PRIVATE
     ${Fields}/fieldMappers/fieldMapper/fieldMapper.C
@@ -915,6 +924,7 @@ target_sources(OpenFOAM PRIVATE
     algorithms/dynamicIndexedOctree/dynamicTreeDataPoint.C
     algorithms/polygonTriangulate/polygonTriangulate.C
     algorithms/solutionControl/solutionControl.C
+    algorithms/boundSphere/boundSphere.C
 )
 
 target_sources(OpenFOAM PRIVATE

@@ -89,6 +89,8 @@ set(FOAM_UTILITIES ${FOAM_APP}/utilities)
 set(FOAM_LIBBIN  ${CMAKE_INSTALL_PREFIX}/lib)
 set(FOAM_APPBIN  ${CMAKE_INSTALL_PREFIX}/bin)
 
+# Set default LTO option for executables
+set(LTO_option OFF)
 
 # Set platform rules by compiler and arch
 include(${CMAKE_CURRENT_LIST_DIR}/rules/${WM_ARCH}${WM_COMPILER}/${WM_COMPILE_OPTION}.cmake)

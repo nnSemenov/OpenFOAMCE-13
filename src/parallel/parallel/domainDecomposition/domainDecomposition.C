@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -993,7 +993,9 @@ const Foam::PtrList<Foam::surfaceLabelField::Boundary>&
 Foam::domainDecomposition::procFaceAddressingBf() const
 {
     validateComplete();
+    validateProcs();
 
+    if (procFaceAddressingBf_.empty())
     {
         // Get any non-conformal proc-face addressing
         List<List<DynamicList<label>>> nonConformalProcFaceAddressingBf =
@@ -1033,7 +1035,8 @@ Foam::domainDecomposition::procFaceAddressingBf() const
 
                     procFaceAddressingBf_[proci][procPatchi] =
                         mag(fvp.patchSlice(procFaceAddressing_[proci]))
-                      - completeMesh().boundaryMesh()[completePatchi].start();
+                      - completeMesh().poly().boundary()[completePatchi]
+                       .start();
                 }
                 else if (isA<processorFvPatch>(fvp))
                 {
@@ -1044,7 +1047,7 @@ Foam::domainDecomposition::procFaceAddressingBf() const
                 {
                     procFaceAddressingBf_[proci][procPatchi] =
                         mag(fvp.patchSlice(procFaceAddressing_[proci]))
-                      - completeMesh().boundaryMesh()[procPatchi].start();
+                      - completeMesh().poly().boundary()[procPatchi].start();
                 }
             }
         }

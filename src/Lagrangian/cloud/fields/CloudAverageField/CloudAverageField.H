@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2025-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -48,7 +48,7 @@ SourceFiles
 namespace Foam
 {
 
-class volMesh;
+class fvMesh;
 
 /*---------------------------------------------------------------------------*\
                         Class CloudAverageField Declaration
@@ -61,11 +61,8 @@ class CloudAverageField
 {
     // Private Data
 
-        //- The name of the average
-        const word name_;
-
         //- The cell weight sum
-        const tmp<DimensionedField<scalar, volMesh>> tcellWeightSum_;
+        const tmp<DimensionedField<scalar, fvMesh>> tcellWeightSum_;
 
         //- Reference to the weight state field
         const CloudStateField<scalar>& weightState_;
@@ -119,7 +116,7 @@ public:
         CloudAverageField
         (
             const word& name,
-            const DimensionedField<scalar, volMesh>& cellWeightSum,
+            const DimensionedField<scalar, fvMesh>& cellWeightSum,
             const CloudDerivedField<Type>& weightPsi
         );
 

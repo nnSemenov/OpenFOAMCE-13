@@ -29,6 +29,7 @@ target_link_libraries(${target_name} PRIVATE
     fileFormats 
     polyTopoChange 
     snappyHexMesh
+    triSurface
     Pstream_best
 )
 

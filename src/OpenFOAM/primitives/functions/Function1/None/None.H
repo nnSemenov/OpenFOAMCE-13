@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2020-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2020-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -50,7 +50,7 @@ class None
 :
     public FieldFunction1<Type, None<Type>>
 {
-    // Private member data
+    // Private Data
 
         //- Name of dictionary from which this function is instantiated
         const fileName dictName_;
@@ -71,7 +71,7 @@ public:
         None
         (
             const word& name,
-            const unitConversions& units,
+            const unitSets& units,
             const dictionary& dict
         );
 
@@ -89,7 +89,7 @@ public:
         virtual Type integral(const scalar x1, const scalar x2) const;
 
         //- Write in dictionary format
-        virtual void write(Ostream& os, const unitConversions& units) const;
+        virtual void write(Ostream& os, const unitSets& units) const;
 
 
     // Member Operators

@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -25,8 +25,14 @@ Class
     Foam::codedMixedFvPatchField
 
 Description
-    Constructs on-the-fly a new boundary condition (derived from
-    mixedFvPatchField) which is then used to evaluate.
+    Mixed boundary condition evaluated from the code provided
+
+    which is compiled, linked and executed automatically at run-time.
+
+    The optional \c name entry specifies the name of the code generated from the
+    template, if not provided the it constructed as
+    \<field name\>_\<patch name\> for single region cases or
+    \<region name\>_\<field name\>_\<patch name\> for multi-region cases.
 
 Usage
     Example:
@@ -39,13 +45,12 @@ Usage
         refGradient     uniform (0 0 0);
         valueFraction   uniform 1;
 
-        name    rampedMixed;   // name of generated BC
+        name            rampedFixedValue;   // Optional name of generated code
 
         code
         #{
             this->refValue() =
-                vector(1, 0, 0)
-               *min(10, 0.1*this->db().time().value());
+                vector(1, 0, 0)*min(10, 0.1*this->db().time().value());
             this->refGrad() = Zero;
             this->valueFraction() = 1.0;
         #};
@@ -62,25 +67,9 @@ Usage
     }
     \endverbatim
 
-    A special form is if the 'code' section is not supplied. In this case
-    the code gets read from a (runTimeModifiable!) dictionary system/codeDict
-    which would have a corresponding entry
-
-    \verbatim
-    <patchName>
-    {
-        code
-        #{
-            this->refValue() = min(10, 0.1*this->db().time().value());
-            this->refGrad() = Zero;
-            this->valueFraction() = 1.0;
-        #};
-    }
-    \endverbatim
-
 See also
+    Foam::codedBase
     Foam::dynamicCode
-    Foam::functionEntries::codeStream
 
 SourceFiles
     codedMixedFvPatchField.C
@@ -116,13 +105,16 @@ class codedMixedFvPatchField
         //- Name of the dictionary variables in the source code
         static const wordList codeDictVars;
 
+        // Name of the code options template file
+        static const word codeOptions;
+
+        // Names of the source files to compile
+        static const wordList compileFiles;
+
+        // Names of the source files to copy (header files)
+        static const wordList copyFiles;
+
         mutable autoPtr<mixedFvPatchField<Type>> redirectPatchFieldPtr_;
-
-
-    // Private Member Functions
-
-        //- Adapt the context for the current object
-        virtual void prepare(dynamicCode&, const dynamicCodeContext&) const;
 
 
 public:
@@ -137,7 +129,7 @@ public:
         codedMixedFvPatchField
         (
             const fvPatch&,
-            const DimensionedField<Type, volMesh>&,
+            const DimensionedField<Type, fvMesh>&,
             const dictionary&
         );
 
@@ -147,7 +139,7 @@ public:
         (
             const codedMixedFvPatchField<Type>&,
             const fvPatch&,
-            const DimensionedField<Type, volMesh>&,
+            const DimensionedField<Type, fvMesh>&,
             const fieldMapper&
         );
 
@@ -159,13 +151,13 @@ public:
         codedMixedFvPatchField
         (
             const codedMixedFvPatchField<Type>&,
-            const DimensionedField<Type, volMesh>&
+            const DimensionedField<Type, fvMesh>&
         );
 
         //- Construct and return a clone setting internal field reference
         virtual tmp<fvPatchField<Type>> clone
         (
-            const DimensionedField<Type, volMesh>& iF
+            const DimensionedField<Type, fvMesh>& iF
         ) const
         {
             return tmp<fvPatchField<Type>>

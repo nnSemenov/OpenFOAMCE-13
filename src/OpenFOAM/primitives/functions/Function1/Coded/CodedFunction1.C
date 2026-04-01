@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2020-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2020-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,8 +24,6 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "CodedFunction1.H"
-#include "dynamicCode.H"
-#include "dynamicCodeContext.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
@@ -41,45 +39,23 @@ const Foam::wordList Foam::Function1s::Coded<Type>::codeDictVars
     {word::null, word::null}
 );
 
-
-// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
+template<class Type>
+const Foam::word Foam::Function1s::Coded<Type>::codeOptions
+(
+    "codedFunction1Options"
+);
 
 template<class Type>
-void Foam::Function1s::Coded<Type>::prepare
-(
-    dynamicCode& dynCode,
-    const dynamicCodeContext& context
-) const
+const Foam::wordList Foam::Function1s::Coded<Type>::compileFiles
 {
-    dynCode.setFilterVariable("typeName", codeName());
+    "codedFunction1Template.C"
+};
 
-    // Set TemplateType filter variables
-    dynCode.setFilterVariable("TemplateType", pTraits<Type>::typeName);
-
-    // Compile filtered C template
-    dynCode.addCompileFile(codeTemplateC("codedFunction1"));
-
-    // Copy filtered H template
-    dynCode.addCopyFile(codeTemplateH("codedFunction1"));
-
-    // Make verbose if debugging
-    dynCode.setFilterVariable("verbose", Foam::name(bool(debug)));
-
-    if (debug)
-    {
-        Info<<"compile " << codeName() << " sha1: " << context.sha1() << endl;
-    }
-
-    // Define Make/options
-    dynCode.setMakeOptions
-    (
-        "EXE_INC = -g \\\n"
-      + context.options()
-      + "\n\nLIB_LIBS = \\\n"
-      + "    -lOpenFOAM \\\n"
-      + context.libs()
-    );
-}
+template<class Type>
+const Foam::wordList Foam::Function1s::Coded<Type>::copyFiles
+{
+    "codedFunction1Template.H"
+};
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -88,21 +64,39 @@ template<class Type>
 Foam::Function1s::Coded<Type>::Coded
 (
     const word& name,
-    const Function1s::unitConversions& units,
+    const Function1s::unitSets& units,
     const dictionary& dict
 )
 :
     Function1<Type>(name),
-    codedBase(dict, codeKeys, codeDictVars),
+    codedBase
+    (
+        dict.lookup("name"),
+        dict,
+        codeKeys,
+        codeDictVars,
+        codeOptions,
+        compileFiles,
+        copyFiles
+    ),
     units_(units)
 {
+    // Set variable substitutions
+    varSubstitutions().set
+    (
+        {
+            {"TemplateType", pTraits<Type>::typeName},
+            {"verbose", Foam::name(bool(debug))}
+        }
+    );
+
     this->updateLibrary(dict);
 
     dictionary redirectDict(dict);
     redirectDict.set(codeName(), codeName());
 
     redirectFunction1Ptr_ =
-        Function1<Type>::New(codeName(), unitAny, unitAny, redirectDict);
+        Function1<Type>::New(codeName(), units::any, units::any, redirectDict);
 }
 
 
@@ -177,7 +171,7 @@ template<class Type>
 void Foam::Function1s::Coded<Type>::write
 (
     Ostream& os,
-    const unitConversions& units
+    const unitSets& units
 ) const
 {
     codedBase::write(os);

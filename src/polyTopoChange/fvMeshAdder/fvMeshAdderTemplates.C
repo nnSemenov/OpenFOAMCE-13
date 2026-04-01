@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -107,7 +107,7 @@ void Foam::fvMeshAdder::MapVolField
         // Sort deleted ones last so is now in newPatch ordering
         bfld.reorder(oldToNew);
         // Extend to covers all patches
-        bfld.setSize(mesh.boundaryMesh().size());
+        bfld.setSize(mesh.poly().boundary().size());
         // Delete unused patches
         for
         (
@@ -136,7 +136,7 @@ void Foam::fvMeshAdder::MapVolField
                         oldPatchStarts[patchi],
                         oldPatchSizes[patchi],
                         meshMap.oldFaceMap(),
-                        mesh.boundaryMesh()[newPatchi],
+                        mesh.poly().boundary()[newPatchi],
                         -1              // unmapped value
                     )
                 );
@@ -178,9 +178,9 @@ void Foam::fvMeshAdder::MapVolField
 
             if (newPatchi != -1)
             {
-                const polyPatch& newPatch = mesh.boundaryMesh()[newPatchi];
+                const polyPatch& newPatch = mesh.poly().boundary()[newPatchi];
                 const polyPatch& oldPatch =
-                    fldToAdd.mesh().boundaryMesh()[patchi];
+                    fldToAdd.mesh().poly().boundary()[patchi];
 
                 if (!bfld(newPatchi))
                 {
@@ -310,7 +310,7 @@ void Foam::fvMeshAdder::MapSurfaceField
     const SurfaceField<Type>& fldToAdd
 )
 {
-    const fvMesh& mesh = fld.mesh();
+    const fvMesh& mesh = fld.mesh()();
     const labelList& oldPatchStarts = meshMap.oldPatchStarts();
 
     typename SurfaceField<Type>::
@@ -398,7 +398,7 @@ void Foam::fvMeshAdder::MapSurfaceField
         // Sort deleted ones last so is now in newPatch ordering
         bfld.reorder(oldToNew);
         // Extend to covers all patches
-        bfld.setSize(mesh.boundaryMesh().size());
+        bfld.setSize(mesh.poly().boundary().size());
         // Delete unused patches
         for
         (
@@ -427,7 +427,7 @@ void Foam::fvMeshAdder::MapSurfaceField
                         oldPatchStarts[patchi],
                         oldPatchSizes[patchi],
                         meshMap.oldFaceMap(),
-                        mesh.boundaryMesh()[newPatchi],
+                        mesh.poly().boundary()[newPatchi],
                         -1      // unmapped value
                     )
                 );
@@ -469,9 +469,9 @@ void Foam::fvMeshAdder::MapSurfaceField
 
             if (newPatchi != -1)
             {
-                const polyPatch& newPatch = mesh.boundaryMesh()[newPatchi];
+                const polyPatch& newPatch = mesh.poly().boundary()[newPatchi];
                 const polyPatch& oldPatch =
-                    fldToAdd.mesh().boundaryMesh()[patchi];
+                    fldToAdd.mesh()().poly().boundary()[patchi];
 
                 if (!bfld(newPatchi))
                 {
@@ -843,7 +843,7 @@ void Foam::fvMeshAdder::MapPointFields
 {
     HashTable<const PointField<Type>*> fields
     (
-        mesh.thisDb().lookupClass<PointField<Type>>()
+        mesh.db().lookupClass<PointField<Type>>()
     );
 
     HashTable<const PointField<Type>*> fieldsToAdd
@@ -891,8 +891,8 @@ void Foam::fvMeshAdder::MapDimField
 (
     const mapAddedPolyMesh& meshMap,
 
-    DimensionedField<Type, volMesh>& fld,
-    const DimensionedField<Type, volMesh>& fldToAdd
+    DimensionedField<Type, fvMesh>& fld,
+    const DimensionedField<Type, fvMesh>& fldToAdd
 )
 {
     const fvMesh& mesh = fld.mesh();

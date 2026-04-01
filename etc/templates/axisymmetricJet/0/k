@@ -24,7 +24,7 @@ boundaryField
 {
     inlet
     {
-        type            turbulentIntensityKineticEnergyInlet;
+        type            turbulentKineticEnergy;
         intensity       0.02;
         value           uniform $kInlet;
     }
@@ -33,7 +33,6 @@ boundaryField
     {
         type            inletOutlet;
         inletValue      uniform $kInlet;
-        value           uniform $kInlet;
     }
 
     #includeEtc "caseDicts/setConstraintTypes"

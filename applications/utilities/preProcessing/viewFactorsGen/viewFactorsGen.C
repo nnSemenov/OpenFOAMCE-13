@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -260,7 +260,7 @@ int main(int argc, char *argv[])
     #include "createTime.H"
     #include "createSpecifiedMeshNoChangers.H"
 
-    const polyBoundaryMesh& patches = mesh.boundaryMesh();
+    const polyBoundaryMesh& patches = mesh.poly().boundary();
 
     forAll(patches, patchi)
     {
@@ -362,7 +362,7 @@ int main(int argc, char *argv[])
     label nCoarseFaces = 0;      // total number of coarse faces
     label nFineFaces = 0;        // total number of fine faces
 
-    const polyBoundaryMesh& coarsePatches = coarseMesh.boundaryMesh();
+    const polyBoundaryMesh& coarsePatches = coarseMesh.poly().boundary();
 
     labelList viewFactorsPatches(patches.size());
 
@@ -705,7 +705,7 @@ int main(int argc, char *argv[])
         0.0
     );
 
-    scalarList patchArea(totalPatches, 0.0);
+    scalarField patchArea(totalPatches, 0.0);
 
     if (Pstream::master())
     {
@@ -822,7 +822,9 @@ int main(int argc, char *argv[])
     F.write();
 
     reduce(sumViewFactorPatch, sumOp<scalarSquareMatrix>());
-    reduce(patchArea, sumOp<scalarList>());
+
+    Pstream::listCombineGather(patchArea, plusEqOp<scalar>());
+    Pstream::listCombineScatter(patchArea);
 
 
     if (Pstream::master() && debug)

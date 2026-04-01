@@ -49,7 +49,7 @@ extern "C"
     //
     // Unique function name that can be checked if the correct library version
     // has been loaded
-    void ${typeName}_${SHA1sum}(bool load)
+    void ${uniqueFunctionName}(bool load)
     {
         if (load)
         {
@@ -69,7 +69,7 @@ Foam::Function2s::${typeName}Function2${TemplateType}::
 ${typeName}Function2${TemplateType}
 (
     const word& entryName,
-    const unitConversions& units,
+    const unitSets& units,
     const dictionary& dict
 )
 :
@@ -120,7 +120,7 @@ Foam::Function2s::${typeName}Function2${TemplateType}::
 void Foam::Function2s::${typeName}Function2${TemplateType}::write
 (
     Ostream& os,
-    const unitConversions&
+    const unitSets&
 ) const
 {
     NotImplemented;

@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -42,7 +42,7 @@ namespace distributions
 
 Foam::distributions::multiFixedValue::multiFixedValue
 (
-    const unitConversion& defaultUnits,
+    const unitSet& defaultUnits,
     const dictionary& dict,
     const label sampleQ,
     randomGenerator&& rndGen
@@ -58,11 +58,16 @@ Foam::distributions::multiFixedValue::multiFixedValue
     ),
     reader_
     (
-        TableReader<scalar>::New(word::null, {defaultUnits, unitAny}, dict)
+        TableReader<scalar, scalar>::New
+        (
+            word::null,
+            {defaultUnits, units::any},
+            dict
+        )
     )
 {
     List<Tuple2<scalar, scalar>> values =
-        reader_->read({defaultUnits, unitAny}, dict, "values");
+        reader_->read({defaultUnits, units::any}, dict, "values");
 
     // Sort
     Foam::sort
@@ -226,7 +231,7 @@ Foam::distributions::multiFixedValue::integralPDFxPow
 void Foam::distributions::multiFixedValue::write
 (
     Ostream& os,
-    const unitConversion& units
+    const unitSet& units
 ) const
 {
     FieldDistribution<distribution, multiFixedValue>::write(os, units);
@@ -244,7 +249,7 @@ void Foam::distributions::multiFixedValue::write
         values[i].first() = x_[i];
         values[i].second() = P[i];
     }
-    reader_->write(os, {units, unitAny}, values, "values");
+    reader_->write(os, {units, units::any}, values, "values");
 }
 
 

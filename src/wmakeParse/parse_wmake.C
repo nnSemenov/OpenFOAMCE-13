@@ -196,4 +196,23 @@ namespace Foam::wmakeParse {
 
     return vars;
   }
+
+  std::string parse_link_libs(std::string_view raw_compile_command) noexcept {
+    std::string_view command=trim(raw_compile_command);
+    std::string_view prefix="-l";
+    if (not command.starts_with(prefix)) {
+      return {};
+    }
+    return std::string{command.substr(prefix.size())};
+  }
+
+  std::string parse_include_dirs(std::string_view raw_compile_command) noexcept {
+    std::string_view command=trim(raw_compile_command);
+    for (std::string_view prefix :{"-I","-isystem","-i"}) {
+      if (command.starts_with(prefix)) {
+        return std::string{command.substr(prefix.size())};
+      }
+    }
+    return {};
+  }
 }

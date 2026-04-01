@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -126,28 +126,18 @@ bool Foam::GeometricField<Type, GeoMesh, PrimitiveField>::readIfPresent()
     (
         this->readOpt() == IOobject::MUST_READ
      || this->readOpt() == IOobject::MUST_READ_IF_MODIFIED
-    )
-    {
-        WarningInFunction
-            << "read option IOobject::MUST_READ or MUST_READ_IF_MODIFIED"
-            << " suggests that a read constructor for field " << this->name()
-            << " would be more appropriate." << endl;
-    }
-    else if
-    (
-        this->readOpt() == IOobject::READ_IF_PRESENT
-     && this->headerOk()
+     || (this->readOpt() == IOobject::READ_IF_PRESENT && this->headerOk())
     )
     {
         readFields();
 
         // Check compatibility between field and mesh
-        if (this->size() != GeoMesh::size(this->mesh()))
+        if (this->size() != this->mesh().size())
         {
             FatalIOErrorInFunction(this->readStream(typeName))
                 << "   number of field elements = " << this->size()
                 << " number of mesh elements = "
-                << GeoMesh::size(this->mesh())
+                << this->mesh().size()
                 << exit(FatalIOError);
         }
 
@@ -166,7 +156,7 @@ template<class Type, class GeoMesh, template<class> class PrimitiveField>
 Foam::GeometricField<Type, GeoMesh, PrimitiveField>::GeometricField
 (
     const IOobject& io,
-    const Mesh& mesh,
+    const GeoMesh& mesh,
     const dimensionSet& ds,
     const word& patchFieldType
 )
@@ -190,7 +180,7 @@ template<class Type, class GeoMesh, template<class> class PrimitiveField>
 Foam::GeometricField<Type, GeoMesh, PrimitiveField>::GeometricField
 (
     const IOobject& io,
-    const Mesh& mesh,
+    const GeoMesh& mesh,
     const dimensionSet& ds,
     const wordList& patchFieldTypes,
     const wordList& actualPatchTypes,
@@ -217,7 +207,7 @@ template<class Type, class GeoMesh, template<class> class PrimitiveField>
 Foam::GeometricField<Type, GeoMesh, PrimitiveField>::GeometricField
 (
     const IOobject& io,
-    const Mesh& mesh,
+    const GeoMesh& mesh,
     const dimensioned<Type>& dt,
     const word& patchFieldType
 )
@@ -243,7 +233,7 @@ template<class Type, class GeoMesh, template<class> class PrimitiveField>
 Foam::GeometricField<Type, GeoMesh, PrimitiveField>::GeometricField
 (
     const IOobject& io,
-    const Mesh& mesh,
+    const GeoMesh& mesh,
     const dimensioned<Type>& dt,
     const wordList& patchFieldTypes,
     const wordList& actualPatchTypes,
@@ -297,7 +287,7 @@ template<class Type, class GeoMesh, template<class> class PrimitiveField>
 Foam::GeometricField<Type, GeoMesh, PrimitiveField>::GeometricField
 (
     const IOobject& io,
-    const Mesh& mesh,
+    const GeoMesh& mesh,
     const dimensionSet& ds,
     const PrimitiveField<Type>& iField,
     const PtrList<Patch>& ptfl,
@@ -322,7 +312,7 @@ template<class Type, class GeoMesh, template<class> class PrimitiveField>
 Foam::GeometricField<Type, GeoMesh, PrimitiveField>::GeometricField
 (
     const IOobject& io,
-    const Mesh& mesh
+    const GeoMesh& mesh
 )
 :
     Internal(io, mesh, dimless, false),
@@ -335,11 +325,11 @@ Foam::GeometricField<Type, GeoMesh, PrimitiveField>::GeometricField
 
     // Check compatibility between field and mesh
 
-    if (this->size() != GeoMesh::size(this->mesh()))
+    if (this->size() != this->mesh().size())
     {
         FatalIOErrorInFunction(this->readStream(typeName))
             << "   number of field elements = " << this->size()
-            << " number of mesh elements = " << GeoMesh::size(this->mesh())
+            << " number of mesh elements = " << this->mesh().size()
             << exit(FatalIOError);
     }
 
@@ -357,7 +347,7 @@ template<class Type, class GeoMesh, template<class> class PrimitiveField>
 Foam::GeometricField<Type, GeoMesh, PrimitiveField>::GeometricField
 (
     const IOobject& io,
-    const Mesh& mesh,
+    const GeoMesh& mesh,
     const dictionary& dict
 )
 :
@@ -371,11 +361,11 @@ Foam::GeometricField<Type, GeoMesh, PrimitiveField>::GeometricField
 
     // Check compatibility between field and mesh
 
-    if (this->size() != GeoMesh::size(this->mesh()))
+    if (this->size() != this->mesh().size())
     {
         FatalErrorInFunction
             << "   number of field elements = " << this->size()
-            << " number of mesh elements = " << GeoMesh::size(this->mesh())
+            << " number of mesh elements = " << this->mesh().size()
             << exit(FatalIOError);
     }
 
@@ -895,8 +885,8 @@ Foam::GeometricField<Type, GeoMesh, PrimitiveField>::cloneUnSliced() const
             IOobject
             (
                 this->name(),
-                this->mesh().thisDb().time().name(),
-                this->mesh().thisDb(),
+                this->mesh().db().time().name(),
+                this->mesh().db(),
                 IOobject::NO_READ,
                 IOobject::NO_WRITE,
                 false
@@ -918,7 +908,7 @@ Foam::GeometricField<Type, GeoMesh, PrimitiveField>::New
     const HashPtrTable<Source>& stft
 )
 {
-    const bool cacheTmp = diField.mesh().thisDb().cacheTemporaryObject(name);
+    const bool cacheTmp = diField.mesh().db().cacheTemporaryObject(name);
 
     return tmp<GeometricField<Type, GeoMesh, PrimitiveField>>
     (
@@ -927,8 +917,8 @@ Foam::GeometricField<Type, GeoMesh, PrimitiveField>::New
             IOobject
             (
                 name,
-                diField.mesh().thisDb().time().name(),
-                diField.mesh().thisDb(),
+                diField.mesh().db().time().name(),
+                diField.mesh().db(),
                 IOobject::NO_READ,
                 IOobject::NO_WRITE,
                 cacheTmp
@@ -947,12 +937,12 @@ Foam::tmp<Foam::GeometricField<Type, GeoMesh, PrimitiveField>>
 Foam::GeometricField<Type, GeoMesh, PrimitiveField>::New
 (
     const word& name,
-    const Mesh& mesh,
+    const GeoMesh& mesh,
     const dimensionSet& ds,
     const word& patchFieldType
 )
 {
-    const bool cacheTmp = mesh.thisDb().cacheTemporaryObject(name);
+    const bool cacheTmp = mesh.db().cacheTemporaryObject(name);
 
     return tmp<GeometricField<Type, GeoMesh, PrimitiveField>>
     (
@@ -961,8 +951,8 @@ Foam::GeometricField<Type, GeoMesh, PrimitiveField>::New
             IOobject
             (
                 name,
-                mesh.thisDb().time().name(),
-                mesh.thisDb(),
+                mesh.db().time().name(),
+                mesh.db(),
                 IOobject::NO_READ,
                 IOobject::NO_WRITE,
                 cacheTmp
@@ -981,12 +971,12 @@ Foam::tmp<Foam::GeometricField<Type, GeoMesh, PrimitiveField>>
 Foam::GeometricField<Type, GeoMesh, PrimitiveField>::New
 (
     const word& name,
-    const Mesh& mesh,
+    const GeoMesh& mesh,
     const dimensioned<Type>& dt,
     const word& patchFieldType
 )
 {
-    const bool cacheTmp = mesh.thisDb().cacheTemporaryObject(name);
+    const bool cacheTmp = mesh.db().cacheTemporaryObject(name);
 
     return tmp<GeometricField<Type, GeoMesh, PrimitiveField>>
     (
@@ -995,8 +985,8 @@ Foam::GeometricField<Type, GeoMesh, PrimitiveField>::New
             IOobject
             (
                 name,
-                mesh.thisDb().time().name(),
-                mesh.thisDb(),
+                mesh.db().time().name(),
+                mesh.db(),
                 IOobject::NO_READ,
                 IOobject::NO_WRITE,
                 cacheTmp
@@ -1016,7 +1006,7 @@ Foam::tmp<Foam::GeometricField<Type, GeoMesh, PrimitiveField>>
 Foam::GeometricField<Type, GeoMesh, PrimitiveField>::New
 (
     const word& name,
-    const Mesh& mesh,
+    const GeoMesh& mesh,
     const dimensioned<Type>& dt,
     const wordList& patchFieldTypes,
     const wordList& actualPatchTypes,
@@ -1024,7 +1014,7 @@ Foam::GeometricField<Type, GeoMesh, PrimitiveField>::New
     const IOerrorLocation& fieldSourceErrorLocation
 )
 {
-    const bool cacheTmp = mesh.thisDb().cacheTemporaryObject(name);
+    const bool cacheTmp = mesh.db().cacheTemporaryObject(name);
 
     return tmp<GeometricField<Type, GeoMesh, PrimitiveField>>
     (
@@ -1033,8 +1023,8 @@ Foam::GeometricField<Type, GeoMesh, PrimitiveField>::New
             IOobject
             (
                 name,
-                mesh.thisDb().time().name(),
-                mesh.thisDb(),
+                mesh.db().time().name(),
+                mesh.db(),
                 IOobject::NO_READ,
                 IOobject::NO_WRITE,
                 cacheTmp

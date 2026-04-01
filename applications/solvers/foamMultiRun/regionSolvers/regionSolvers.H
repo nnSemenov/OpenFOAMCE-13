@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2022-2023 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2022-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -81,7 +81,7 @@ namespace Foam
 
 class regionSolvers
 {
-    // Private Member Data
+    // Private Data
 
         //- Region meshes
         PtrList<fvMesh> regions_;
@@ -156,9 +156,9 @@ public:
                 inline bool operator==(const iterator&) const;
                 inline bool operator!=(const iterator&) const;
 
-                inline solver& operator*();
-                inline solver& operator()();
-                inline solver* operator->();
+                inline solver& operator*() const;
+                inline solver& operator()() const;
+                inline solver* operator->() const;
 
                 inline iterator operator++();
                 inline iterator operator++(int);

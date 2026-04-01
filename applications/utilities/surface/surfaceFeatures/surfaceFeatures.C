@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2018-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2018-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -198,7 +198,7 @@ namespace Foam
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         const scalar includedAngle =
-            dict.lookup<scalar>("includedAngle", unitDegrees);
+            dict.lookup<scalar>("includedAngle", units::degrees);
 
         autoPtr<surfaceFeatures> set
         (
@@ -453,7 +453,7 @@ namespace Foam
                 closenessDict.lookupOrDefault<scalar>
                 (
                     "internalAngleTolerance",
-                    unitDegrees,
+                    units::degrees,
                     80
                 )
             );
@@ -463,7 +463,7 @@ namespace Foam
                 closenessDict.lookupOrDefault<scalar>
                 (
                     "externalAngleTolerance",
-                    unitDegrees,
+                    units::degrees,
                     80
                 )
             );
@@ -622,10 +622,12 @@ namespace Foam
             {
                 const triPointRef& tri = surf[fi].tri(surf.points());
 
-                const Tuple2<point, scalar> circle = tri.circumCircle();
-                const point& c = circle.first();
-                const scalar rSqr =
-                    min(sqr(4*circle.second()), sqr(searchDistance));
+                const Tuple2<point, scalar> crSqr = tri.circumCircleSqr();
+
+                if (crSqr.second() < 0) continue;
+
+                const point& c = crSqr.first();
+                const scalar rSqr = min(16*crSqr.second(), sqr(searchDistance));
 
                 pointIndexHitList hitList;
 

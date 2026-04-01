@@ -16,7 +16,7 @@ target_include_directories(${target_name} PRIVATE
     ${LIB_SRC}/finiteVolume/lnInclude
     ${LIB_SRC}/sampling/lnInclude
     ${LIB_SRC}/physicalProperties/lnInclude
-    ${LIB_SRC}/thermophysicalModels/basic/lnInclude
+    #${LIB_SRC}/thermophysicalModels/basic/lnInclude
     ${LIB_SRC}/thermophysicalModels/specie/lnInclude
     ${LIB_SRC}/thermophysicalModels/multicomponentThermo/lnInclude
     ${LIB_SRC}/twoPhaseModels/twoPhaseMixture/lnInclude
@@ -38,6 +38,8 @@ target_link_libraries(${target_name} PRIVATE
 
     phaseSystem
     coupledThermophysicalTransportModels
+    fluidThermophysicalModels
+    fluidThermophysicalTransportModel
 )
 
 target_compile_definitions(${target_name} PRIVATE

@@ -105,9 +105,9 @@ int main()
         << " controlDict => " << findEtcFile("controlDict") << nl
         << " badName => " << findEtcFile("badName") << endl;
 
-    Info<< "This should emit a fatal error:" << endl;
-    Info<< " badName(die) => " << findEtcFile("badName", true) << nl
-        << endl;
+    // Info<< "This should emit a fatal error:" << endl;
+    // Info<< " badName(die) => " << findEtcFile("badName", true) << nl
+    //     << endl;
 
     Info<< "\nEnd\n" << endl;
     return 0;

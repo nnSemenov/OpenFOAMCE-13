@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -71,7 +71,14 @@ void stabilise(scalarField& res, const UList<scalar>& sf, const scalar s)
     )
 }
 
-tmp<scalarField> stabilise(const UList<scalar>& sf, const scalar s)
+tmp<scalarField> stabilise(const Field<scalar>& sf, const scalar s)
+{
+    tmp<scalarField> tRes(new scalarField(sf.size()));
+    stabilise(tRes.ref(), sf, s);
+    return tRes;
+}
+
+tmp<scalarField> stabilise(const SubField<scalar>& sf, const scalar s)
 {
     tmp<scalarField> tRes(new scalarField(sf.size()));
     stabilise(tRes.ref(), sf, s);
@@ -83,6 +90,28 @@ tmp<scalarField> stabilise(const tmp<scalarField>& tsf, const scalar s)
     tmp<scalarField> tRes = New(tsf);
     stabilise(tRes.ref(), tsf(), s);
     tsf.clear();
+    return tRes;
+}
+
+
+tmp<scalarField> linearSequence
+(
+    const scalar start,
+    const scalar end,
+    const label n
+)
+{
+    return start + (end - start)*linearSequence01(n);
+}
+
+tmp<scalarField> linearSequence01(const label n)
+{
+    tmp<scalarField> tRes(new scalarField(n));
+    scalarField& res = tRes.ref();
+    forAll(res, i)
+    {
+        res[i] = scalar(i)/(n - 1);
+    }
     return tRes;
 }
 

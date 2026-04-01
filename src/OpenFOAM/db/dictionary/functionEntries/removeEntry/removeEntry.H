@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -65,20 +65,10 @@ class removeEntry
 :
     public functionEntry
 {
-    // Private Member Data
+    // Private Data
 
         //- The list of patterns of entries to remove
         wordReList patterns_;
-
-
-    // Private Member Functions
-
-        //- Read a single argument or list
-        tokenList readArgOrList
-        (
-            const functionName& functionType,
-            Istream& is
-        ) const;
 
 
 public:

@@ -26,12 +26,11 @@ boundaryField
     {
         type            inletOutlet;
         inletValue      $internalField;
-        value           $internalField;
     }
 
     inlet
     {
-        type            turbulentIntensityKineticEnergyInlet;
+        type            turbulentKineticEnergy;
         intensity       0.05;
         value           $internalField;
     }
@@ -40,7 +39,6 @@ boundaryField
     {
         type            inletOutlet;
         inletValue      $internalField;
-        value           $internalField;
     }
 
     wall

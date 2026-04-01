@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -31,15 +31,15 @@ template<class Type>
 Foam::turbulentInletFvPatchField<Type>::turbulentInletFvPatchField
 (
     const fvPatch& p,
-    const DimensionedField<Type, volMesh>& iF,
+    const DimensionedField<Type, fvMesh>& iF,
     const dictionary& dict
 )
 :
     fixedValueFvPatchField<Type>(p, iF, dict, false),
     ranGen_(label(0)),
-    fluctuationScale_(dict.lookup<Type>("fluctuationScale", unitFraction)),
+    fluctuationScale_(dict.lookup<Type>("fluctuationScale", units::fraction)),
     referenceField_("referenceField", iF.dimensions(), dict, p.size()),
-    alpha_(dict.lookupOrDefault<scalar>("alpha", unitFraction, 0.1)),
+    alpha_(dict.lookupOrDefault<scalar>("alpha", units::fraction, 0.1)),
     curTimeIndex_(-1)
 {
     if (dict.found("value"))
@@ -61,7 +61,7 @@ Foam::turbulentInletFvPatchField<Type>::turbulentInletFvPatchField
 (
     const turbulentInletFvPatchField<Type>& ptf,
     const fvPatch& p,
-    const DimensionedField<Type, volMesh>& iF,
+    const DimensionedField<Type, fvMesh>& iF,
     const fieldMapper& mapper
 )
 :
@@ -78,7 +78,7 @@ template<class Type>
 Foam::turbulentInletFvPatchField<Type>::turbulentInletFvPatchField
 (
     const turbulentInletFvPatchField<Type>& ptf,
-    const DimensionedField<Type, volMesh>& iF
+    const DimensionedField<Type, fvMesh>& iF
 )
 :
     fixedValueFvPatchField<Type>(ptf, iF),

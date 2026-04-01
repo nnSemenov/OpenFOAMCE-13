@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2016-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2016-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -34,7 +34,7 @@ License
 Foam::plenumPressureFvPatchScalarField::plenumPressureFvPatchScalarField
 (
     const fvPatch& p,
-    const DimensionedField<scalar, volMesh>& iF,
+    const DimensionedField<scalar, fvMesh>& iF,
     const dictionary& dict
 )
 :
@@ -57,10 +57,10 @@ Foam::plenumPressureFvPatchScalarField::plenumPressureFvPatchScalarField
     ),
     rho_(1.0),
     hasRho_(false),
-    inletAreaRatio_(dict.lookup<scalar>("inletAreaRatio", unitFraction)),
+    inletAreaRatio_(dict.lookup<scalar>("inletAreaRatio", units::fraction)),
     inletDischargeCoefficient_
     (
-        dict.lookup<scalar>("inletDischargeCoefficient", unitFraction)
+        dict.lookup<scalar>("inletDischargeCoefficient", units::fraction)
     ),
     timeScale_(dict.lookupOrDefault<scalar>("timeScale", dimTime, 0.0)),
     phiName_(dict.lookupOrDefault<word>("phi", "phi")),
@@ -78,7 +78,7 @@ Foam::plenumPressureFvPatchScalarField::plenumPressureFvPatchScalarField
 (
     const plenumPressureFvPatchScalarField& ptf,
     const fvPatch& p,
-    const DimensionedField<scalar, volMesh>& iF,
+    const DimensionedField<scalar, fvMesh>& iF,
     const fieldMapper& mapper
 )
 :
@@ -103,7 +103,7 @@ Foam::plenumPressureFvPatchScalarField::plenumPressureFvPatchScalarField
 Foam::plenumPressureFvPatchScalarField::plenumPressureFvPatchScalarField
 (
     const plenumPressureFvPatchScalarField& tppsf,
-    const DimensionedField<scalar, volMesh>& iF
+    const DimensionedField<scalar, fvMesh>& iF
 )
 :
     fixedValueFvPatchScalarField(tppsf, iF),

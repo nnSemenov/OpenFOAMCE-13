@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -305,18 +305,18 @@ void Foam::InteractionLists<ParticleType>::buildInteractionLists()
 
     // The referring of wall patch data relies on patches having the same
     // index on each processor.
-    mesh_.boundaryMesh().checkParallelSync(true);
+    mesh_.boundary().checkParallelSync(true);
 
     // Determine the index of all of the wall faces on this processor
     DynamicList<label> localWallFaces;
 
-    forAll(mesh_.boundaryMesh(), patchi)
+    forAll(mesh_.boundary(), patchi)
     {
-        const polyPatch& patch = mesh_.boundaryMesh()[patchi];
+        const polyPatch& patch = mesh_.boundary()[patchi];
 
         if (isA<wallPolyPatch>(patch))
         {
-            localWallFaces.append(identityMap(patch.size()) + patch.start());
+            localWallFaces.append(identityMap(patch.start(), patch.size()));
         }
     }
 
@@ -537,7 +537,7 @@ void Foam::InteractionLists<ParticleType>::buildInteractionLists()
 
         const face& f = mesh_.faces()[wallFaceIndex];
 
-        label patchi = mesh_.boundaryMesh().patchIndices()
+        label patchi = mesh_.boundary().patchIndices()
         [
             wallFaceIndex - mesh_.nInternalFaces()
         ];
@@ -1010,14 +1010,14 @@ void Foam::InteractionLists<ParticleType>::prepareWallDataToRefer()
             globalTransforms.transformIndex(wfiat)
         );
 
-        label patchi = mesh_.boundaryMesh().patchIndices()
+        label patchi = mesh_.boundary().patchIndices()
         [
             wallFaceIndex - mesh_.nInternalFaces()
         ];
 
         label patchFacei =
             wallFaceIndex
-          - mesh_.boundaryMesh()[patchi].start();
+          - mesh_.boundary()[patchi].start();
 
         // Need to transform velocity when tensor transforms are
         // supported

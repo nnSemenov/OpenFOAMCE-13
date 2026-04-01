@@ -165,6 +165,9 @@ target_sources(finiteVolume PRIVATE
 set(fvPatchFields fields/fvPatchFields)
 target_sources(finiteVolume PRIVATE
     ${fvPatchFields}/fvPatchField/fvPatchFields.C
+
+    ${fvPatchFields}/DimensionedFvPatchFields/DimensionedFvPatchFields.C
+    ${fvPatchFields}/DimensionedFvPatchFieldFunctions/makeDimensionedFvPatchFieldFunctions.C
 )
 
 set(basicFvPatchFields ${fvPatchFields}/basic)
@@ -208,6 +211,7 @@ set(derivedFvPatchFields ${fvPatchFields}/derived)
 target_sources(finiteVolume PRIVATE
     ${derivedFvPatchFields}/advective/advectiveFvPatchFields.C
     ${derivedFvPatchFields}/codedFixedValue/codedFixedValueFvPatchFields.C
+    ${derivedFvPatchFields}/functionalFixedValue/functionalFixedValueFvPatchFields.C
     ${derivedFvPatchFields}/codedMixed/codedMixedFvPatchFields.C
     ${derivedFvPatchFields}/externalCoupledMixed/externalCoupledMixedFvPatchFields.C
     ${derivedFvPatchFields}/fanPressureJump/fanPressureJumpFvPatchScalarField.C
@@ -270,7 +274,7 @@ target_sources(finiteVolume PRIVATE
     ${derivedFvPatchFields}/totalTemperature/totalTemperatureFvPatchScalarField.C
     ${derivedFvPatchFields}/translatingWallVelocity/translatingWallVelocityFvPatchVectorField.C
     ${derivedFvPatchFields}/turbulentInlet/turbulentInletFvPatchFields.C
-    ${derivedFvPatchFields}/turbulentIntensityKineticEnergyInlet/turbulentIntensityKineticEnergyInletFvPatchScalarField.C
+    ${derivedFvPatchFields}/turbulentKineticEnergy/turbulentKineticEnergyFvPatchScalarField.C
     ${derivedFvPatchFields}/uniformDensityHydrostaticPressure/uniformDensityHydrostaticPressureFvPatchScalarField.C
     ${derivedFvPatchFields}/uniformFixedGradient/uniformFixedGradientFvPatchFields.C
     ${derivedFvPatchFields}/uniformFixedValue/uniformFixedValueFvPatchFields.C
@@ -344,12 +348,14 @@ target_sources(finiteVolume PRIVATE
     ${derivedFvFieldSources}/internal/internalFvFieldSources.C
     ${derivedFvFieldSources}/uniformFixedValue/uniformFixedValueFvFieldSources.C
     ${derivedFvFieldSources}/uniformInletOutlet/uniformInletOutletFvFieldSources.C
-    ${derivedFvFieldSources}/turbulentIntensityKineticEnergy/turbulentIntensityKineticEnergyFvScalarFieldSource.C
+    ${derivedFvFieldSources}/turbulentKineticEnergy/turbulentKineticEnergyFvScalarFieldSource.C
     ${derivedFvFieldSources}/NaN/NaNFvFieldSources.C
-
 )
 
 target_sources(finiteVolume PRIVATE
+    fields/DimensionedFields/DimensionedFieldFunctions/makeDimensionedVolFieldFunctions.C
+    fields/DimensionedFields/DimensionedFieldFunctions/makeDimensionedSurfaceFieldFunctions.C
+
     fields/volFields/volFields.C
     fields/surfaceFields/surfaceFields.C
 

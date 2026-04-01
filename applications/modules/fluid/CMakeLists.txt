@@ -33,6 +33,9 @@ target_link_libraries(${target_name} PRIVATE
     isothermalFluidSolver
 
     fluidThermophysicalModels 
+    thermophysicalTransportModel
+    fluidThermophysicalTransportModel
+    fluidThermoThermophysicalTransportModels
     compressibleMomentumTransportModels 
     coupledThermophysicalTransportModels
 )

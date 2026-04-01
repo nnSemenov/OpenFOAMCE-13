@@ -52,8 +52,8 @@ $
 U^R/(R T) & = 1/(R T) integral_infinity^V [T((partial p)/(partial T))_V - p] dif V \
           & = (a - T (dif a)/(dif T))/(R T) integral_infinity^V (dif V)/(V(V+b)+b(V-b)) \
           & = (a - T (dif a)/(dif T))/(R T) integral_infinity^(tilde(V)-c) (dif tilde(V))/(tilde(V)(tilde(V)+b)+b(tilde(V)-b)) \
-          & = (a - A (dif a)/(dif T))/(2 sqrt(2) b R T) ln (tilde(V) - c + (1-sqrt(2))b)/(tilde(V) -c +(1+sqrt(2))b)\
-          & = (a - A (dif a)/(dif T))/(2 sqrt(2) b R T) ln (V + (1-sqrt(2))b)/(V +(1+sqrt(2))b)
+          & = (a - T (dif a)/(dif T))/(2 sqrt(2) b R T) ln (tilde(V) - c + (1-sqrt(2))b)/(tilde(V) -c +(1+sqrt(2))b)\
+          & = (a - T (dif a)/(dif T))/(2 sqrt(2) b R T) ln (V + (1-sqrt(2))b)/(V +(1+sqrt(2))b)
 $
 
 Volume shifting doesn't change the form of residual properties, nor does it affect partial derivatives.
@@ -61,6 +61,12 @@ Volume shifting doesn't change the form of residual properties, nor does it affe
 Enthalpy
 $
 H^R/(R T) = Z - 1 + U^R/(R T)
+$
+
+=== Residual Entropy
+$
+  S^R/R &= ln Z + 1/R integral_infinity^V [((partial p)/(partial T))_V -R/V] dif V \
+  &= ln Z + ln (1-b/V) - (dif a)/(dif T)/(2sqrt(2)R b)ln (V + (1-sqrt(2))b)/(V +(1+sqrt(2))b)
 $
 
 === Residual Heat capacity

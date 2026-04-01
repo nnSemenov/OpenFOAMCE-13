@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 cd ${0%/*} || exit 1    # Run from this directory
 
 # Source tutorial run functions
@@ -9,8 +9,6 @@ runApplication -s incompressibleFluid blockMesh -region incompressibleFluid
 runApplication -s multicomponentFluid blockMesh -region multicomponentFluid
 runApplication -s incompressibleVoF blockMesh -region incompressibleVoF
 runApplication -s compressibleVoF blockMesh -region compressibleVoF
-runApplication -s incompressibleVoF foamPostProcess -func setAlphaWater -region incompressibleVoF
-runApplication -s compressibleVoF foamPostProcess -func setAlphaWater -region compressibleVoF
 runApplication foamMultiRun
 
 # Get initial amounts of droplet material
@@ -42,8 +40,6 @@ compressibleVoFDropletsPlot="\
 postProcessing/compressibleVoFDropletsPlot/0/LagrangianFieldValue.dat"
 compressibleVoFCarrierPlot="\
 postProcessing/compressibleVoF/compressibleVoFCarrierPlot/$t1/volFieldValue.dat"
-
-cumulative="< awk '{for(i=1;i<=NF;i++){sum[i]+=\$i;\$i=sum[i]};print}'"
 
 # Plot a comparison between the change in droplet volume or mass and the
 # corresponding carrier source terms

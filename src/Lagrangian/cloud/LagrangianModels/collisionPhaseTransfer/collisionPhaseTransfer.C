@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2025-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -157,7 +157,7 @@ Foam::Lagrangian::collisionPhaseTransfer::collisionPhaseTransfer
     (
         cloud<clouds::carried>().carrierField
         (
-            mesh.mesh().lookupObject<volScalarField>
+            mesh.poly().lookupObject<volScalarField>
             (
                 IOobject::groupName
                 (
@@ -256,7 +256,7 @@ void Foam::Lagrangian::collisionPhaseTransfer::calculate
             (
                 scalarField
                 (
-                    subMesh.mesh().mesh().cellVolumes(),
+                    subMesh.mesh().poly().cellVolumes(),
                     subMesh.sub(subMesh.mesh().celli())
                 )
             )
@@ -269,7 +269,7 @@ void Foam::Lagrangian::collisionPhaseTransfer::calculate
         (
             max(mag(alphac_.grad(subMesh)), rootVSmall/L)
            *mag(cloud().U(subMesh))
-           /max(1 - alphac_(subMesh), rootVSmall)
+           /max(alphac_(subMesh), rootVSmall)
            *deltaT
         ).ptr()
     );

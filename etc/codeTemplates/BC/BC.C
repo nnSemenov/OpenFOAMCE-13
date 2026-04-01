@@ -45,12 +45,12 @@ Foam::CLASS::
 CONSTRUCT
 (
     const fvPatch& p,
-    const DimensionedField<TYPE, volMesh>& iF,
+    const DimensionedField<TYPE, fvMesh>& iF,
     const dictionary& dict
 )
 :
     PARENT(p, iF),
-    scalarData_(dict.lookup<scalar>("scalarData", unitAny)),
+    scalarData_(dict.lookup<scalar>("scalarData", units::any)),
     data_(dict.lookup<TYPE>("data")),
     fieldData_("fieldData", iF.dimensions(), dict, p.size()),
     timeVsData_
@@ -59,7 +59,7 @@ CONSTRUCT
         (
             "timeVsData",
             this->db().time().userUnits(),
-            unitAny,
+            units::any,
             dict
         )
     ),
@@ -92,7 +92,7 @@ CONSTRUCT
 (
     const CLASS& ptf,
     const fvPatch& p,
-    const DimensionedField<TYPE, volMesh>& iF,
+    const DimensionedField<TYPE, fvMesh>& iF,
     const fieldMapper& mapper
 )
 :
@@ -112,7 +112,7 @@ Foam::CLASS::
 CONSTRUCT
 (
     const CLASS& ptf,
-    const DimensionedField<TYPE, volMesh>& iF
+    const DimensionedField<TYPE, fvMesh>& iF
 )
 :
     PARENT(ptf, iF),
@@ -195,7 +195,7 @@ void Foam::CLASS::write
     writeEntry(os, "scalarData", scalarData_);
     writeEntry(os, "data", data_);
     writeEntry(os, "fieldData", fieldData_);
-    writeEntry(os, this->db().time().userUnits(), unitAny, timeVsData_());
+    writeEntry(os, this->db().time().userUnits(), units::any, timeVsData_());
     writeEntry(os, "wordData", wordData_);
     writeEntry(os, "value", *this);
 }

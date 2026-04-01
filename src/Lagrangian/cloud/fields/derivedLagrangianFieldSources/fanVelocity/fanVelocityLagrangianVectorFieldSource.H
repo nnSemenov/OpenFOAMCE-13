@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2025-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -34,6 +34,7 @@ Usage
     \table
         Property      | Description                       | Required? | Default
         Ucentre       | The velocity along the centreline | yes       |
+        normal        | Normal to the plane of the fan    | yes       |
         thetaInner    | The inner fan angle               | yes       |
         thetaOuter    | The outer fan angle               | yes       |
     \endtable
@@ -52,6 +53,7 @@ Usage
                 (0.5 (0.5 0 0))
             );
         }
+        normal          (0 0 1);
         thetaInner      15 [deg];
         thetaOuter      22.5 [deg];
     }
@@ -141,6 +143,9 @@ public:
 
 
     // Member Functions
+
+        //- Use the base class' value method
+        using LagrangianVectorFieldSource::value;
 
         //- Return the value for an instantaneous injection
         virtual tmp<LagrangianSubVectorField> value

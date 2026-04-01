@@ -62,6 +62,7 @@ add_library(${target_name} SHARED
     turbulenceIntensity/turbulenceIntensity.C
     wallShearStress/wallShearStress.C
     wallHeatFlux/wallHeatFlux.C
+    energyFlux/energyFlux.C
     specieFlux/specieFlux.C
 
     wallHeatTransferCoeff/wallHeatTransferCoeff.C

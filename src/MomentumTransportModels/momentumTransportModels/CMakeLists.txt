@@ -79,13 +79,13 @@ target_sources(${target_name} PRIVATE
 
 target_sources(${target_name} PRIVATE
     # Inlet turbulence BCs
-    RAS/derivedFvPatchFields/turbulentMixingLengthDissipationRateInlet/turbulentMixingLengthDissipationRateInletFvPatchScalarField.C
-    RAS/derivedFvPatchFields/turbulentMixingLengthFrequencyInlet/turbulentMixingLengthFrequencyInletFvPatchScalarField.C
+    RAS/derivedFvPatchFields/turbulentEpsilon/turbulentEpsilonFvPatchScalarField.C
+    RAS/derivedFvPatchFields/turbulentOmega/turbulentOmegaFvPatchScalarField.C
 
 
     # Turbulence model values
-    RAS/derivedFvFieldSources/turbulentMixingLengthDissipationRate/turbulentMixingLengthDissipationRateFvScalarFieldSource.C
-    RAS/derivedFvFieldSources/turbulentMixingLengthFrequency/turbulentMixingLengthFrequencyFvScalarFieldSource.C
+    RAS/derivedFvFieldSources/turbulentEpsilon/turbulentEpsilonFvScalarFieldSource.C
+    RAS/derivedFvFieldSources/turbulentOmega/turbulentOmegaFvScalarFieldSource.C
 )
 
 set(generalisedNewtonianViscosityModels laminar/generalisedNewtonian/generalisedNewtonianViscosityModels)

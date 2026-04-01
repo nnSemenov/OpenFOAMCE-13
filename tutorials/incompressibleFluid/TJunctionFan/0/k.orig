@@ -22,7 +22,7 @@ boundaryField
 {
     inlet
     {
-        type            turbulentIntensityKineticEnergyInlet;
+        type            turbulentKineticEnergy;
         intensity       0.05;
         value           uniform 0.375;
     }
@@ -30,13 +30,11 @@ boundaryField
     {
         type            inletOutlet;
         inletValue      uniform 0.375;
-        value           uniform 0.375;
     }
     outlet2
     {
         type            inletOutlet;
         inletValue      uniform 0.375;
-        value           uniform 0.375;
     }
     defaultFaces
     {

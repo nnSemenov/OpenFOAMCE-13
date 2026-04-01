@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2016-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2016-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -25,6 +25,7 @@ License
 
 #include "rigidBody.H"
 #include "subBody.H"
+#include "primitiveFields.H"
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -35,13 +36,7 @@ namespace RBD
 {
     defineTypeNameAndDebug(rigidBody, 0);
     defineRunTimeSelectionTable(rigidBody, dictionary);
-
-    addToRunTimeSelectionTable
-    (
-        rigidBody,
-        rigidBody,
-        dictionary
-    );
+    addToRunTimeSelectionTable(rigidBody, rigidBody, dictionary);
 }
 }
 
@@ -114,6 +109,42 @@ void Foam::RBD::rigidBody::merge(const subBody& subBody)
         name(),
         *this + transform(subBody.masterXT(), subBody.body())
     );
+}
+
+
+Foam::tmp<Foam::scalarField> Foam::RBD::rigidBody::sectionMu0s
+(
+    const direction axis,
+    const scalarField& distances
+) const
+{
+    FatalErrorInFunction
+        << "Rigid body " << name() << " of type " << type()
+        << " does not support the calculation of sectional moments"
+        << exit(FatalError);
+    return tmp<scalarField>(nullptr);
+}
+
+
+Foam::tmp<Foam::vectorField> Foam::RBD::rigidBody::sectionMu1s
+(
+    const direction axis,
+    const scalarField& distances
+) const
+{
+    sectionMu0s(axis, distances);
+    return tmp<vectorField>(nullptr);
+}
+
+
+Foam::tmp<Foam::symmTensorField> Foam::RBD::rigidBody::sectionMu2s
+(
+    const direction axis,
+    const scalarField& distances
+) const
+{
+    sectionMu0s(axis, distances);
+    return tmp<symmTensorField>(nullptr);
 }
 
 

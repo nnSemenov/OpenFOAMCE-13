@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2014-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2014-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -44,18 +44,18 @@ Foam::JohnsonJacksonParticleThetaFvPatchScalarField::
 JohnsonJacksonParticleThetaFvPatchScalarField
 (
     const fvPatch& p,
-    const DimensionedField<scalar, volMesh>& iF,
+    const DimensionedField<scalar, fvMesh>& iF,
     const dictionary& dict
 )
 :
     mixedFvPatchScalarField(p, iF, dict, false),
     restitutionCoefficient_
     (
-        dict.lookup<scalar>("restitutionCoefficient", unitFraction)
+        dict.lookup<scalar>("restitutionCoefficient", units::fraction)
     ),
     specularityCoefficient_
     (
-        dict.lookup<scalar>("specularityCoefficient", unitFraction)
+        dict.lookup<scalar>("specularityCoefficient", units::fraction)
     )
 {
     if (restitutionCoefficient_ < 0 || restitutionCoefficient_ > 1)
@@ -84,7 +84,7 @@ JohnsonJacksonParticleThetaFvPatchScalarField
 (
     const JohnsonJacksonParticleThetaFvPatchScalarField& ptf,
     const fvPatch& p,
-    const DimensionedField<scalar, volMesh>& iF,
+    const DimensionedField<scalar, fvMesh>& iF,
     const fieldMapper& mapper
 )
 :
@@ -99,7 +99,7 @@ Foam::JohnsonJacksonParticleThetaFvPatchScalarField::
 JohnsonJacksonParticleThetaFvPatchScalarField
 (
     const JohnsonJacksonParticleThetaFvPatchScalarField& ptf,
-    const DimensionedField<scalar, volMesh>& iF
+    const DimensionedField<scalar, fvMesh>& iF
 )
 :
     mixedFvPatchScalarField(ptf, iF),

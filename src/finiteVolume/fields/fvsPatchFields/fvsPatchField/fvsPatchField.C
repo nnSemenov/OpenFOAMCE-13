@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -27,7 +27,6 @@ License
 #include "dictionary.H"
 #include "fvMesh.H"
 #include "fieldMapper.H"
-#include "surfaceMesh.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -131,7 +130,7 @@ Foam::fvsPatchField<Type>::fvsPatchField
 template<class Type>
 const Foam::objectRegistry& Foam::fvsPatchField<Type>::db() const
 {
-    return patch_.boundaryMesh().mesh();
+    return patch_.mesh();
 }
 
 

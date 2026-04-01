@@ -73,6 +73,11 @@ target_sources(sampling PRIVATE
     ${surfWriters}/vtk/vtkSurfaceWriter.C
 )
 
+target_sources(sampling PRIVATE
+    cutPlot/patchCutPlot.C
+    cutPlot/cellCutPlot.C
+)
+
 target_include_directories(sampling PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/lnInclude"
 )
