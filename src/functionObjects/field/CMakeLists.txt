@@ -73,8 +73,6 @@ add_library(${target_name} SHARED
     writeCellCentres/writeCellCentres.C
     writeCellVolumes/writeCellVolumes.C
 
-    bXiProgress/bXiProgress.C
-    XiReactionRate/XiReactionRate.C
     streamFunction/streamFunction.C
 
     fieldsExpression/fieldsExpression.C

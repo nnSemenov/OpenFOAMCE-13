@@ -2,6 +2,7 @@ lnInclude(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(genericFvPatches SHARED
     genericFvPatch/genericFvPatch.C
+    genericPointPatch/genericPointPatch.C
 )
 
 target_include_directories(genericFvPatches PUBLIC

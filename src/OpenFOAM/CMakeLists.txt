@@ -199,6 +199,10 @@ target_sources(OpenFOAM PRIVATE
     containers/LinkedLists/linkTypes/DLListBase/DLListBase.C
 )
 
+target_sources(OpenFOAM PRIVATE
+    typeName/typeName.C
+)
+
 set(Streams db/IOstreams)
 target_sources(OpenFOAM PRIVATE
     ${Streams}/token/tokenIO.C
@@ -262,6 +266,7 @@ target_sources(OpenFOAM PRIVATE
     ${dictionary}/dictionaryIO.C
 
     ${dictionary}/keyType/keyType.C
+    ${dictionary}/printDictionary/printDictionary.C
 )
 
 set(entry ${dictionary}/entry)
@@ -294,6 +299,7 @@ set(functionEntries ${dictionary}/functionEntries)
 target_sources(OpenFOAM PRIVATE
     ${functionEntries}/functionEntry/functionEntry.C
     ${functionEntries}/exitEntry/exitEntry.C
+    ${functionEntries}/dumpEntry/dumpEntry.C
     ${functionEntries}/printEntry/printEntry.C
     ${functionEntries}/negEntry/negEntry.C
     ${functionEntries}/codeIncludeEntry/codeIncludeEntry.C
@@ -534,17 +540,6 @@ target_sources(OpenFOAM PRIVATE
 )
 
 target_sources(OpenFOAM PRIVATE
-    fields/GeometricFields/pointFields/pointFields.C
-
-    fields/DimensionedFields/DimensionedFieldFunctions/makeDimensionedPointFieldFunctions.C
-
-    fields/UniformDimensionedFields/uniformDimensionedFields.C
-
-    fields/UniformGeometricFields/uniformGeometricFields.C
-)
-
-target_sources(OpenFOAM PRIVATE
-
     meshes/lduMesh/lduMesh.C
     meshes/lduMesh/lduPrimitiveMesh.C
 )
@@ -763,53 +758,6 @@ target_sources(OpenFOAM PRIVATE
 )
 
 
-set(pointMesh meshes/pointMesh)
-target_sources(OpenFOAM PRIVATE
-    ${pointMesh}/pointMesh.C
-)
-
-set(pointMeshMapper ${pointMesh}/pointMeshMapper)
-target_sources(OpenFOAM PRIVATE
-    ${pointMeshMapper}/pointMapper.C
-    ${pointMeshMapper}/pointPatchMapper.C
-)
-
-set(pointPatches ${pointMesh}/pointPatches)
-target_sources(OpenFOAM PRIVATE
-    ${pointPatches}/pointPatch/pointPatch.C
-    ${pointPatches}/facePointPatch/facePointPatch.C
-    ${pointPatches}/facePointPatch/facePointPatchNew.C
-)
-
-set(basicPointPatches ${pointPatches}/basic)
-target_sources(OpenFOAM PRIVATE
-    ${basicPointPatches}/coupled/coupledPointPatch.C
-)
-
-set(constraintPointPatches ${pointPatches}/constraint)
-target_sources(OpenFOAM PRIVATE
-    ${constraintPointPatches}/cyclic/cyclicPointPatch.C
-    ${constraintPointPatches}/cyclicSlip/cyclicSlipPointPatch.C
-    ${constraintPointPatches}/empty/emptyPointPatch.C
-    ${constraintPointPatches}/processor/processorPointPatch.C
-    ${constraintPointPatches}/processorCyclic/processorCyclicPointPatch.C
-    ${constraintPointPatches}/symmetryPlane/symmetryPlanePointPatch.C
-    ${constraintPointPatches}/symmetry/symmetryPointPatch.C
-    ${constraintPointPatches}/wedge/wedgePointPatch.C
-    ${constraintPointPatches}/internal/internalPointPatch.C
-)
-
-set(derivedPointPatches ${pointPatches}/derived)
-target_sources(OpenFOAM PRIVATE
-    ${derivedPointPatches}/coupled/coupledFacePointPatch.C
-    ${derivedPointPatches}/wall/wallPointPatch.C
-)
-
-set(pointBoundaryMesh ${pointMesh}/pointBoundaryMesh)
-target_sources(OpenFOAM PRIVATE
-    ${pointBoundaryMesh}/pointBoundaryMesh.C
-)
-
 target_sources(OpenFOAM PRIVATE
     meshes/boundBox/boundBox.C
 
@@ -821,88 +769,50 @@ target_sources(OpenFOAM PRIVATE
     ${meshTools}/matchPoints.C
 )
 
-set(Fields fields/Fields)
 target_sources(OpenFOAM PRIVATE
-    ${Fields}/fieldMappers/fieldMapper/fieldMapper.C
-    ${Fields}/fieldMappers/forwardFieldMapper/forwardFieldMapper.C
-    ${Fields}/fieldMappers/forwardOrAssignFieldMapper/forwardOrAssignFieldMapper.C
-    ${Fields}/fieldMappers/generalFieldMapper/generalFieldMapper.C
-    ${Fields}/fieldMappers/identityFieldMapper/identityFieldMapper.C
-    ${Fields}/fieldMappers/reverseFieldMapper/reverseFieldMapper.C
-    ${Fields}/fieldMappers/reverseInterpolativeFieldMapper/reverseInterpolativeFieldMapper.C
-    ${Fields}/fieldMappers/setSizeFieldMapper/setSizeFieldMapper.C
-    ${Fields}/fieldMappers/setSizeAndZeroFieldMapper/setSizeAndZeroFieldMapper.C
-    ${Fields}/labelField/labelField.C
-    ${Fields}/scalarField/scalarField.C
-    ${Fields}/vectorField/vectorField.C
-    ${Fields}/vector2DField/vector2DField.C
-    ${Fields}/sphericalTensorField/sphericalTensorField.C
-    ${Fields}/diagTensorField/diagTensorField.C
-    ${Fields}/symmTensorField/symmTensorField.C
-    ${Fields}/tensorField/tensorField.C
-    ${Fields}/quaternionField/quaternionField.C
-    ${Fields}/triadField/triadField.C
-    ${Fields}/complexFields/complexFields.C
+    fields/fieldMappers/fieldMapper/fieldMapper.C
+    fields/fieldMappers/forwardFieldMapper/forwardFieldMapper.C
+    fields/fieldMappers/forwardOrAssignFieldMapper/forwardOrAssignFieldMapper.C
+    fields/fieldMappers/generalFieldMapper/generalFieldMapper.C
+    fields/fieldMappers/identityFieldMapper/identityFieldMapper.C
+    fields/fieldMappers/reverseFieldMapper/reverseFieldMapper.C
+    fields/fieldMappers/reverseInterpolativeFieldMapper/reverseInterpolativeFieldMapper.C
+    fields/fieldMappers/setSizeFieldMapper/setSizeFieldMapper.C
+    fields/fieldMappers/setSizeAndZeroFieldMapper/setSizeAndZeroFieldMapper.C
+    fields/labelField/labelField.C
+    fields/scalarField/scalarField.C
+    fields/vectorField/vectorField.C
+    fields/vector2DField/vector2DField.C
+    fields/sphericalTensorField/sphericalTensorField.C
+    fields/diagTensorField/diagTensorField.C
+    fields/symmTensorField/symmTensorField.C
+    fields/tensorField/tensorField.C
+    fields/quaternionField/quaternionField.C
+    fields/triadField/triadField.C
+    fields/complexFields/complexFields.C
 
-    ${Fields}/labelField/labelIOField.C
-    ${Fields}/labelField/labelFieldIOField.C
-    ${Fields}/scalarField/scalarIOField.C
-    ${Fields}/scalarField/scalarFieldIOField.C
-    ${Fields}/vectorField/vectorIOField.C
-    ${Fields}/vectorField/vectorFieldIOField.C
-    ${Fields}/vector2DField/vector2DIOField.C
-    ${Fields}/vector2DField/vector2DFieldIOField.C
-    ${Fields}/sphericalTensorField/sphericalTensorIOField.C
-    ${Fields}/sphericalTensorField/sphericalTensorFieldIOField.C
-    ${Fields}/diagTensorField/diagTensorIOField.C
-    ${Fields}/diagTensorField/diagTensorFieldIOField.C
-    ${Fields}/symmTensorField/symmTensorIOField.C
-    ${Fields}/symmTensorField/symmTensorFieldIOField.C
-    ${Fields}/tensorField/tensorIOField.C
-    ${Fields}/tensorField/tensorFieldIOField.C
-    ${Fields}/quaternionField/quaternionIOField.C
-    ${Fields}/triadField/triadIOField.C
-    ${Fields}/transformField/transformField.C
-)
-
-set(pointPatchFields fields/pointPatchFields)
-target_sources(OpenFOAM PRIVATE
-    ${pointPatchFields}/pointPatchField/pointPatchFields.C
-)
-
-set(basicPointPatchFields ${pointPatchFields}/basic)
-target_sources(OpenFOAM PRIVATE
-    ${basicPointPatchFields}/calculated/calculatedPointPatchFields.C
-    ${basicPointPatchFields}/coupled/coupledPointPatchFields.C
-    ${basicPointPatchFields}/value/valuePointPatchFields.C
-    ${basicPointPatchFields}/fixedValue/fixedValuePointPatchFields.C
-    ${basicPointPatchFields}/zeroGradient/zeroGradientPointPatchFields.C
-)
-
-set(constraintPointPatchFields ${pointPatchFields}/constraint)
-target_sources(OpenFOAM PRIVATE
-    ${constraintPointPatchFields}/cyclic/cyclicPointPatchFields.C
-    ${constraintPointPatchFields}/cyclicSlip/cyclicSlipPointPatchFields.C
-    ${constraintPointPatchFields}/empty/emptyPointPatchFields.C
-    ${constraintPointPatchFields}/processor/processorPointPatchFields.C
-    ${constraintPointPatchFields}/processorCyclic/processorCyclicPointPatchFields.C
-    ${constraintPointPatchFields}/symmetryPlane/symmetryPlanePointPatchFields.C
-    ${constraintPointPatchFields}/symmetry/symmetryPointPatchFields.C
-    ${constraintPointPatchFields}/wedge/wedgePointPatchFields.C
-    ${constraintPointPatchFields}/internal/internalPointPatchFields.C
-)
-
-set(derivedPointPatchFields ${pointPatchFields}/derived)
-target_sources(OpenFOAM PRIVATE
-    ${derivedPointPatchFields}/slip/slipPointPatchFields.C
-    ${derivedPointPatchFields}/fixedNormalSlip/fixedNormalSlipPointPatchFields.C
-    ${derivedPointPatchFields}/uniformFixedValue/uniformFixedValuePointPatchFields.C
-    ${derivedPointPatchFields}/codedFixedValue/codedFixedValuePointPatchFields.C
+    fields/labelField/labelIOField.C
+    fields/labelField/labelFieldIOField.C
+    fields/scalarField/scalarIOField.C
+    fields/scalarField/scalarFieldIOField.C
+    fields/vectorField/vectorIOField.C
+    fields/vectorField/vectorFieldIOField.C
+    fields/vector2DField/vector2DIOField.C
+    fields/vector2DField/vector2DFieldIOField.C
+    fields/sphericalTensorField/sphericalTensorIOField.C
+    fields/sphericalTensorField/sphericalTensorFieldIOField.C
+    fields/diagTensorField/diagTensorIOField.C
+    fields/diagTensorField/diagTensorFieldIOField.C
+    fields/symmTensorField/symmTensorIOField.C
+    fields/symmTensorField/symmTensorFieldIOField.C
+    fields/tensorField/tensorIOField.C
+    fields/tensorField/tensorFieldIOField.C
+    fields/quaternionField/quaternionIOField.C
+    fields/triadField/triadIOField.C
+    fields/transformField/transformField.C
 )
 
 target_sources(OpenFOAM PRIVATE
-    fields/GeometricFields/pointFields/pointFields.C
-
     meshes/bandCompression/bandCompression.C
     meshes/preservePatchTypes/preservePatchTypes.C
 )

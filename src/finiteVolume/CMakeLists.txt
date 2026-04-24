@@ -1,6 +1,66 @@
 lnInclude(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(finiteVolume SHARED
+    pointMesh/pointMesh.C
+)
+
+set(pointMeshMapper pointMesh/pointMeshMapper)
+target_sources(finiteVolume PRIVATE
+    ${pointMeshMapper}/pointMapper.C
+    ${pointMeshMapper}/pointPatchMapper.C
+)
+
+set(pointPatches pointMesh/pointPatches)
+target_sources(finiteVolume PRIVATE
+    ${pointPatches}/pointPatch/pointPatch.C
+    ${pointPatches}/facePointPatch/facePointPatch.C
+    ${pointPatches}/facePointPatch/facePointPatchNew.C
+)
+
+set(basicPointPatches ${pointPatches}/basic)
+target_sources(finiteVolume PRIVATE
+    ${basicPointPatches}/coupled/coupledPointPatch.C
+)
+
+set(constraintPointPatches ${pointPatches}/constraint)
+target_sources(finiteVolume PRIVATE
+    ${constraintPointPatches}/cyclic/cyclicPointPatch.C
+    ${constraintPointPatches}/cyclicSlip/cyclicSlipPointPatch.C
+    ${constraintPointPatches}/empty/emptyPointPatch.C
+    ${constraintPointPatches}/processor/processorPointPatch.C
+    ${constraintPointPatches}/processorCyclic/processorCyclicPointPatch.C
+    ${constraintPointPatches}/symmetryPlane/symmetryPlanePointPatch.C
+    ${constraintPointPatches}/symmetry/symmetryPointPatch.C
+    ${constraintPointPatches}/wedge/wedgePointPatch.C
+    ${constraintPointPatches}/internal/internalPointPatch.C
+    ${constraintPointPatches}/nonConformalCyclic/nonConformalCyclicPointPatch.C
+    ${constraintPointPatches}/nonConformalError/nonConformalErrorPointPatch.C
+    ${constraintPointPatches}/nonConformalProcessorCyclic/nonConformalProcessorCyclicPointPatch.C
+)
+
+set(derivedPointPatches ${pointPatches}/derived)
+target_sources(finiteVolume PRIVATE
+    ${derivedPointPatches}/coupled/coupledFacePointPatch.C
+    ${derivedPointPatches}/wall/wallPointPatch.C
+
+    ${derivedPointPatches}/mapped/mappedPointPatch/mappedPointPatch.C
+    ${derivedPointPatches}/mapped/mappedPointPatch/mappedWallPointPatch.C
+    ${derivedPointPatches}/mapped/mappedExtrudedPointPatch/mappedExtrudedWallPointPatch.C
+    ${derivedPointPatches}/mapped/mappedInternalPointPatch/mappedInternalPointPatch.C
+    ${derivedPointPatches}/mapped/nonConformalMappedPointPatch/nonConformalMappedWallPointPatch.C
+)
+
+set(pointBoundaryMesh pointMesh/pointBoundaryMesh)
+target_sources(finiteVolume PRIVATE
+    ${pointBoundaryMesh}/pointBoundaryMesh.C
+)
+
+target_sources(finiteVolume PRIVATE
+    pointMesh/pointDist/pointEdgeDist.C
+    pointMesh/pointDist/pointDist.C
+)
+
+target_sources(finiteVolume PRIVATE
     fvMesh/fvMeshGeometry.C
     fvMesh/fvMesh.C
 
@@ -162,6 +222,52 @@ target_sources(finiteVolume PRIVATE
     functionObjects/fvModelFunctionObject/fvModelFunctionObject.C
 )
 
+target_sources(finiteVolume PRIVATE
+    fields/UniformDimensionedFields/uniformDimensionedFields.C
+)
+
+set(pointPatchFields fields/pointPatchFields)
+target_sources(finiteVolume PRIVATE
+    ${pointPatchFields}/pointPatchField/pointPatchFields.C
+)
+
+set(basicPointPatchFields ${pointPatchFields}/basic)
+target_sources(finiteVolume PRIVATE
+    ${basicPointPatchFields}/calculated/calculatedPointPatchFields.C
+    ${basicPointPatchFields}/coupled/coupledPointPatchFields.C
+    ${basicPointPatchFields}/value/valuePointPatchFields.C
+    ${basicPointPatchFields}/fixedValue/fixedValuePointPatchFields.C
+    ${basicPointPatchFields}/zeroGradient/zeroGradientPointPatchFields.C
+)
+set(constraintPointPatchFields ${pointPatchFields}/constraint)
+target_sources(finiteVolume PRIVATE
+
+    ${constraintPointPatchFields}/cyclic/cyclicPointPatchFields.C
+    ${constraintPointPatchFields}/cyclicSlip/cyclicSlipPointPatchFields.C
+    ${constraintPointPatchFields}/empty/emptyPointPatchFields.C
+    ${constraintPointPatchFields}/processor/processorPointPatchFields.C
+    ${constraintPointPatchFields}/processorCyclic/processorCyclicPointPatchFields.C
+    ${constraintPointPatchFields}/symmetryPlane/symmetryPlanePointPatchFields.C
+    ${constraintPointPatchFields}/symmetry/symmetryPointPatchFields.C
+    ${constraintPointPatchFields}/wedge/wedgePointPatchFields.C
+    ${constraintPointPatchFields}/internal/internalPointPatchFields.C
+    ${constraintPointPatchFields}/nonConformalCyclic/nonConformalCyclicPointPatchFields.C
+    ${constraintPointPatchFields}/nonConformalError/nonConformalErrorPointPatchFields.C
+    ${constraintPointPatchFields}/nonConformalProcessorCyclic/nonConformalProcessorCyclicPointPatchFields.C
+)
+
+set(derivedPointPatchFields ${pointPatchFields}/derived)
+target_sources(finiteVolume PRIVATE
+    ${derivedPointPatchFields}/slip/slipPointPatchFields.C
+    ${derivedPointPatchFields}/fixedNormalSlip/fixedNormalSlipPointPatchFields.C
+    ${derivedPointPatchFields}/uniformFixedValue/uniformFixedValuePointPatchFields.C
+    ${derivedPointPatchFields}/codedFixedValue/codedFixedValuePointPatchFields.C
+)
+
+target_sources(finiteVolume PRIVATE
+    fields/DimensionedFields/DimensionedFieldFunctions/makeDimensionedPointFieldFunctions.C
+)
+
 set(fvPatchFields fields/fvPatchFields)
 target_sources(finiteVolume PRIVATE
     ${fvPatchFields}/fvPatchField/fvPatchFields.C
@@ -250,7 +356,6 @@ target_sources(finiteVolume PRIVATE
     ${derivedFvPatchFields}/phaseHydrostaticPressure/phaseHydrostaticPressureFvPatchScalarField.C
     ${derivedFvPatchFields}/pressureDirectedInletOutletVelocity/pressureDirectedInletOutletVelocityFvPatchVectorField.C
     ${derivedFvPatchFields}/pressureDirectedInletVelocity/pressureDirectedInletVelocityFvPatchVectorField.C
-    ${derivedFvPatchFields}/pressureInletOutletParSlipVelocity/pressureInletOutletParSlipVelocityFvPatchVectorField.C
     ${derivedFvPatchFields}/pressureInletOutletVelocity/pressureInletOutletVelocityFvPatchVectorField.C
     ${derivedFvPatchFields}/pressureInletUniformVelocity/pressureInletUniformVelocityFvPatchVectorField.C
     ${derivedFvPatchFields}/pressureInletVelocity/pressureInletVelocityFvPatchVectorField.C
@@ -356,8 +461,11 @@ target_sources(finiteVolume PRIVATE
     fields/DimensionedFields/DimensionedFieldFunctions/makeDimensionedVolFieldFunctions.C
     fields/DimensionedFields/DimensionedFieldFunctions/makeDimensionedSurfaceFieldFunctions.C
 
-    fields/volFields/volFields.C
-    fields/surfaceFields/surfaceFields.C
+    fields/UniformGeometricFields/uniformGeometricFields.C
+
+    fields/GeometricFields/pointFields/pointFields.C
+    fields/GeometricFields/volFields/volFields.C
+    fields/GeometricFields/surfaceFields/surfaceFields.C
 
     fvMatrices/fvMatrices.C
     fvMatrices/fvScalarMatrix/fvScalarMatrix.C

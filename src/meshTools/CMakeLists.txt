@@ -192,20 +192,15 @@ target_sources(meshTools PRIVATE
     mappedPatches/mappedPatchBase/mappedPatchBase.C
     mappedPatches/mappedPolyPatch/mappedPolyPatch.C
     mappedPatches/mappedPolyPatch/mappedWallPolyPatch.C
-    mappedPatches/mappedPointPatch/mappedPointPatch.C
-    mappedPatches/mappedPointPatch/mappedWallPointPatch.C
 
     mappedPatches/mappedExtrudedPatchBase/mappedExtrudedPatchBase.C
     mappedPatches/mappedExtrudedPolyPatch/mappedExtrudedWallPolyPatch.C
-    mappedPatches/mappedExtrudedPointPatch/mappedExtrudedWallPointPatch.C
 
     mappedPatches/mappedInternalPatchBase/mappedInternalPatchBase.C
     mappedPatches/mappedInternalPolyPatch/mappedInternalPolyPatch.C
-    mappedPatches/mappedInternalPointPatch/mappedInternalPointPatch.C
 
     mappedPatches/nonConformalMappedPatchBase/nonConformalMappedPatchBase.C
     mappedPatches/nonConformalMappedPolyPatch/nonConformalMappedWallPolyPatch.C
-    mappedPatches/nonConformalMappedPointPatch/nonConformalMappedWallPointPatch.C
 
     meshStructure/meshStructure.C
     meshStructure/topoDistanceData.C
@@ -226,18 +221,7 @@ target_sources(meshTools PRIVATE
     nonConformal/polyPatches/nonConformalError/nonConformalErrorPolyPatch.C
     nonConformal/polyPatches/nonConformalProcessorCyclic/nonConformalProcessorCyclicPolyPatch.C
 
-    nonConformal/pointPatches/nonConformalCyclic/nonConformalCyclicPointPatch.C
-    nonConformal/pointPatches/nonConformalError/nonConformalErrorPointPatch.C
-    nonConformal/pointPatches/nonConformalProcessorCyclic/nonConformalProcessorCyclicPointPatch.C
-
-    nonConformal/pointPatchFields/nonConformalCyclic/nonConformalCyclicPointPatchFields.C
-    nonConformal/pointPatchFields/nonConformalError/nonConformalErrorPointPatchFields.C
-    nonConformal/pointPatchFields/nonConformalProcessorCyclic/nonConformalProcessorCyclicPointPatchFields.C
-
     nonConformal/boundary/nonConformalBoundary.C
-
-    pointDist/pointEdgeDist.C
-    pointDist/pointDist.C
 
     patchIntersection/star/star.C
     patchIntersection/patchIntersection.C
@@ -267,6 +251,7 @@ target_sources(meshTools PRIVATE
 
     zoneGenerators/point/point/point_zoneGenerator.C
 
+    zoneGenerators/cell/cell/cell_zoneGenerator.C
     zoneGenerators/cell/containsPoints/containsPoints.C
     zoneGenerators/cell/generatedCellZone/generatedCellZone.C
     zoneGenerators/cell/patchCells/patchCells_zoneGenerator.C

@@ -2,7 +2,6 @@ lnInclude(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(genericFields SHARED
     genericFieldBase/genericFieldBase.C
-    genericPointPatchField/genericPointPatchFields.C
 )
 
 target_include_directories(genericFields PUBLIC
