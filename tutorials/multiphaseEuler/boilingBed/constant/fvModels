@@ -161,6 +161,8 @@ solidSurfaceBoiling
     departureDiameterModel
     {
         type            TolubinskiKostanchuk;
+
+        #print
     }
 
     departureFrequencyModel
@@ -168,6 +170,8 @@ solidSurfaceBoiling
         type            KocamustafaogullariIshii;
         Cf              1.18;
     }
+
+    #print
 }
 
 

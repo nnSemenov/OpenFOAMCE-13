@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2021-2022 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2021-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -87,8 +87,7 @@ public:
             const label size,
             const label start,
             const label index,
-            const polyBoundaryMesh& bm,
-            const word& patchType
+            const polyBoundaryMesh& bm
         );
 
         //- Construct from components
@@ -99,7 +98,6 @@ public:
             const label start,
             const label index,
             const polyBoundaryMesh& bm,
-            const word& patchType,
             const word& origPatchName
         );
 
@@ -109,8 +107,7 @@ public:
             const word& name,
             const dictionary& dict,
             const label index,
-            const polyBoundaryMesh& bm,
-            const word& patchType
+            const polyBoundaryMesh& bm
         );
 
         //- Construct as copy, resetting the boundary mesh
@@ -171,6 +168,12 @@ public:
 
 
     // Member Functions
+
+        //- Return true as this patch is a constraint type
+        virtual bool constraint() const
+        {
+            return true;
+        }
 
         //- Write the polyPatch data as a dictionary
         virtual void write(Ostream&) const;

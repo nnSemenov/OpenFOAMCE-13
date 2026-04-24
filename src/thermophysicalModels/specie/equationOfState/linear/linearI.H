@@ -153,7 +153,7 @@ inline void Foam::linear<Specie>::operator+=
     const linear<Specie>& pf
 )
 {
-    noCoefficientMixing(linear<Specie>());
+    noCoefficientMixing(linear);
 }
 
 
@@ -173,7 +173,7 @@ inline Foam::linear<Specie> Foam::operator+
     const linear<Specie>& pf2
 )
 {
-    noCoefficientMixing(linear<Specie>());
+    noCoefficientMixing(linear);
     return pf1;
 }
 
@@ -201,7 +201,7 @@ inline Foam::linear<Specie> Foam::operator==
     const linear<Specie>& pf2
 )
 {
-    noCoefficientMixing(linear<Specie>());
+    noCoefficientMixing(linear);
     return pf1;
 }
 

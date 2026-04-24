@@ -28,8 +28,9 @@ License
 #include "fieldTypes.H"
 #include "addToRunTimeSelectionTable.H"
 
+#include "TimeFunction_DimensionedFieldFunction.H"
 #include "Zonal_DimensionedFieldFunction.H"
-#include "Function1_DimensionedFieldFunction.H"
+#include "DistanceFunction_DimensionedFieldFunction.H"
 #include "Coded_DimensionedFieldFunction.H"
 #include "Surfaces_DimensionedFieldFunction.H"
 
@@ -47,12 +48,17 @@ License
     {                                                                          \
         addDimensionedFieldFunction                                            \
         (                                                                      \
+            TimeFunction,                                                      \
+            DimensionedField##Type##fvMesh##Field                              \
+        );                                                                     \
+        addDimensionedFieldFunction                                            \
+        (                                                                      \
             Zonal,                                                             \
             DimensionedField##Type##fvMesh##Field                              \
         );                                                                     \
         addDimensionedFieldFunction                                            \
         (                                                                      \
-            Function1,                                                         \
+            DistanceFunction,                                                  \
             DimensionedField##Type##fvMesh##Field                              \
         );                                                                     \
         addDimensionedFieldFunction                                            \

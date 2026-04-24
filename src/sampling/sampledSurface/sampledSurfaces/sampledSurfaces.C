@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -65,29 +65,6 @@ bool Foam::functionObjects::sampledSurfaces::needsUpdate() const
     }
 
     return false;
-}
-
-
-bool Foam::functionObjects::sampledSurfaces::expire()
-{
-    bool justExpired = false;
-
-    forAll(*this, si)
-    {
-        if (operator[](si).expire())
-        {
-            justExpired = true;
-        }
-
-        // Clear merge information
-        if (Pstream::parRun())
-        {
-            mergeList_[si].clear();
-        }
-    }
-
-    // true if any surfaces just expired
-    return justExpired;
 }
 
 
@@ -231,16 +208,19 @@ bool Foam::functionObjects::sampledSurfaces::read(const dictionary& dict)
                 dict.lookup("surfaces"),
                 sampledSurface::iNew(mesh_)
             );
+
             transfer(newList);
         }
 
         if (Pstream::parRun())
         {
             mergeList_.setSize(size());
-        }
 
-        // Ensure all surfaces and merge information are expired
-        expire();
+            forAll(*this, si)
+            {
+                mergeList_[si].clear();
+            }
+        }
 
         if (this->size())
         {
@@ -397,7 +377,15 @@ void Foam::functionObjects::sampledSurfaces::movePoints(const polyMesh& mesh)
 {
     if (&mesh == &mesh_)
     {
-        expire();
+        forAll(*this, si)
+        {
+            operator[](si).movePoints();
+
+            if (Pstream::parRun())
+            {
+                mergeList_[si].clear();
+            }
+        }
     }
 }
 
@@ -409,7 +397,15 @@ void Foam::functionObjects::sampledSurfaces::topoChange
 {
     if (&map.mesh() == &mesh_)
     {
-        expire();
+        forAll(*this, si)
+        {
+            operator[](si).topoChange(map);
+
+            if (Pstream::parRun())
+            {
+                mergeList_[si].clear();
+            }
+        }
     }
 }
 
@@ -421,7 +417,15 @@ void Foam::functionObjects::sampledSurfaces::mapMesh
 {
     if (&map.mesh() == &mesh_)
     {
-        expire();
+        forAll(*this, si)
+        {
+            operator[](si).mapMesh(map);
+
+            if (Pstream::parRun())
+            {
+                mergeList_[si].clear();
+            }
+        }
     }
 }
 
@@ -433,7 +437,15 @@ void Foam::functionObjects::sampledSurfaces::distribute
 {
     if (&map.mesh() == &mesh_)
     {
-        expire();
+        forAll(*this, si)
+        {
+            operator[](si).distribute(map);
+
+            if (Pstream::parRun())
+            {
+                mergeList_[si].clear();
+            }
+        }
     }
 }
 

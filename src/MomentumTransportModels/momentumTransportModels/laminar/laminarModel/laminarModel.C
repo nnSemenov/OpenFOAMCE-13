@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2016-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2016-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -89,7 +89,7 @@ Foam::laminarModel<BasicMomentumTransportModel>::New
             {"model", "laminarModel"}
         );
 
-        Info<< indent
+        Info<< indentOrNl
             << "Selecting laminar stress model " << modelType << endl;
 
         libs.open(laminarDict, "libs", dictionaryConstructorTablePtr_);
@@ -107,7 +107,7 @@ Foam::laminarModel<BasicMomentumTransportModel>::New
                 << exit(FatalError);
         }
 
-        Info<< incrIndent;
+        printDictionary print(laminarDict.name());
 
         autoPtr<laminarModel> modelPtr
         (
@@ -122,18 +122,16 @@ Foam::laminarModel<BasicMomentumTransportModel>::New
             )
         );
 
-        Info<< decrIndent;
-
         return modelPtr;
     }
     else
     {
-        Info<< indent
+        Info<< indentOrNl
             << "Selecting laminar stress model "
             << laminarModels::Stokes<BasicMomentumTransportModel>::typeName
             << endl;
 
-        Info<< incrIndent;
+        printDictionary print(dict.name());
 
         autoPtr<laminarModel> modelPtr
         (
@@ -147,8 +145,6 @@ Foam::laminarModel<BasicMomentumTransportModel>::New
                 viscosity
             )
         );
-
-        Info<< decrIndent;
 
         return modelPtr;
     }

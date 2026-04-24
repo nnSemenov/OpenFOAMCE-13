@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2020-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2020-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -80,9 +80,11 @@ Foam::RASThermophysicalTransportModel
     {
         IOdictionary modelDict(header);
 
-        const word modelType(modelDict.subDict("RAS").lookup( "model"));
+        const dictionary& RASdict(modelDict.subDict("RAS"));
 
-        Info<< indent
+        const word modelType(RASdict.lookup("model"));
+
+        Info<< indentOrNl
             << "Selecting RAS thermophysical transport model "
             << modelType << endl;
 
@@ -99,14 +101,12 @@ Foam::RASThermophysicalTransportModel
                 << exit(FatalError);
         }
 
-        Info<< incrIndent;
+        printDictionary print(RASdict.name());
 
         autoPtr<RASThermophysicalTransportModel> modelPtr
         (
             cstrIter()(momentumTransport, thermo)
         );
-
-        Info<< decrIndent;
 
         return modelPtr;
     }
@@ -121,11 +121,11 @@ Foam::RASThermophysicalTransportModel
                 >
             > RASunityLewisEddyDiffusivity;
 
-        Info<< indent
+        Info<< indentOrNl
             << "Selecting default RAS thermophysical transport model "
             <<  RASunityLewisEddyDiffusivity::typeName << endl;
 
-        Info<< incrIndent;
+        printDictionary print(header.name());
 
         autoPtr<RASThermophysicalTransportModel> modelPtr
         (
@@ -137,8 +137,6 @@ Foam::RASThermophysicalTransportModel
                 true
             )
         );
-
-        Info<< decrIndent;
 
         return modelPtr;
     }

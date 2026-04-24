@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2013-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2013-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -111,7 +111,7 @@ Foam::RASModel<BasicMomentumTransportModel>::New
         {"model", "RASModel"}
     );
 
-    Info<< indent
+    Info<< indentOrNl
         << "Selecting RAS turbulence model " << modelType << endl;
 
     libs.open(RASdict, "libs", dictionaryConstructorTablePtr_);
@@ -129,14 +129,12 @@ Foam::RASModel<BasicMomentumTransportModel>::New
             << exit(FatalError);
     }
 
-    Info<< incrIndent;
+    printDictionary print(RASdict.name());
 
     autoPtr<RASModel> modelPtr
     (
         cstrIter()(alpha, rho, U, alphaRhoPhi, phi, viscosity)
     );
-
-    Info<< decrIndent;
 
     return modelPtr;
 }

@@ -27,7 +27,7 @@ License
 #include "cyclicPolyPatch.H"
 #include "mergedCyclicPolyPatch.H"
 #include "polyTopoChange.H"
-#include "unitSet.H"
+#include "units.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -216,7 +216,6 @@ void Foam::polyMeshUnMergeCyclics(polyMesh& mesh, const scalar includedAngle)
                     mesh.nFaces(),
                     patches.size(),
                     mesh.boundary(),
-                    cyclicPolyPatch::typeName,
                     pp.name() + "-half-1"
                 )
             );
@@ -232,7 +231,6 @@ void Foam::polyMeshUnMergeCyclics(polyMesh& mesh, const scalar includedAngle)
                     mesh.nFaces(),
                     patches.size(),
                     mesh.boundary(),
-                    cyclicPolyPatch::typeName,
                     pp.name() + "-half-0"
                 )
             );

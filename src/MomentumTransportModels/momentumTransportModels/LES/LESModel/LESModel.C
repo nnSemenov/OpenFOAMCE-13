@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2013-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2013-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -121,7 +121,7 @@ Foam::LESModel<BasicMomentumTransportModel>::New
         {"model", "LESModel"}
     );
 
-    Info<< indent
+    Info<< indentOrNl
         << "Selecting LES turbulence model " << modelType << endl;
 
     libs.open(LESdict, "libs", dictionaryConstructorTablePtr_);
@@ -139,14 +139,12 @@ Foam::LESModel<BasicMomentumTransportModel>::New
             << exit(FatalError);
     }
 
-    Info<< incrIndent;
+    printDictionary print(LESdict.name());
 
     autoPtr<LESModel> modelPtr
     (
         cstrIter()(alpha, rho, U, alphaRhoPhi, phi, viscosity)
     );
-
-    Info<< decrIndent;
 
     return modelPtr;
 }

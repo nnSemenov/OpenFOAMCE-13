@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2021-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2021-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -53,9 +53,8 @@ Foam::IOobject Foam::fvConstraints::createIOobject
 
     if (io.headerOk())
     {
-        Info<< "Creating fvConstraints from "
-            << io.instance()/io.name() << nl
-            << endl;
+        Info<< "Constructing " << typeName << " from "
+            << io.instance()/io.name() << endl;
 
         io.readOpt() = IOobject::MUST_READ_IF_MODIFIED;
         return io;
@@ -69,9 +68,8 @@ Foam::IOobject Foam::fvConstraints::createIOobject
         if (io.headerOk())
         {
             Warning
-                << "Creating fvConstraints from "
-                << io.instance()/io.name() << nl
-                << endl;
+                << "Constructing " << typeName << " from "
+                << io.instance()/io.name() << endl;
 
             io.readOpt() = IOobject::MUST_READ_IF_MODIFIED;
             return io;
@@ -85,7 +83,7 @@ Foam::IOobject Foam::fvConstraints::createIOobject
             if (io.headerOk())
             {
                 Warning
-                    << "Creating fvConstraints from "
+                    << "Constructing " << typeName << " from "
                     << io.instance()/io.name()
                     << " rather than system/fvConstraints"
                     << endl;
@@ -151,9 +149,9 @@ Foam::fvConstraints::fvConstraints
 {
     readHeaderOk(IOstream::ASCII, typeName);
 
-    const bool readFromFvConstraints(IOobject::name() == typeName);
+    const bool readFromFvConstraints = IOobject::name() == typeName;
 
-    const dictionary& dict(*this);
+    const dictionary& dict = *this;
 
     // Count number of active fvConstraints
     label count = 0;
@@ -168,6 +166,8 @@ Foam::fvConstraints::fvConstraints
     PtrListDictionary<fvConstraint>::setSize(count);
 
     constrainedFields_.setSize(count);
+
+    Info<< incrIndent;
 
     label i = 0;
     forAllConstIter(dictionary, dict, iter)
@@ -201,6 +201,8 @@ Foam::fvConstraints::fvConstraints
             }
         }
     }
+
+    Info<< decrIndent;
 
     PtrListDictionary<fvConstraint>::setSize(i);
     constrainedFields_.setSize(i);

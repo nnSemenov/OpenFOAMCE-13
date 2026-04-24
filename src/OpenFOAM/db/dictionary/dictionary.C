@@ -27,8 +27,7 @@ License
 #include "dictionaryEntry.H"
 #include "regExp.H"
 #include "OSHA1stream.H"
-#include "unitSet.H"
-#include "stringOps.H"
+#include "printDictionary.H"
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
@@ -193,6 +192,18 @@ bool Foam::dictionary::findInPatterns
 }
 
 
+bool Foam::dictionary::haveDefaults(const dictionary& dict)
+{
+    return Foam::printDictionary::haveDefaults(dict);
+}
+
+
+Foam::dictionary& Foam::dictionary::defaults(const dictionary& dict)
+{
+    return Foam::printDictionary::defaults(dict);
+}
+
+
 bool Foam::dictionary::findInPatterns
 (
     const bool patternMatch,
@@ -224,89 +235,6 @@ bool Foam::dictionary::findInPatterns
 }
 
 
-void Foam::dictionary::assertNoConvertUnits
-(
-    const char* typeName,
-    const word& keyword,
-    const unitSet& defaultUnits,
-    ITstream& is
-) const
-{
-    if (!defaultUnits.standard())
-    {
-        FatalIOErrorInFunction(is)
-            << "Unit conversions are not supported when reading "
-            << typeName << " types" << abort(FatalError);
-    }
-}
-
-
-template<class T>
-T Foam::dictionary::readTypeAndConvertUnits
-(
-    const word& keyword,
-    const unitSet& defaultUnits,
-    ITstream& is
-) const
-{
-    // Read the units if they are before the value
-    unitSet units(defaultUnits);
-    const bool haveUnits = units.readIfPresent(keyword, *this, is);
-
-    // Read the value
-    T value = pTraits<T>(is);
-
-    // Read the units if they are after the value
-    if (!haveUnits && !is.eof())
-    {
-        units.readIfPresent(keyword, *this, is);
-    }
-
-    // Modify the value by the unit conversion
-    units.makeStandard(value);
-
-    return value;
-}
-
-
-#define IMPLEMENT_SPECIALISED_READ_TYPE(T, nullArg)                            \
-                                                                               \
-    template<>                                                                 \
-    Foam::T Foam::dictionary::readType                                         \
-    (                                                                          \
-        const word& keyword,                                                   \
-        const unitSet& defaultUnits,                                    \
-        ITstream& is                                                           \
-    ) const                                                                    \
-    {                                                                          \
-        return readTypeAndConvertUnits<T>(keyword, defaultUnits, is);          \
-    }                                                                          \
-                                                                               \
-    template<>                                                                 \
-    Foam::T Foam::dictionary::readType                                         \
-    (                                                                          \
-        const word& keyword,                                                   \
-        ITstream& is                                                           \
-    ) const                                                                    \
-    {                                                                          \
-        return readTypeAndConvertUnits<T>(keyword, units::any, is);            \
-    }
-
-#define IMPLEMENT_SPECIALISED_READ_PAIR_TYPE(T, nullArg)                       \
-    IMPLEMENT_SPECIALISED_READ_TYPE(Pair<Foam::T>, nullArg)
-
-#define IMPLEMENT_SPECIALISED_READ_LIST_TYPE(T, nullArg)                       \
-    IMPLEMENT_SPECIALISED_READ_TYPE(List<Foam::T>, nullArg)
-
-FOR_ALL_FIELD_TYPES(IMPLEMENT_SPECIALISED_READ_TYPE)
-FOR_ALL_FIELD_TYPES(IMPLEMENT_SPECIALISED_READ_PAIR_TYPE)
-FOR_ALL_FIELD_TYPES(IMPLEMENT_SPECIALISED_READ_LIST_TYPE)
-
-#undef IMPLEMENT_SPECIALISED_READ_TYPE
-#undef IMPLEMENT_SPECIALISED_READ_PAIR_TYPE
-#undef IMPLEMENT_SPECIALISED_READ_LIST_TYPE
-
-
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 Foam::dictionary::dictionary()
@@ -332,8 +260,8 @@ Foam::dictionary::dictionary
 :
     dictionaryName
     (
-        parentDict.name().size()
-      ? parentDict.name()/name
+        parentDict.currentName().size()
+      ? parentDict.currentName()/name
       : name
     ),
     parent_(parentDict),
@@ -370,25 +298,8 @@ Foam::dictionary::dictionary
 
 Foam::dictionary::dictionary(const dictionary& dict)
 :
-    dictionaryName(dict.name()),
-    IDLList<entry>(dict, *this),
-    parent_(dictionary::null),
-    filePtr_(nullptr)
-{
-    forAllIter(IDLList<entry>, *this, iter)
-    {
-        hashedEntries_.insert(iter().keyword(), &iter());
-
-        if (iter().keyword().isPattern())
-        {
-            patternEntries_.insert(&iter());
-            patternRegexps_.insert
-            (
-                autoPtr<regExp>(new regExp(iter().keyword()))
-            );
-        }
-    }
-}
+    dictionary(dictionary::null, dict)
+{}
 
 
 Foam::dictionary::dictionary(const dictionary* dictPtr)
@@ -413,7 +324,7 @@ Foam::autoPtr<Foam::dictionary> Foam::dictionary::clone() const
 
 Foam::dictionary::~dictionary()
 {
-    // cerr<< "~dictionary() " << name() << " " << long(this) << std::endl;
+    printDictionary::unset(*this);
 }
 
 
@@ -450,6 +361,31 @@ Foam::word Foam::dictionary::topDictKeyword() const
     else
     {
         return word::null;
+    }
+}
+
+
+const Foam::fileName& Foam::dictionary::currentName() const
+{
+    if (filePtr_)
+    {
+        const fileName& fName = filePtr_->name();
+
+        // If this is a sub-dictionary of the current file then we want to
+        // retain the sub-dictionary part of the name, so return the name
+        // rather than the file name
+        if (name().find(fName.c_str(), 0, fName.size()) != string::npos)
+        {
+            return name();
+        }
+
+        // Otherwise this is the top-level or the top-level of an included
+        // file, in which case we just want the name of the file
+        return fName;
+    }
+    else
+    {
+        return name();
     }
 }
 
@@ -1056,7 +992,7 @@ bool Foam::dictionary::add(entry* entryPtr, bool mergeEntry)
 
     if (hashedEntries_.insert(entryPtr->keyword(), entryPtr))
     {
-        entryPtr->name() = name() + '/' + entryPtr->keyword();
+        entryPtr->name() = currentName() + '/' + entryPtr->keyword();
         IDLList<entry>::append(entryPtr);
 
         if (entryPtr->keyword().isPattern())
@@ -1075,7 +1011,7 @@ bool Foam::dictionary::add(entry* entryPtr, bool mergeEntry)
         // If function entries are disabled allow duplicate entries
         if (entry::disableFunctionEntries)
         {
-            entryPtr->name() = name() + '/' + entryPtr->keyword();
+            entryPtr->name() = currentName() + '/' + entryPtr->keyword();
             IDLList<entry>::append(entryPtr);
 
             return true;

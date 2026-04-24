@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2020-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2020-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -80,9 +80,11 @@ Foam::laminarThermophysicalTransportModel
     {
         IOdictionary modelDict(header);
 
-        const word modelType(modelDict.subDict("laminar").lookup( "model"));
+        const dictionary& laminarDict(modelDict.subDict("laminar"));
 
-        Info<< "Selecting laminar thermophysical transport model "
+        const word modelType(laminarDict.lookup("model"));
+
+        Info<< indentOrNl << "Selecting laminar thermophysical transport model "
             << modelType << endl;
 
         typename dictionaryConstructorTable::iterator cstrIter =
@@ -98,6 +100,8 @@ Foam::laminarThermophysicalTransportModel
                 << exit(FatalError);
         }
 
+        printDictionary print(laminarDict.name());
+
         return autoPtr<laminarThermophysicalTransportModel>
         (
             cstrIter()(momentumTransport, thermo)
@@ -105,9 +109,12 @@ Foam::laminarThermophysicalTransportModel
     }
     else
     {
-        Info<< "Selecting default laminar thermophysical transport model "
+        Info<< indentOrNl
+            << "Selecting default laminar thermophysical transport model "
             << laminarThermophysicalTransportModels::unityLewisFourier<
                BasicThermophysicalTransportModel>::typeName << endl;
+
+        printDictionary print(header.name());
 
         return autoPtr<laminarThermophysicalTransportModel>
         (

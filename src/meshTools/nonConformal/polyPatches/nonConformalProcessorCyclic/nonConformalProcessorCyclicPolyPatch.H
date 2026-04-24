@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2023 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -85,8 +85,7 @@ public:
             const int myProcNo,
             const int neighbProcNo,
             const word& referPatchName,
-            const word& origPatchName,
-            const word& patchType = typeName
+            const word& origPatchName
         );
 
         //- Construct from dictionary
@@ -95,8 +94,7 @@ public:
             const word& name,
             const dictionary& dict,
             const label index,
-            const polyBoundaryMesh&,
-            const word& patchType
+            const polyBoundaryMesh&
         );
 
         //- Construct as copy, resetting the boundary mesh
@@ -155,6 +153,12 @@ public:
 
 
     // Member Functions
+
+        //- Return true as this patch is a constraint type
+        virtual bool constraint() const
+        {
+            return true;
+        }
 
         //- Get the referred patch
         const nonConformalCyclicPolyPatch& referPatch() const

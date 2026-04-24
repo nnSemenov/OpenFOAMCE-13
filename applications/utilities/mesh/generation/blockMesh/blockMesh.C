@@ -216,6 +216,8 @@ int main(int argc, char *argv[])
 
     Info<< nl << "Creating polyMesh from blockMesh" << endl;
 
+    units::setLength(blocks.scaleFactor());
+
     word defaultFacesName = "defaultFaces";
     word defaultFacesType = emptyPolyPatch::typeName;
     polyMesh mesh
@@ -240,15 +242,18 @@ int main(int argc, char *argv[])
     // Read in a list of dictionaries for the merge patch pairs
     if (meshDict.found("mergePatchPairs"))
     {
-        List<Pair<word>> patchPairNames
+        const List<Pair<word>> patchPairNames
         (
             meshDict.lookup("mergePatchPairs")
         );
 
+        const scalar mergeTolerance =
+            meshDict.lookupOrDefault<scalar>("mergeTolerance", 1e-4);
+
         if (patchPairNames.size())
         {
             const word oldInstance = mesh.pointsInstance();
-            mergePatchPairs(mesh, patchPairNames, 1e-4);
+            mergePatchPairs(mesh, patchPairNames, mergeTolerance);
             mesh.setInstance(oldInstance);
         }
     }

@@ -13,6 +13,8 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+#includeFunc writeObjects(bSource)
+#includeFunc bXiQdot
 #includeFunc bXiProgress
 #includeFunc cellMin(b)
 

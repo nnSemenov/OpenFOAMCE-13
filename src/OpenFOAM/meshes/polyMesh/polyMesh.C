@@ -33,7 +33,6 @@ License
 #include "processorPolyPatch.H"
 #include "polyMeshTetDecomposition.H"
 #include "meshObjects.H"
-#include "pointMesh.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
@@ -44,8 +43,6 @@ namespace Foam
 
 
 Foam::word Foam::polyMesh::defaultRegion = "region0";
-
-
 Foam::word Foam::polyMesh::meshSubDir = "polyMesh";
 
 
@@ -344,13 +341,12 @@ Foam::polyMesh::polyMesh(const IOobject& io)
     boundary_.calcGeometry();
 
     // Warn if global empty mesh
-    const bool complete = Pstream::parRun() || !time().processorCase();
-    if (complete && returnReduce(nPoints(), sumOp<label>()) == 0)
+    if (time().completeCase() && returnReduce(nPoints(), sumOp<label>()) == 0)
     {
         WarningInFunction
             << "no points in mesh" << endl;
     }
-    if (complete && returnReduce(nCells(), sumOp<label>()) == 0)
+    if (time().completeCase() && returnReduce(nCells(), sumOp<label>()) == 0)
     {
         WarningInFunction
             << "no cells in mesh" << endl;
@@ -721,8 +717,11 @@ void Foam::polyMesh::resetPrimitives
     const bool validBoundary
 )
 {
-    // Clear addressing. Keep geometric props and updateable props for mapping.
-    clearAddressing(true);
+    // Clear mesh objects
+    meshObjects::clear<polyMesh, DeletableMeshObject>(*this);
+
+    // Clear addressing
+    clearAddressing();
 
     // Take over new primitive data.
     // Optimised to avoid overwriting data at all
@@ -809,14 +808,40 @@ void Foam::polyMesh::resetPrimitives
                 << exit(FatalError);
         }
     }
+
+    // Mapping handled by specific mapping function
+    // meshObjects::reset<polyMesh>(*this);
 }
 
 
 void Foam::polyMesh::swap(polyMesh& otherMesh)
 {
-    // Clear addressing. Keep geometric and updatable properties for mapping.
-    clearAddressing(true);
-    otherMesh.clearAddressing(true);
+    // Keep meshObjects that have an topoChange callback
+    meshObjects::clearUpto
+    <
+        polyMesh,
+        DeletableMeshObject,
+        TopoChangeableMeshObject
+    >
+    (
+        *this
+    );
+
+    // Clear addressing
+    clearAddressing();
+
+    // Keep meshObjects that have an topoChange callback
+    meshObjects::clearUpto
+    <
+        polyMesh,
+        DeletableMeshObject,
+        TopoChangeableMeshObject
+    >
+    (
+        otherMesh
+    );
+
+    otherMesh.clearAddressing();
 
     // Swap the primitives
     points_.swap(otherMesh.points_);
@@ -925,16 +950,8 @@ void Foam::polyMesh::swap(polyMesh& otherMesh)
     boundary_.calcGeometry();
     otherMesh.boundary_.calcGeometry();
 
-    // Update the optional pointMesh with respect to the updated polyMesh
-    if (foundObject<pointMesh>(pointMesh::typeName))
-    {
-        pointMesh::New(*this).reset();
-    }
-
-    if (otherMesh.foundObject<pointMesh>(pointMesh::typeName))
-    {
-        pointMesh::New(*this).reset();
-    }
+    // Reset permanent meshObjects with respect to the updated polyMesh
+    meshObjects::swap<polyMesh>(*this, otherMesh);
 
     // Swap zones
     pointZones_.swap(otherMesh.pointZones_);
@@ -1171,21 +1188,12 @@ void Foam::polyMesh::reorderPatches
 {
     // Clear local fields and e.g. polyMesh parallelInfo
     boundary_.clearGeom();
-    clearAddressing(true);
+    clearAddressing();
 
     // Clear all but RepatchableMeshObjects
     meshObjects::clearUpto
     <
         polyMesh,
-        DeletableMeshObject,
-        RepatchableMeshObject
-    >
-    (
-        *this
-    );
-    meshObjects::clearUpto
-    <
-        pointMesh,
         DeletableMeshObject,
         RepatchableMeshObject
     >
@@ -1202,7 +1210,6 @@ void Foam::polyMesh::reorderPatches
 
     // Warn mesh objects
     meshObjects::reorderPatches<polyMesh>(*this, newToOld, validBoundary);
-    meshObjects::reorderPatches<pointMesh>(*this, newToOld, validBoundary);
 }
 
 
@@ -1239,21 +1246,12 @@ void Foam::polyMesh::addPatch
 
     // Clear local fields and e.g. polyMesh parallelInfo
     boundary_.clearGeom();
-    clearAddressing(true);
+    clearAddressing();
 
     // Clear all but RepatchableMeshObjects
     meshObjects::clearUpto
     <
         polyMesh,
-        DeletableMeshObject,
-        RepatchableMeshObject
-    >
-    (
-        *this
-    );
-    meshObjects::clearUpto
-    <
-        pointMesh,
         DeletableMeshObject,
         RepatchableMeshObject
     >
@@ -1276,7 +1274,6 @@ void Foam::polyMesh::addPatch
 
     // Warn mesh objects
     meshObjects::addPatch<polyMesh>(*this, insertPatchi);
-    meshObjects::addPatch<pointMesh>(*this, insertPatchi);
 }
 
 
@@ -1400,7 +1397,6 @@ void Foam::polyMesh::setPoints(const pointField& newPoints)
     solutionD_ = Zero;
 
     meshObjects::movePoints<polyMesh>(*this);
-    meshObjects::movePoints<pointMesh>(*this);
 }
 
 
@@ -1456,7 +1452,6 @@ Foam::tmp<Foam::scalarField> Foam::polyMesh::movePoints
     solutionD_ = Zero;
 
     meshObjects::movePoints<polyMesh>(*this);
-    meshObjects::movePoints<pointMesh>(*this);
 
     return sweptVols;
 }

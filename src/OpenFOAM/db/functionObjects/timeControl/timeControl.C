@@ -158,7 +158,7 @@ void Foam::timeControl::read(const dictionary& dict)
                 (
                     "timeDelta",
                     units::none,
-                    1e-3*time_.userDeltaTValue()
+                    scalar(1e-3*time_.userDeltaTValue())
                 );
 
             if (dict.found(timesName))
@@ -254,7 +254,8 @@ void Foam::timeControl::read(const dictionary& dict)
 bool Foam::timeControl::active() const
 {
     return
-        time_.value() >= startTime_ - 0.5*time_.deltaTValue()
+        timeControl_ != timeControls::none
+     && time_.value() >= startTime_ - 0.5*time_.deltaTValue()
      && time_.value() <= endTime_;
 }
 

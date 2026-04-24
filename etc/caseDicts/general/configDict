@@ -1,0 +1,43 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  dev
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      configDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Local Debug, Info and Optimisation switches
+// The following command shows the current parameters, which can be overridden
+// below
+//     foamToC -switches
+
+DebugSwitches
+{
+}
+
+InfoSwitches
+{
+    writePrecision  6;
+}
+
+OptimisationSwitches
+{
+    fileHandler     uncollated;
+}
+
+// Local unit set and/or conversions
+units
+{
+    set        SI;
+    day        24 [hr];
+}
+
+// ************************************************************************* //

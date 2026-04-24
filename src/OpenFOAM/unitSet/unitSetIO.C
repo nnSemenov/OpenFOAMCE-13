@@ -23,8 +23,9 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "unitSet.H"
+#include "units.H"
 #include "dictionary.H"
+#include "NamedEnum.H"
 #include "symbols.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -122,14 +123,6 @@ bool Foam::unitSet::readIfPresent
     }
     else
     {
-        if (dictionary::writeOptionalEntries)
-        {
-            IOInfoInFunction(dict)
-                << "Optional entry '" << keyword << "' is not present,"
-                << " the default value '" << info() << "' will be used."
-                << endl;
-        }
-
         return false;
     }
 }

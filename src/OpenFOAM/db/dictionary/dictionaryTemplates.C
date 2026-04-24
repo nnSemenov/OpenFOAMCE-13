@@ -26,6 +26,7 @@ License
 #include "dictionary.H"
 #include "primitiveEntry.H"
 #include "dictionaryEntry.H"
+#include "unitSet.H"
 
 // * * * * * * * * * * * * * Static Member Functions * * * * * * * * * * * * //
 
@@ -40,27 +41,6 @@ std::tuple<const Entries& ...> Foam::dictionary::entries
 
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
-
-template<class T>
-T Foam::dictionary::readType
-(
-    const word& keyword,
-    const unitSet& defaultUnits,
-    ITstream& is
-) const
-{
-    assertNoConvertUnits(pTraits<T>::typeName, keyword, defaultUnits, is);
-
-    return pTraits<T>(is);
-}
-
-
-template<class T>
-T Foam::dictionary::readType(const word& keyword, ITstream& is) const
-{
-    return pTraits<T>(is);
-}
-
 
 template<class ... Entries, size_t ... Indices>
 void Foam::dictionary::set
@@ -153,15 +133,15 @@ T Foam::dictionary::lookup
             << name() << exit(FatalIOError);
     }
 
-    return readType<T>(keyword, entryPtr->stream());
+    return Foam::readAndMaybeConvert<T>(entryPtr->stream());
 }
 
 
-template<class T>
+template<class T, class DefaultUnits>
 T Foam::dictionary::lookup
 (
     const word& keyword,
-    const unitSet& defaultUnits,
+    const DefaultUnits& defaultUnits,
     bool recursive,
     bool patternMatch
 ) const
@@ -175,7 +155,7 @@ T Foam::dictionary::lookup
             << name() << exit(FatalIOError);
     }
 
-    return readType<T>(keyword, defaultUnits, entryPtr->stream());
+    return Foam::readAndConvert<T>(entryPtr->stream(), defaultUnits);
 }
 
 
@@ -192,7 +172,7 @@ T Foam::dictionary::lookupBackwardsCompatible
 
     if (entryPtr)
     {
-        return readType<T>(entryPtr->keyword(), entryPtr->stream());
+        return Foam::readAndMaybeConvert<T>(entryPtr->stream());
     }
     else
     {
@@ -202,11 +182,11 @@ T Foam::dictionary::lookupBackwardsCompatible
 }
 
 
-template<class T>
+template<class T, class DefaultUnits>
 T Foam::dictionary::lookupBackwardsCompatible
 (
     const wordList& keywords,
-    const unitSet& defaultUnits,
+    const DefaultUnits& defaultUnits,
     bool recursive,
     bool patternMatch
 ) const
@@ -216,8 +196,7 @@ T Foam::dictionary::lookupBackwardsCompatible
 
     if (entryPtr)
     {
-        return
-            readType<T>(entryPtr->keyword(), defaultUnits, entryPtr->stream());
+        return Foam::readAndConvert<T>(entryPtr->stream(), defaultUnits);
     }
     else
     {
@@ -231,23 +210,24 @@ template<class T>
 T Foam::dictionary::lookupOrDefault
 (
     const word& keyword,
-    const T& defaultValue,
-    const bool writeDefault
+    const T& defaultValue
 ) const
 {
     const entry* entryPtr = lookupEntryPtr(keyword, false, false);
 
     if (entryPtr)
     {
-        return readType<T>(keyword, entryPtr->stream());
+        return Foam::readAndMaybeConvert<T>(entryPtr->stream());
     }
     else
     {
-        if (writeDefault)
+        if (haveDefaults(*this))
         {
-            Info<< indent << "Default: " << keyword
-                << " " << defaultValue
-                << " in " << name().relativePath() << endl;
+            defaults(*this).add
+            (
+                new primitiveEntry(keyword, defaultValue),
+                true
+            );
         }
 
         return defaultValue;
@@ -255,28 +235,29 @@ T Foam::dictionary::lookupOrDefault
 }
 
 
-template<class T>
+template<class T, class DefaultUnits>
 T Foam::dictionary::lookupOrDefault
 (
     const word& keyword,
-    const unitSet& defaultUnits,
-    const T& defaultValue,
-    const bool writeDefault
+    const DefaultUnits& defaultUnits,
+    const T& defaultValue
 ) const
 {
     const entry* entryPtr = lookupEntryPtr(keyword, false, false);
 
     if (entryPtr)
     {
-        return readType<T>(keyword, defaultUnits, entryPtr->stream());
+        return Foam::readAndConvert<T>(entryPtr->stream(), defaultUnits);
     }
     else
     {
-        if (writeDefault)
+        if (haveDefaults(*this))
         {
-            Info<< indent << "Default: " << keyword
-                << " " << defaultValue
-                << " in " << name().relativePath() << endl;
+            defaults(*this).add
+            (
+                new primitiveEntry(keyword, defaultValue),
+                true
+            );
         }
 
         return defaultValue;
@@ -296,7 +277,7 @@ T Foam::dictionary::lookupOrDefaultBackwardsCompatible
 
     if (entryPtr)
     {
-        return readType<T>(entryPtr->keyword(), entryPtr->stream());
+        return Foam::readAndMaybeConvert<T>(entryPtr->stream());
     }
     else
     {
@@ -306,11 +287,11 @@ T Foam::dictionary::lookupOrDefaultBackwardsCompatible
 }
 
 
-template<class T>
+template<class T, class DefaultUnits>
 T Foam::dictionary::lookupOrDefaultBackwardsCompatible
 (
     const wordList& keywords,
-    const unitSet& defaultUnits,
+    const DefaultUnits& defaultUnits,
     const T& defaultValue
 ) const
 {
@@ -319,8 +300,7 @@ T Foam::dictionary::lookupOrDefaultBackwardsCompatible
 
     if (entryPtr)
     {
-        return
-            readType<T>(entryPtr->keyword(), defaultUnits, entryPtr->stream());
+        return Foam::readAndConvert<T>(entryPtr->stream(), defaultUnits);
     }
     else
     {
@@ -341,15 +321,17 @@ T Foam::dictionary::lookupOrAddDefault
 
     if (entryPtr)
     {
-        return readType<T>(keyword, entryPtr->stream());
+        return Foam::readAndMaybeConvert<T>(entryPtr->stream());
     }
     else
     {
-        if (writeOptionalEntries > 1)
+        if (haveDefaults(*this))
         {
-            Info<< indent << "Added default: " << keyword
-                << " " << defaultValue
-                << " to " << name().relativePath() << endl;
+            defaults(*this).add
+            (
+                new primitiveEntry(keyword, defaultValue),
+                true
+            );
         }
 
         add(new primitiveEntry(keyword, defaultValue));
@@ -371,28 +353,21 @@ bool Foam::dictionary::readIfPresent
 
     if (entryPtr)
     {
-        val = readType<T>(keyword, entryPtr->stream());
+        val = Foam::readAndMaybeConvert<T>(entryPtr->stream());
         return true;
     }
     else
     {
-        if (writeOptionalEntries > 1)
-        {
-            Info<< indent << "Default: " << keyword
-                << " " << val
-                << " in " << name().relativePath() << endl;
-        }
-
         return false;
     }
 }
 
 
-template<class T>
+template<class T, class DefaultUnits>
 bool Foam::dictionary::readIfPresent
 (
     const word& keyword,
-    const unitSet& defaultUnits,
+    const DefaultUnits& defaultUnits,
     T& val,
     bool recursive,
     bool patternMatch
@@ -402,18 +377,11 @@ bool Foam::dictionary::readIfPresent
 
     if (entryPtr)
     {
-        val = readType<T>(keyword, defaultUnits, entryPtr->stream());
+        val = Foam::readAndConvert<T>(entryPtr->stream(), defaultUnits);
         return true;
     }
     else
     {
-        if (writeOptionalEntries > 1)
-        {
-            Info<< indent << "Default: " << keyword
-                << " " << val
-                << " in " << name().relativePath() << endl;
-        }
-
         return false;
     }
 }
@@ -530,12 +498,12 @@ void Foam::writeEntry
 }
 
 
-template<class EntryType>
+template<class EntryType, class DefaultUnits>
 void Foam::writeEntry
 (
     Ostream& os,
     const word& entryName,
-    const unitSet& defaultUnits,
+    const DefaultUnits& defaultUnits,
     const EntryType& value
 )
 {
@@ -561,12 +529,12 @@ void Foam::writeEntryIfDifferent
 }
 
 
-template<class EntryType>
+template<class EntryType, class DefaultUnits>
 void Foam::writeEntryIfDifferent
 (
     Ostream& os,
     const word& entryName,
-    const unitSet& defaultUnits,
+    const DefaultUnits& defaultUnits,
     const EntryType& value1,
     const EntryType& value2
 )

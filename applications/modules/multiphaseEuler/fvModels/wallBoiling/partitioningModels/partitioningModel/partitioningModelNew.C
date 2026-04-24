@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2016-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2016-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -35,7 +35,7 @@ Foam::wallBoilingModels::partitioningModel::New
 {
     word partitioningModelType(dict.lookup("type"));
 
-    Info<< "Selecting partitioningModel: "
+    Info<< indentOrNl << "Selecting partitioningModel "
         << partitioningModelType << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
@@ -50,6 +50,8 @@ Foam::wallBoilingModels::partitioningModel::New
             << dictionaryConstructorTablePtr_->sortedToc()
             << exit(FatalIOError);
     }
+
+    printDictionary print(dict);
 
     return cstrIter()(dict);
 }

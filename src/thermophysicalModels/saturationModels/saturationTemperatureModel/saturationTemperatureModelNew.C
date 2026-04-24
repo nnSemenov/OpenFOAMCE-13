@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2015-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2015-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -71,7 +71,8 @@ Foam::saturationTemperatureModel::New
       : isDict ? dict.subDict(name)
       : dict.optionalSubDict(name + "Coeffs");
 
-    Info<< "Selecting " << typeName << " " << modelTypeName << endl;
+    Info<< indentOrNl << "Selecting " << typeName
+        << " " << modelTypeName << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find(modelTypeName);
@@ -85,6 +86,8 @@ Foam::saturationTemperatureModel::New
             << dictionaryConstructorTablePtr_->sortedToc()
             << exit(FatalIOError);
     }
+
+    printDictionary print(coeffDict);
 
     return cstrIter()(coeffDict);
 }
