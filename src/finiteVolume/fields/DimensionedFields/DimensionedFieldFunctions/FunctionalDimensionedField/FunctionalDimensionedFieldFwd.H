@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2012-2026 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,67 +23,25 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "IOMRFZoneList.H"
-#include "fvMesh.H"
-#include "Time.H"
+#ifndef FunctionalDimensionedFieldFwd_H
+#define FunctionalDimensionedFieldFwd_H
 
-// * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * * //
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-Foam::IOobject Foam::IOMRFZoneList::createIOobject
-(
-    const fvMesh& mesh
-) const
+namespace Foam
 {
-    typeIOobject<IOdictionary> io
-    (
-        "MRFProperties",
-        mesh.time().constant(),
-        mesh,
-        IOobject::MUST_READ,
-        IOobject::NO_WRITE
-    );
 
-    if (io.headerOk())
-    {
-        Info<< indentOrNl
-            << "Constructing MRF zones from " << io.name()
-            << endl;
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-        io.readOpt() = IOobject::MUST_READ_IF_MODIFIED;
-        return io;
-    }
-    else
-    {
-        io.readOpt() = IOobject::NO_READ;
-        return io;
-    }
-}
+template<class Type, class GeoMesh>
+class FunctionalDimensionedField;
 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-// * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
+} // End namespace Foam
 
-Foam::IOMRFZoneList::IOMRFZoneList
-(
-    const fvMesh& mesh
-)
-:
-    IOdictionary(createIOobject(mesh)),
-    MRFZoneList(mesh, *this)
-{}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-
-bool Foam::IOMRFZoneList::read()
-{
-    if (regIOobject::read())
-    {
-        MRFZoneList::read(*this);
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
+#endif
 
 // ************************************************************************* //

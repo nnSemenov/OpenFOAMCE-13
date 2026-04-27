@@ -53,9 +53,8 @@ Foam::IOobject Foam::LagrangianModels::io(const LagrangianMesh& mesh) const
     }
     else
     {
-        Info<< indentOrNl
-            << "Constructing " << typeName << " from "
-            << result.instance()/result.name() << endl;
+        Info<< indentOrNl << "Constructing " << typeName << " from "
+            << result.relativeObjectPath() << endl;
     }
 
     return result;
@@ -127,6 +126,8 @@ Foam::LagrangianModels::LagrangianModels(const LagrangianMesh& mesh)
     // Size the storage
     PtrListDictionary<LagrangianModel>::setSize(i);
     addSupFields_.setSize(i);
+
+    printDictionary print(*this);
 
     // Iterate through the dictionary to construct the models
     i = 0;

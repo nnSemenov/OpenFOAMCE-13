@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2025-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -42,7 +42,7 @@ void Foam::cloudLagrangianModel::assertCloud() const
     if (!isCloud<Cloud, Clouds ...>())
     {
         FatalErrorInFunction
-            << "The Larangian model '" << name_ << "' of cloud '"
+            << "The Lagrangian model '" << name_ << "' of cloud '"
             << cloud_.mesh().name() << "' requires a cloud of type "
             << CloudTypes<Cloud, Clouds ...>::typesString("or").c_str()
             << " (or a derivation thereof), rather than '" << cloud_.type()

@@ -53,14 +53,17 @@ Foam::IOobject Foam::fvModels::createIOobject
 
     if (io.headerOk())
     {
-        Info<< "Constructing " << typeName << " from "
-            << io.instance()/io.name() << endl;
+        Info<< indentOrNl << "Constructing " << typeName << " from "
+            << io.relativeObjectPath() << endl;
 
         io.readOpt() = IOobject::MUST_READ_IF_MODIFIED;
         return io;
     }
     else
     {
+        const fileName preferredPath =
+            mesh.time().constant()/io.db().dbDir()/io.local()/io.name();
+
         // For backward-compatibility
         // check if the fvOptions file is in constant
         io.rename("fvOptions");
@@ -68,9 +71,9 @@ Foam::IOobject Foam::fvModels::createIOobject
         if (io.headerOk())
         {
             Warning
-                << "Constructing " << typeName << " from "
-                << io.instance()/io.name()
-                << endl;
+                << indentOrNl << "Constructing " << typeName << " from "
+                << io.relativeObjectPath() << " rather than "
+                << preferredPath << endl;
 
             io.readOpt() = IOobject::MUST_READ_IF_MODIFIED;
             return io;
@@ -84,10 +87,9 @@ Foam::IOobject Foam::fvModels::createIOobject
             if (io.headerOk())
             {
                 Warning
-                    << "Constructing " << typeName << " from "
-                    << io.instance()/io.name()
-                    << " rather than constant/fvModels"
-                    << endl;
+                    << indentOrNl << "Constructing " << typeName << " from "
+                    << io.relativeObjectPath() << " rather than "
+                    << preferredPath << endl;
 
                 io.readOpt() = IOobject::MUST_READ_IF_MODIFIED;
                 return io;
@@ -173,7 +175,7 @@ Foam::fvModels::fvModels
 
     addSupFields_.setSize(count);
 
-    Info<< incrIndent;
+    printDictionary print(*this);
 
     label i = 0;
     forAllConstIter(dictionary, dict, iter)
@@ -207,8 +209,6 @@ Foam::fvModels::fvModels
             }
         }
     }
-
-    Info<< decrIndent;
 
     PtrListDictionary<fvModel>::setSize(i);
     addSupFields_.setSize(i);
