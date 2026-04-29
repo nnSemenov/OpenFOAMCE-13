@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -70,15 +70,15 @@ Foam::BreakupModel<CloudType>::BreakupModel
 :
     CloudSubModelBase<CloudType>(owner, dict, typeName, type),
     solveOscillationEq_(solveOscillationEq),
-    y0_(this->coeffDict().template lookupOrDefault<scalar>("y0", 0.0)),
-    yDot0_(this->coeffDict().template lookupOrDefault<scalar>("yDot0", 0.0)),
+    y0_(this->typeDict().template lookupOrDefault<scalar>("y0", 0.0)),
+    yDot0_(this->typeDict().template lookupOrDefault<scalar>("yDot0", 0.0)),
     TABComega_(8),
     TABCmu_(5),
     TABtwoWeCrit_(12)
 {
-    if (solveOscillationEq_ && dict.found("TABCoeffs"))
+    if (solveOscillationEq_ && (dict.found("TAB") || dict.found("TABCoeffs")))
     {
-        const dictionary coeffs(dict.subDict("TABCoeffs"));
+        const dictionary coeffs(dict.typeDict("TAB"));
         coeffs.lookup("Comega") >> TABComega_;
         coeffs.lookup("Cmu") >> TABCmu_;
         scalar WeCrit(coeffs.template lookup<scalar>("WeCrit"));

@@ -125,7 +125,7 @@ public:
         {
             const word scopedName = name_.name();
 
-            string::size_type i = scopedName.rfind('/');
+            const string::size_type i = scopedName.find_last_of("/!");
 
             if (i == scopedName.npos)
             {
@@ -180,6 +180,16 @@ class dictionary
 
 
     // Private Member Functions
+
+        //- Construct the path name from the name of the parent dictionary
+        //  and the given name.
+        //  A '/' separator is used unless the parent dictionary is top-level
+        //  and hence has the name of the file in which case a '!' is used
+        fileName pathName
+        (
+            const dictionary& parentDict,
+            const fileName& name
+        ) const;
 
         //- Find and return an entry data stream pointer if present
         //  otherwise return nullptr.
@@ -658,6 +668,19 @@ public:
             //- Find and return a sub-dictionary if found
             //  otherwise return this dictionary
             const dictionary& optionalSubDict(const word&) const;
+
+            //- Find and return a type sub-dictionary
+            //  looked-up from typeName with optional "Coeffs" appended
+            const dictionary& typeDict(const word& typeName) const;
+
+            //- Find and return a type sub-dictionary
+            //  looked-up from typeName with optional "Coeffs" appended
+            //  or empty dictionary if the sub-dictionary does not exist
+            const dictionary& typeOrEmptyDict(const word& typeName) const;
+
+            //- Find and return an optional type sub-dictionary
+            //  looked-up from typeName with optional "Coeffs" appended
+            const dictionary& optionalTypeDict(const word& typeName) const;
 
             //- Find and return a sub-dictionary by scoped lookup
             //  i.e. the keyword may contain scope characters.

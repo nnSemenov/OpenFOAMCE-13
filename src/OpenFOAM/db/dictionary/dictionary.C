@@ -31,6 +31,21 @@ License
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
+Foam::fileName Foam::dictionary::pathName
+(
+    const dictionary& parentDict,
+    const fileName& name
+) const
+{
+    return
+        parentDict.currentName().size()
+      ? parentDict.parent().isNull()
+        ? fileName(parentDict.currentName() + '!' + name)
+        : parentDict.currentName()/name
+      : name;
+}
+
+
 const Foam::entry* Foam::dictionary::lookupScopedSubEntryPtr
 (
     const word& keyword,
@@ -258,12 +273,7 @@ Foam::dictionary::dictionary
     const dictionary& parentDict
 )
 :
-    dictionaryName
-    (
-        parentDict.currentName().size()
-      ? parentDict.currentName()/name
-      : name
-    ),
+    dictionaryName(pathName(parentDict, name)),
     parent_(parentDict),
     filePtr_(nullptr)
 {}
@@ -862,6 +872,76 @@ const Foam::dictionary& Foam::dictionary::optionalSubDict
 }
 
 
+const Foam::dictionary& Foam::dictionary::typeDict
+(
+    const word& typeName
+) const
+{
+    const entry* entryPtr = lookupEntryPtr(typeName, false, true);
+
+    if (!entryPtr)
+    {
+        entryPtr = lookupEntryPtr(typeName + "Coeffs", false, true);
+    }
+
+    if (entryPtr == nullptr)
+    {
+        // Generate error message using the typeName keyword
+        return subDict(typeName);
+    }
+    else
+    {
+        return entryPtr->dict();
+    }
+}
+
+
+const Foam::dictionary& Foam::dictionary::typeOrEmptyDict
+(
+    const word& typeName
+) const
+{
+    const entry* entryPtr = lookupEntryPtr(typeName, false, true);
+
+    if (!entryPtr)
+    {
+        entryPtr = lookupEntryPtr(typeName + "Coeffs", false, true);
+    }
+
+    if (entryPtr == nullptr)
+    {
+        return null;
+    }
+    else
+    {
+        return entryPtr->dict();
+    }
+}
+
+
+const Foam::dictionary& Foam::dictionary::optionalTypeDict
+(
+    const word& typeName
+) const
+{
+    const entry* entryPtr = lookupEntryPtr(typeName, false, true);
+
+    if (!entryPtr)
+    {
+        entryPtr = lookupEntryPtr(typeName + "Coeffs", false, true);
+    }
+
+    if (entryPtr)
+    {
+        return entryPtr->dict();
+    }
+    else
+    {
+        return *this;
+    }
+}
+
+
 const Foam::dictionary& Foam::dictionary::scopedDict(const word& keyword) const
 {
     if (keyword == "")
@@ -964,7 +1044,7 @@ bool Foam::dictionary::add(entry* entryPtr, bool mergeEntry)
 
             if (hashedEntries_.insert(entryPtr->keyword(), entryPtr))
             {
-                entryPtr->name() = name() + '/' + entryPtr->keyword();
+                entryPtr->name() = pathName(*this, entryPtr->keyword());
 
                 if (entryPtr->keyword().isPattern())
                 {
@@ -992,7 +1072,7 @@ bool Foam::dictionary::add(entry* entryPtr, bool mergeEntry)
 
     if (hashedEntries_.insert(entryPtr->keyword(), entryPtr))
     {
-        entryPtr->name() = currentName() + '/' + entryPtr->keyword();
+        entryPtr->name() = pathName(*this, entryPtr->keyword());
         IDLList<entry>::append(entryPtr);
 
         if (entryPtr->keyword().isPattern())
@@ -1011,7 +1091,7 @@ bool Foam::dictionary::add(entry* entryPtr, bool mergeEntry)
         // If function entries are disabled allow duplicate entries
         if (entry::disableFunctionEntries)
         {
-            entryPtr->name() = currentName() + '/' + entryPtr->keyword();
+            entryPtr->name() = pathName(*this, entryPtr->keyword());
             IDLList<entry>::append(entryPtr);
 
             return true;
@@ -1604,7 +1684,7 @@ void Foam::dictArgList
 
 Foam::Pair<Foam::word> Foam::dictAndKeyword(const word& scopedName)
 {
-    string::size_type i = scopedName.find_last_of('/');
+    const string::size_type i = scopedName.find_last_of("/!");
 
     if (i != string::npos)
     {

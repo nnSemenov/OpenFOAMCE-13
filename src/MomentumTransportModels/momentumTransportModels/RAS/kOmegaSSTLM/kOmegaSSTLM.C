@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2016-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2016-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -82,7 +82,11 @@ tmp<volScalarField::Internal> kOmegaSSTLM<BasicMomentumTransportModel>::Fthetat
     const volScalarField::Internal& omega = this->omega_();
     const volScalarField::Internal& y = this->y()();
 
-    const volScalarField::Internal delta(375*Omega*nu*ReThetat_()*y/sqr(Us));
+    const volScalarField::Internal yBydelta
+    (
+        sqr(Us)
+       /max(375*Omega*nu*ReThetat_(), sqr(deltaU_))
+    );
     const volScalarField::Internal ReOmega(sqr(y)*omega/nu);
     const volScalarField::Internal Fwake(exp(-sqr(ReOmega/1e5)));
 
@@ -93,7 +97,7 @@ tmp<volScalarField::Internal> kOmegaSSTLM<BasicMomentumTransportModel>::Fthetat
         (
             max
             (
-                Fwake*exp(-pow4((y/delta))),
+                Fwake*exp(-pow4(yBydelta)),
                 (1 - sqr((gammaInt_() - 1.0/ce2_)/(1 - 1.0/ce2_)))
             ),
             scalar(1)
@@ -355,14 +359,14 @@ kOmegaSSTLM<BasicMomentumTransportModel>::kOmegaSSTLM
         viscosity
     ),
 
-    ca1_("ca1", this->coeffDict(), 2),
-    ca2_("ca2", this->coeffDict(), 0.06),
-    ce1_("ce1", this->coeffDict(), 1),
-    ce2_("ce2", this->coeffDict(), 50),
-    cThetat_("cThetat", this->coeffDict(), 0.03),
-    sigmaThetat_("sigmaThetat", this->coeffDict(), 2),
-    lambdaErr_(this->coeffDict().lookupOrDefault("lambdaErr", 1e-6)),
-    maxLambdaIter_(this->coeffDict().lookupOrDefault("maxLambdaIter", 10)),
+    ca1_("ca1", this->typeDict(), 2),
+    ca2_("ca2", this->typeDict(), 0.06),
+    ce1_("ce1", this->typeDict(), 1),
+    ce2_("ce2", this->typeDict(), 50),
+    cThetat_("cThetat", this->typeDict(), 0.03),
+    sigmaThetat_("sigmaThetat", this->typeDict(), 2),
+    lambdaErr_(this->typeDict().lookupOrDefault("lambdaErr", 1e-6)),
+    maxLambdaIter_(this->typeDict().lookupOrDefault("maxLambdaIter", 10)),
     deltaU_("deltaU", dimVelocity, small),
 
     ReThetat_
@@ -412,14 +416,14 @@ bool kOmegaSSTLM<BasicMomentumTransportModel>::read()
 {
     if (kOmegaSST<BasicMomentumTransportModel>::read())
     {
-        ca1_.readIfPresent(this->coeffDict());
-        ca2_.readIfPresent(this->coeffDict());
-        ce1_.readIfPresent(this->coeffDict());
-        ce2_.readIfPresent(this->coeffDict());
-        sigmaThetat_.readIfPresent(this->coeffDict());
-        cThetat_.readIfPresent(this->coeffDict());
-        this->coeffDict().readIfPresent("lambdaErr", lambdaErr_);
-        this->coeffDict().readIfPresent("maxLambdaIter", maxLambdaIter_);
+        ca1_.readIfPresent(this->typeDict());
+        ca2_.readIfPresent(this->typeDict());
+        ce1_.readIfPresent(this->typeDict());
+        ce2_.readIfPresent(this->typeDict());
+        sigmaThetat_.readIfPresent(this->typeDict());
+        cThetat_.readIfPresent(this->typeDict());
+        this->typeDict().readIfPresent("lambdaErr", lambdaErr_);
+        this->typeDict().readIfPresent("maxLambdaIter", maxLambdaIter_);
 
         return true;
     }

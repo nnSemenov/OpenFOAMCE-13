@@ -25,23 +25,23 @@ LES
 
     delta           smooth;
 
-    cubeRootVolCoeffs
+    cubeRootVol
     {
         deltaCoeff      1;
     }
 
-    PrandtlCoeffs
+    Prandtl
     {
         delta           cubeRootVol;
-        cubeRootVolCoeffs
+        cubeRootVol
         {
             deltaCoeff      1;
         }
 
-        smoothCoeffs
+        smooth
         {
             delta           cubeRootVol;
-            cubeRootVolCoeffs
+            cubeRootVol
             {
                 deltaCoeff      1;
             }
@@ -52,18 +52,18 @@ LES
         Cdelta          0.158;
     }
 
-    vanDriestCoeffs
+    vanDriest
     {
         delta           cubeRootVol;
-        cubeRootVolCoeffs
+        cubeRootVol
         {
             deltaCoeff      1;
         }
 
-        smoothCoeffs
+        smooth
         {
             delta           cubeRootVol;
-            cubeRootVolCoeffs
+            cubeRootVol
             {
                 deltaCoeff      1;
             }
@@ -75,10 +75,10 @@ LES
         Cdelta          0.158;
     }
 
-    smoothCoeffs
+    smooth
     {
         delta           cubeRootVol;
-        cubeRootVolCoeffs
+        cubeRootVol
         {
             deltaCoeff      1;
         }

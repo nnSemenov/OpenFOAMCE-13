@@ -24,13 +24,13 @@ libs            ("libzoltanDecomp.so");
 // distributor     parMetis;
 // libs            ("libparMetisDecomp.so");
 
-hierarchicalCoeffs
+hierarchical
 {
     n           (6 2 1);
     order       xyz;
 }
 
-zoltanCoeffs
+zoltan
 {
     lb_method   rcb;
 }
