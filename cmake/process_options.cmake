@@ -114,6 +114,22 @@ string(REPLACE "-std=c++" "-std=c" WM_CFLAGS "${WM_CXXFLAGS}")
 set(env_file ${CMAKE_BINARY_DIR}/FOAMenv.sh)
 configure_file(${CMAKE_CURRENT_LIST_DIR}/FOAMenv.sh.in ${env_file} @ONLY)
 
+
+set(env_var_names WM_MPLIB WM_OPTIONS WM_LABEL_SIZE WM_LABEL_OPTION LIB_SRC
+    FOAM_SRC
+    FOAM_APP
+    FOAM_MODULES
+    FOAM_SOLVERS
+    FOAM_UTILITIES
+    FOAM_LIBBIN
+    FOAM_APPBIN
+)
+foreach (var_name ${env_var_names})
+    set(ENV{${var_name}} ${var_name})
+endforeach ()
+
+
+
 install(FILES ${env_file}
     DESTINATION .
     PERMISSIONS OWNER_READ OWNER_WRITE
