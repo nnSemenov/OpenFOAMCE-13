@@ -129,7 +129,12 @@ Foam::RASModel<BasicMomentumTransportModel>::New
             << exit(FatalError);
     }
 
-    printDictionary print(RASdict.name());
+    printDictionary print
+    (
+        RASdict.name(),
+        RASdict.optionalSubDict(modelType + "Coeffs").name()
+    );
+
     return cstrIter()(alpha, rho, U, alphaRhoPhi, phi, viscosity);
 }
 

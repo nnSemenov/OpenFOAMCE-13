@@ -139,7 +139,12 @@ Foam::LESModel<BasicMomentumTransportModel>::New
             << exit(FatalError);
     }
 
-    printDictionary print(LESdict.name());
+    printDictionary print
+    (
+        LESdict.name(),
+        LESdict.optionalSubDict(modelType + "Coeffs").name()
+    );
+
     return cstrIter()(alpha, rho, U, alphaRhoPhi, phi, viscosity);
 }
 

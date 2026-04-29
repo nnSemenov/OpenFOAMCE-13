@@ -101,7 +101,11 @@ Foam::RASThermophysicalTransportModel
                 << exit(FatalError);
         }
 
-        printDictionary print(RASdict.name());
+        printDictionary print
+        (
+            RASdict.name(),
+            RASdict.optionalSubDict(modelType + "Coeffs")
+        );
 
         autoPtr<RASThermophysicalTransportModel> modelPtr
         (
@@ -124,8 +128,6 @@ Foam::RASThermophysicalTransportModel
         Info<< indentOrNl
             << "Selecting default RAS thermophysical transport model "
             <<  RASunityLewisEddyDiffusivity::typeName << endl;
-
-        printDictionary print(header.name());
 
         autoPtr<RASThermophysicalTransportModel> modelPtr
         (
