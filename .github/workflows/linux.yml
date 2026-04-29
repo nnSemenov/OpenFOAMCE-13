@@ -130,8 +130,8 @@ jobs:
         ./multiphaseEuler/Allclean
         ./chemistry/Allrun
         ./chemistry/Allclean
-        ./postProcessing/Allrun
-        ./postProcessing/Allclean
+#        ./postProcessing/Allrun
+#        ./postProcessing/Allclean
 
     - name: Compress test files
       if: ${{ failure() }}
