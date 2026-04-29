@@ -7,7 +7,7 @@ add_library(saturationModels SHARED
     saturationTemperatureModel/saturationTemperatureModelNew.C
 
     Antoine/Antoine.C
-    #AntoineExtended/AntoineExtended.C
+    AntoineExtended/AntoineExtended.C
     ArdenBuck/ArdenBuck.C
     constantPressure/constantPressure.C
     constantTemperature/constantTemperature.C
