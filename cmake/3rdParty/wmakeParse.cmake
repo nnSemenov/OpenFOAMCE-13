@@ -1,10 +1,14 @@
-find_package(wmakeParse CONFIG REQUIRED)
+find_package(wmakeParse
+    0.1.3
+    COMPONENTS wmakeParse parse-wmake
+    CONFIG
+    REQUIRED
+)
 
 function(wmake_parse_files file OUT_VAR)
     unset(${OUT_VAR} PARENT_SCOPE)
 
     get_target_property(parser_loc wmakeParse::parse-wmake LOCATION)
-#    message(STATUS "Found parse-wmake at ${parser_loc}")
 
     execute_process(
         COMMAND ${parser_loc} ${file} --strict --print-files
@@ -13,6 +17,5 @@ function(wmake_parse_files file OUT_VAR)
     )
 
     string(REPLACE "\n" ";" output ${output})
-#    list(LENGTH )
     set(${OUT_VAR} ${output} PARENT_SCOPE)
 endfunction()
