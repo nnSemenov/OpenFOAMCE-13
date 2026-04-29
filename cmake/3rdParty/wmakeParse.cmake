@@ -12,5 +12,7 @@ function(wmake_parse_files file OUT_VAR)
         OUTPUT_VARIABLE output
     )
 
+    string(REPLACE "\n" ";" output ${output})
+#    list(LENGTH )
     set(${OUT_VAR} ${output} PARENT_SCOPE)
 endfunction()
