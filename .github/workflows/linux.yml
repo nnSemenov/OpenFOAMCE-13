@@ -50,6 +50,17 @@ jobs:
 #    - name: Install paraview and related deps
 #      run: sudo apt install --fix-missing paraview paraview-dev libvtk9-dev
 
+    - name: Clone, build and install wmakeParser
+      run: |
+        mkdir 3rdParty
+        cd 3rdParty
+        git clone https://github.com/nnSemenov/wmakeParse
+        cd wmakeParse
+        git checkout v0.1.1
+        cmake -S -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -G Ninja -DCMAKE_C_COMPILER=$c_compiler -DCMAKE_CXX_COMPILER=$cxx_compiler
+        cmake --build build --parallel
+        sudo cmake --install build
+
     - name: Configure CMake
       run: cmake -S . -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -G Ninja -DParaView_TYPE=none -DCMAKE_C_COMPILER=$c_compiler -DCMAKE_CXX_COMPILER=$cxx_compiler
 
