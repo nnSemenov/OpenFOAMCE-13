@@ -104,7 +104,7 @@ Foam::RASThermophysicalTransportModel
         printDictionary print
         (
             RASdict.name(),
-            RASdict.optionalSubDict(modelType + "Coeffs")
+            RASdict.optionalTypeDict(modelType).name()
         );
 
         autoPtr<RASThermophysicalTransportModel> modelPtr
@@ -129,7 +129,7 @@ Foam::RASThermophysicalTransportModel
             << "Selecting default RAS thermophysical transport model "
             <<  RASunityLewisEddyDiffusivity::typeName << endl;
 
-        autoPtr<RASThermophysicalTransportModel> modelPtr
+        return autoPtr<RASThermophysicalTransportModel>
         (
             new RASunityLewisEddyDiffusivity
             (
@@ -139,8 +139,6 @@ Foam::RASThermophysicalTransportModel
                 true
             )
         );
-
-        return modelPtr;
     }
 }
 
@@ -153,7 +151,17 @@ const Foam::dictionary& Foam::RASThermophysicalTransportModel
     BasicThermophysicalTransportModel
 >::typeDict() const
 {
-    return this->subOrEmptyDict("RAS").optionalTypeDict(type());
+    return typeDict(this->type());
+}
+
+
+template<class BasicThermophysicalTransportModel>
+const Foam::dictionary& Foam::RASThermophysicalTransportModel
+<
+    BasicThermophysicalTransportModel
+>::typeDict(const word& type) const
+{
+    return this->subOrEmptyDict("RAS").optionalTypeDict(type);
 }
 
 

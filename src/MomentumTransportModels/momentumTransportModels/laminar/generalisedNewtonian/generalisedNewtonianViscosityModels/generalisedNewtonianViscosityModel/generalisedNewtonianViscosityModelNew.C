@@ -57,7 +57,7 @@ Foam::laminarModels::generalisedNewtonianViscosityModel::New
     printDictionary print
     (
         viscosityProperties,
-        viscosityProperties.optionalSubDict(modelType + "Coeffs")
+        viscosityProperties.optionalTypeDict(modelType)
     );
 
     return cstrIter()(viscosityProperties, viscosity, U);

@@ -359,14 +359,14 @@ kOmegaSSTLM<BasicMomentumTransportModel>::kOmegaSSTLM
         viscosity
     ),
 
-    ca1_("ca1", this->typeDict(), 2),
-    ca2_("ca2", this->typeDict(), 0.06),
-    ce1_("ce1", this->typeDict(), 1),
-    ce2_("ce2", this->typeDict(), 50),
-    cThetat_("cThetat", this->typeDict(), 0.03),
-    sigmaThetat_("sigmaThetat", this->typeDict(), 2),
-    lambdaErr_(this->typeDict().lookupOrDefault("lambdaErr", 1e-6)),
-    maxLambdaIter_(this->typeDict().lookupOrDefault("maxLambdaIter", 10)),
+    ca1_("ca1", this->typeDict(type), 2),
+    ca2_("ca2", this->typeDict(type), 0.06),
+    ce1_("ce1", this->typeDict(type), 1),
+    ce2_("ce2", this->typeDict(type), 50),
+    cThetat_("cThetat", this->typeDict(type), 0.03),
+    sigmaThetat_("sigmaThetat", this->typeDict(type), 2),
+    lambdaErr_(this->typeDict(type).lookupOrDefault("lambdaErr", 1e-6)),
+    maxLambdaIter_(this->typeDict(type).lookupOrDefault("maxLambdaIter", 10)),
     deltaU_("deltaU", dimVelocity, small),
 
     ReThetat_
