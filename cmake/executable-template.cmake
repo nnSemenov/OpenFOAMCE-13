@@ -2,7 +2,10 @@ lnInclude(${CMAKE_CURRENT_SOURCE_DIR})
 
 set(target_name )
 
+wmake_parse_files(${CMAKE_CURRENT_SOURCE_DIR}/Make/files sources_from_wmake)
+
 add_executable(${target_name}
+    ${sources_from_wmake}
 )
 
 target_include_directories(${target_name} PRIVATE
