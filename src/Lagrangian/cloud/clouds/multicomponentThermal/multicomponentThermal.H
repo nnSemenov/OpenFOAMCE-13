@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2018-2026 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,102 +22,64 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::simpleControl
+    Foam::clouds::multicomponentThermal
 
 Description
-    Simple control class. Provides time-loop control methods which exit the
-    simulation once convergence criteria have been reached. Example usage:
-
-    \verbatim
-    simpleControl simple(mesh);
-
-    while (simple.loop(runTime))
-    {
-        Info<< "Time = " << runTime.userTimeName() << nl << endl;
-
-        // solve ...
-    }
-    \endverbatim
+    Base class for clouds with multicomponent thermodynamic modelling
 
 SourceFiles
-    simpleControl.C
+    multicomponentThermal.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef simpleControl_H
-#define simpleControl_H
+#ifndef multicomponentThermal_H
+#define multicomponentThermal_H
 
-#include "fluidSolutionControl.H"
-#include "singleRegionConvergenceControl.H"
-
-#define SIMPLE_CONTROL
+#include "thermal.H"
+#include "multicomponentLagrangianThermo.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
 {
+namespace clouds
+{
 
 /*---------------------------------------------------------------------------*\
-                        Class simpleControl Declaration
+                     Class multicomponentThermal Declaration
 \*---------------------------------------------------------------------------*/
 
-class simpleControl
+class multicomponentThermal
 :
-    public fluidSolutionControl,
-    public singleRegionConvergenceControl
+    public Thermal<multicomponentLagrangianThermo>
 {
-protected:
-
-    // Protected Member Functions
-
-        //- Read controls
-        virtual bool read();
-
-
 public:
 
-    // Static Data Members
+    // Public Static Data
 
         //- Run-time type information
-        TypeName("simpleControl");
+        TypeName("multicomponentThermal");
 
 
     // Constructors
 
-        //- Construct from a mesh and the name of the algorithm
-        simpleControl(fvMesh& mesh, const word& algorithmName="SIMPLE");
+        //- Construct from a reference to the cloud and its base classes
+        multicomponentThermal(const cloud&, const shaped&, const carried&);
+
+
+    // Public Data
+
+        //- Mass fractions
+        PtrList<CloudStateFieldRef<scalar>> Y;
 
 
     //- Destructor
-    virtual ~simpleControl();
-
-
-    // Member Functions
-
-        // Access
-
-            using singleRegionSolutionControl::dict;
-
-            //- Return the solution dictionary
-            static const dictionary& dict
-            (
-                const fvMesh& mesh,
-                const word& algorithmName="SIMPLE"
-            );
-
-
-        // Evolution
-
-            //- Time run loop
-            bool run(Time& time);
-
-            //- Time loop loop
-            bool loop(Time& time);
+    virtual ~multicomponentThermal();
 };
-
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+} // End namespace clouds
 } // End namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

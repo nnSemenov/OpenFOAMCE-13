@@ -37,8 +37,8 @@ SourceFiles
 
 #include "thermal.H"
 #include "coupledToThermalFluid.H"
-#include "massiveCoupledToFluid.H"
 #include "sphericalCoupled.H"
+#include "massiveCoupledToFluid.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -54,9 +54,10 @@ namespace clouds
 class particle
 :
     public cloud,
+    public carried,
     public spherical,
-    public coupledToThermalFluid,
     public thermal,
+    public coupledToThermalFluid,
     public sphericalCoupled,
     public massiveCoupledToFluid
 {
