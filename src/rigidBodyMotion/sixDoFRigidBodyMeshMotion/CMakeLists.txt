@@ -1,11 +1,12 @@
 lnInclude(${CMAKE_CURRENT_SOURCE_DIR})
 
-set(target_name sixDoFRigidBodyMotion)
+set(target_name sixDoFRigidBodyMeshMotion)
 
-wmake_parse_files(${CMAKE_CURRENT_SOURCE_DIR}/Make/files sources_from_wmake)
+#wmake_parse_files(${CMAKE_CURRENT_SOURCE_DIR}/Make/files sources_from_wmake)
 
 add_library(${target_name} SHARED
-    ${sources_from_wmake}
+#    ${sources_from_wmake}
+    sixDoFRigidBodyMeshMotion.C
 )
 
 target_include_directories(${target_name} PUBLIC
@@ -13,7 +14,11 @@ target_include_directories(${target_name} PUBLIC
 )
 
 target_include_directories(${target_name} PRIVATE
-    ${LIB_SRC}/finiteVolume/lnInclude
+#    ${LIB_SRC}/rigidBodyMotion/sixDoFRigidBodyMotion/lnInclude
+    ${LIB_SRC}/finiteVolume/lnInclude 
+#    ${LIB_SRC}/meshTools/lnInclude
+#    ${LIB_SRC}/functionObjects/forces/lnInclude
+#    ${LIB_SRC}/fileFormats/lnInclude
     ${LIB_SRC}/motionSolvers/lnInclude
 )
 
@@ -22,9 +27,10 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM
     OSspecific
 
-    forces 
-    meshTools 
-    fileFormats 
+    sixDoFRigidBodyMotion
+    forces
+    meshTools
+    fileFormats
     motionSolver_fvMeshMover
 )
 

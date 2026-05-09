@@ -2,38 +2,10 @@ lnInclude(${CMAKE_CURRENT_SOURCE_DIR})
 
 set(target_name motionSolvers)
 
+wmake_parse_files(${CMAKE_CURRENT_SOURCE_DIR}/Make/files sources_from_wmake)
+
 add_library(${target_name} SHARED
-    motionSolver/motionSolver.C
-    displacement/points0/points0MotionSolver.C
-    displacement/displacement/displacementMotionSolver.C
-    displacement/layeredSolver/displacementLayeredMotionSolver.C
-    displacement/layeredSolver/pointEdgeStructuredWalk.C
-    displacement/linearSolver/displacementLinearMotionSolver.C
-    componentDisplacement/componentDisplacementMotionSolver.C
-    velocity/velocityMotionSolver.C
-    componentVelocity/componentVelocityMotionSolver.C
-    displacement/solidBody/solidBodyMotionSolver/solidBodyMotionSolver.C
-    displacement/solidBody/multiSolidBodyMotionSolver/multiSolidBodyMotionSolver.C
-    displacement/solidBody/interpolatingSolidBodyMotionSolver/interpolatingSolidBodyMotionSolver.C
-    motionSolverList/motionSolverList.C
-)
-
-set(solidBodyMotionFunctions displacement/solidBody/solidBodyMotionFunctions)
-target_sources(${target_name} PRIVATE
-    ${solidBodyMotionFunctions}/solidBodyMotionFunction/solidBodyMotionFunction.C
-    ${solidBodyMotionFunctions}/solidBodyMotionFunction/solidBodyMotionFunctionNew.C
-    ${solidBodyMotionFunctions}/SDA/SDA.C
-    ${solidBodyMotionFunctions}/sixDoFMotion/sixDoFMotion.C
-    ${solidBodyMotionFunctions}/linearMotion/linearMotion.C
-    ${solidBodyMotionFunctions}/rotatingMotion/rotatingMotion.C
-    ${solidBodyMotionFunctions}/axisRotationMotion/axisRotationMotion.C
-    ${solidBodyMotionFunctions}/multiMotion/multiMotion.C
-    ${solidBodyMotionFunctions}/oscillatingLinearMotion/oscillatingLinearMotion.C
-    ${solidBodyMotionFunctions}/oscillatingRotatingMotion/oscillatingRotatingMotion.C
-
-    displacement/solidBody/pointPatchFields/derived/solidBodyMotionDisplacement/solidBodyMotionDisplacementPointPatchVectorField.C
-
-    pointInterpolator/dynamicMeshPointInterpolator.C
+    ${sources_from_wmake}
 )
 
 target_include_directories(${target_name} PUBLIC

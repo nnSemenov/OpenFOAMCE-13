@@ -2,33 +2,10 @@ lnInclude(${CMAKE_CURRENT_SOURCE_DIR})
 
 set(target_name fvModels)
 
-add_library(${target_name} SHARED
-    codedFvModel/codedFvModel.C
-    semiImplicitSource/semiImplicitSource.C
+wmake_parse_files(${CMAKE_CURRENT_SOURCE_DIR}/Make/files sources_from_wmake)
 
-    actuationDisk/actuationDisk.C
-    effectivenessHeatExchanger/effectivenessHeatExchanger.C
-    porosityForce/porosityForce.C
-    radialActuationDisk/radialActuationDisk.C
-    solidificationMelting/solidificationMelting.C
-    sixDoFAcceleration/sixDoFAcceleration.C
-    buoyancyForce/buoyancyForce.C
-    buoyancyEnergy/buoyancyEnergy.C
-    viscousHeating/viscousHeating.C
-    phaseLimitStabilisation/phaseLimitStabilisation.C
-    acceleration/acceleration.C
-    volumeBlockage/volumeBlockage.C
-    solidThermalEquilibrium/solidThermalEquilibrium.C
-    volumeSource/volumeSource.C
-    massSource/massSourceBase.C
-    massSource/massSource.C
-    heatSource/heatSource.C
-    zeroDimensionalMassSource/zeroDimensionalMassSourceBase.C
-    zeroDimensionalMassSource/zeroDimensionalMassSource.C
-    massTransfer/massTransfer.C
-    massTransfer/coefficientMassTransfer.C
-    phaseChange/phaseChange.C
-    phaseChange/coefficientPhaseChange.C
+add_library(${target_name} SHARED
+    ${sources_from_wmake}
 )
 
 target_include_directories(${target_name} PUBLIC
