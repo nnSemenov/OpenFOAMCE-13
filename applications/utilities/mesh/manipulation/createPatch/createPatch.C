@@ -98,7 +98,7 @@ void filterPatches(polyMesh& mesh, const HashSet<word>& addedPatchNames)
             if
             (
                 addedPatchNames.found(pp.name())
-             || polyPatch::constraintType(pp.type())
+             || pp.constraint()
              || returnReduce(pp.size(), sumOp<label>()) > 0
             )
             {
@@ -450,7 +450,7 @@ int main(int argc, char *argv[])
     #include "addMeshOption.H"
     #include "addRegionOption.H"
     #include "addDictOption.H"
-    #include "setRootCase.H"
+    #include "setRootCaseNoFunctionObjects.H"
     #include "createTimeNoFunctionObjects.H"
 
     Foam::word meshRegionName = polyMesh::defaultRegion;

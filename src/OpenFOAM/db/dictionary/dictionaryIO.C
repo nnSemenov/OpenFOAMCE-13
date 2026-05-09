@@ -44,12 +44,7 @@ Foam::dictionary::dictionary
     Istream& is
 )
 :
-    dictionaryName
-    (
-        parentDict.name().size()
-      ? parentDict.name()/name
-      : name
-    ),
+    dictionaryName(pathName(parentDict, name)),
     parent_(parentDict),
     filePtr_(nullptr)
 {
@@ -124,12 +119,10 @@ bool Foam::dictionary::read(Istream& is, const bool keepHeader)
         return false;
     }
 
-    // Cache the current name and file/stream pointer
-    const fileName name0(name());
+    // Cache the file/stream pointer
     const Istream* filePtr0 = filePtr_;
 
-    // Set the name and file/stream pointer to the given stream
-    name() = is.name();
+    // Set the file/stream pointer to the given stream
     filePtr_ = &is;
 
     token currToken(is);
@@ -156,8 +149,7 @@ bool Foam::dictionary::read(Istream& is, const bool keepHeader)
         return false;
     }
 
-    // Reset the name and file/stream pointer to the original
-    name() = name0;
+    // Reset the file/stream pointer to the original
     filePtr_ = filePtr0;
 
     return true;
@@ -552,16 +544,24 @@ bool Foam::readConfigFile
     // Insert the 'field' and/or 'fields' and 'objects' entries corresponding
     // to both the arguments and the named arguments
     DynamicList<wordAndDictionary> fieldArgs;
+    bool print = false;
     forAll(args, i)
     {
-        fieldArgs.append
-        (
-            wordAndDictionary
+        if (const_cast<const wordRe&>(args[i].first()).strip(" \n") == "print")
+        {
+            print = true;
+        }
+        else
+        {
+            fieldArgs.append
             (
-                expandArg(args[i].first(), funcDict, args[i].second()),
-                dictionary::null
-            )
-        );
+                wordAndDictionary
+                (
+                    expandArg(args[i].first(), funcDict, args[i].second()),
+                    dictionary::null
+                )
+            );
+        }
     }
     forAll(namedArgs, i)
     {
@@ -790,6 +790,11 @@ bool Foam::readConfigFile
     // Merge this configuration dictionary into parentDict
     parentDict.merge(funcArgsDict);
     parentDict.subDict(entryName).name() = funcDict.name();
+
+    if (print)
+    {
+        printDictionary::set(parentDict.subDict(entryName));
+    }
 
     return true;
 }

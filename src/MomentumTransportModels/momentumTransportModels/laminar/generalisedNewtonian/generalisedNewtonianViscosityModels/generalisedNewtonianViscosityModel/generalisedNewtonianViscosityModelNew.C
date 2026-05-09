@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2018-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2018-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,7 +24,7 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "generalisedNewtonianViscosityModel.H"
-#include "dictionary.H"
+#include "printDictionary.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -38,7 +38,7 @@ Foam::laminarModels::generalisedNewtonianViscosityModel::New
 {
     const word modelType(viscosityProperties.lookup("viscosityModel"));
 
-    Info<< indent
+    Info<< indentOrNl
         << "Selecting generalised Newtonian model " << modelType << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
@@ -54,16 +54,13 @@ Foam::laminarModels::generalisedNewtonianViscosityModel::New
             << exit(FatalIOError);
     }
 
-    Info<< incrIndent;
-
-    autoPtr<generalisedNewtonianViscosityModel> modelPtr
+    printDictionary print
     (
-        cstrIter()(viscosityProperties, viscosity, U)
+        viscosityProperties,
+        viscosityProperties.optionalTypeDict(modelType)
     );
 
-    Info<< decrIndent;
-
-    return modelPtr;
+    return cstrIter()(viscosityProperties, viscosity, U);
 }
 
 

@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -69,7 +69,7 @@ Foam::autoPtr<Foam::motionSolver> Foam::motionSolver::New
 {
     const word solverTypeName = solverDict.lookup<word>("motionSolver");
 
-    Info<< "Selecting motion solver: " << solverTypeName << endl;
+    Info<< indentOrNl << "Selecting motion solver: " << solverTypeName << endl;
 
     libs.open
     (
@@ -104,7 +104,7 @@ Foam::autoPtr<Foam::motionSolver> Foam::motionSolver::New
         (
             name,
             mesh,
-            solverDict.optionalSubDict(solverTypeName + "Coeffs")
+            solverDict.optionalTypeDict(solverTypeName)
         )
     );
 }
@@ -117,13 +117,6 @@ Foam::motionSolver::~motionSolver()
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
-
-Foam::tmp<Foam::pointField> Foam::motionSolver::newPoints()
-{
-    solve();
-    return curPoints();
-}
-
 
 void Foam::motionSolver::twoDCorrectPoints(pointField& p) const
 {

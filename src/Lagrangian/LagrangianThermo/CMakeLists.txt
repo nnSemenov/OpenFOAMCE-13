@@ -14,6 +14,11 @@ add_library(${target_name} SHARED
     fluidLagrangianThermo/fluidLagrangianThermo.C
     fluidLagrangianThermo/fluidLagrangianThermos.C
 
+    multicomponentLagrangianThermo/multicomponentLagrangianThermo.C
+
+    fluidMulticomponentLagrangianThermo/fluidMulticomponentLagrangianThermo.C
+    fluidMulticomponentLagrangianThermo/fluidMulticomponentLagrangianThermos.C
+
     fields/derivedLagrangianFieldSources/density/densityLagrangianScalarFieldSource.C
     fields/derivedLagrangianFieldSources/energy/energyLagrangianScalarFieldSource.C
     fields/derivedLagrangianFieldSources/specificHeatCapacity/specificHeatCapacityLagrangianScalarFieldSource.C
@@ -25,6 +30,7 @@ add_library(${target_name} SHARED
 
 target_include_directories(${target_name} PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/lnInclude"
+    ${LIB_SRC}/thermophysicalModels/multicomponentThermo/lnInclude
 )
 
 target_include_directories(${target_name} PRIVATE

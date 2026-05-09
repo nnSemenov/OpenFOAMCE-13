@@ -138,5 +138,5 @@ FOAM_unit_test(SOURCES fileNameClean/Test-fileNameClean.C)
 
 
 FOAM_unit_test(SOURCES realFluidEOS/Test-realFluidEOS.cpp
-    LINK_LIBS specie
+    LINK_LIBS specie finiteVolume
 )

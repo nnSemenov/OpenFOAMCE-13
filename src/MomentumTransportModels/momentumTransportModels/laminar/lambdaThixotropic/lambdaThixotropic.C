@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2020-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2020-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -47,7 +47,8 @@ lambdaThixotropic<BasicMomentumTransportModel>::lambdaThixotropic
     const volVectorField& U,
     const surfaceScalarField& alphaRhoPhi,
     const surfaceScalarField& phi,
-    const viscosity& viscosity
+    const viscosity& viscosity,
+    const word& type
 )
 :
     linearViscousStress<laminarModel<BasicMomentumTransportModel>>
@@ -61,21 +62,31 @@ lambdaThixotropic<BasicMomentumTransportModel>::lambdaThixotropic
         viscosity
     ),
 
-    a_("a", dimless/dimTime, this->coeffDict()),
-    b_("b", dimless, this->coeffDict()),
-    d_("d", dimless, this->coeffDict()),
-    c_("c", pow(dimTime, d_.value() - scalar(1)), this->coeffDict()),
-    nu0_("nu0", dimKinematicViscosity, this->coeffDict()),
-    nuInf_("nuInf", dimKinematicViscosity, this->coeffDict()),
+    a_("a", dimless/dimTime, this->typeDict(type)),
+    b_("b", dimless, this->typeDict(type)),
+    d_("d", dimless, this->typeDict(type)),
+    c_("c", pow(dimTime, d_.value() - scalar(1)), this->typeDict(type)),
+    nu0_("nu0", dimKinematicViscosity, this->typeDict(type)),
+    nuInf_("nuInf", dimKinematicViscosity, this->typeDict(type)),
     K_(1 - sqrt(nuInf_/nu0_)),
-    BinghamPlastic_(this->coeffDict().found("sigmay")),
+    BinghamPlastic_(this->typeDict(type).found("sigmay")),
     sigmay_
     (
         BinghamPlastic_
-      ? dimensionedScalar("sigmay", dimPressure/dimDensity, this->coeffDict())
-      : dimensionedScalar("sigmay", dimPressure/dimDensity, 0)
+      ? dimensionedScalar
+        (
+            "sigmay",
+            dimPressure/dimDensity,
+            this->typeDict(type)
+        )
+      : dimensionedScalar
+        (
+            "sigmay",
+            dimPressure/dimDensity,
+            0
+        )
     ),
-    residualAlpha_("residualAlpha", dimless, this->coeffDict(), 1e-6),
+    residualAlpha_("residualAlpha", dimless, this->typeDict(type), 1e-6),
     lambda_
     (
         IOobject
@@ -158,19 +169,19 @@ bool lambdaThixotropic<BasicMomentumTransportModel>::read()
 {
     if (laminarModel<BasicMomentumTransportModel>::read())
     {
-        a_.read(this->coeffDict());
-        b_.read(this->coeffDict());
-        d_.read(this->coeffDict());
+        a_.read(this->typeDict());
+        b_.read(this->typeDict());
+        d_.read(this->typeDict());
 
         c_ = dimensionedScalar
         (
             "c",
             pow(dimTime, d_.value() - scalar(1)),
-            this->coeffDict()
+            this->typeDict()
         );
 
-        nu0_.read(this->coeffDict());
-        nuInf_.read(this->coeffDict());
+        nu0_.read(this->typeDict());
+        nuInf_.read(this->typeDict());
 
         K_ = (1 - sqrt(nuInf_/nu0_));
 

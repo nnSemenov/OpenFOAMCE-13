@@ -19,6 +19,7 @@ target_link_libraries(${target_name} PRIVATE
     genericPatches 
     meshTools 
     Pstream_best
+    finiteVolume
 )
 
 target_compile_definitions(${target_name} PRIVATE

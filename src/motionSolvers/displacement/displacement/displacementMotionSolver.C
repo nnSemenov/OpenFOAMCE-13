@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2012-2023 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2012-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -30,6 +30,15 @@ License
 namespace Foam
 {
     defineTypeNameAndDebug(displacementMotionSolver, 0);
+}
+
+
+// * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * * //
+
+Foam::tmp<Foam::pointField>
+Foam::displacementMotionSolver::points() const
+{
+    return points0() + pointDisplacement_.primitiveField();
 }
 
 

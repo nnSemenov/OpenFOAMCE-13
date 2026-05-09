@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2025-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -50,6 +50,11 @@ Foam::IOobject Foam::LagrangianModels::io(const LagrangianMesh& mesh) const
     if (!result.headerOk())
     {
         result.readOpt() = IOobject::NO_READ;
+    }
+    else
+    {
+        Info<< indentOrNl << "Constructing " << typeName << " from "
+            << result.relativeObjectPath() << endl;
     }
 
     return result;
@@ -121,6 +126,8 @@ Foam::LagrangianModels::LagrangianModels(const LagrangianMesh& mesh)
     // Size the storage
     PtrListDictionary<LagrangianModel>::setSize(i);
     addSupFields_.setSize(i);
+
+    printDictionary print(*this);
 
     // Iterate through the dictionary to construct the models
     i = 0;
@@ -398,7 +405,7 @@ bool Foam::LagrangianModels::read()
             const bool ok =
                 modelList[i].read
                 (
-                    modelDict.optionalSubDict(modelList[i].type() + "Coeffs")
+                    modelDict.optionalTypeDict(modelList[i].type())
                 );
             allOk = allOk && ok;
         }

@@ -79,7 +79,7 @@ void filterPatches(fvMesh& mesh, const HashSet<word>& bafflePatches)
             if
             (
                 bafflePatches.found(pp.name())
-             || fvPatch::constraintType(pp.type())
+             || pp.constraint()
              || returnReduce(pp.size(), sumOp<label>())
             )
             {
@@ -333,7 +333,7 @@ int main(int argc, char *argv[])
     #include "addMeshOption.H"
     #include "addRegionOption.H"
 
-    #include "setRootCase.H"
+    #include "setRootCaseNoFunctionObjects.H"
     #include "createTimeNoFunctionObjects.H"
     #include "createSpecifiedMeshNoChangers.H"
 

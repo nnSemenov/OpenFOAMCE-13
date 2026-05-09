@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2024-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -57,7 +57,8 @@ Foam::autoPtr<Foam::packingDispersionModel> Foam::packingDispersionModel::New
     {
         const word modelType(dict.lookup(typeName));
 
-        Info<< "Selecting packing dispersion model " << modelType << endl;
+        Info<< indentOrNl
+            << "Selecting packing dispersion model " << modelType << endl;
 
         dictionaryConstructorTable::iterator cstrIter =
             dictionaryConstructorTablePtr_->find(modelType);
@@ -72,12 +73,14 @@ Foam::autoPtr<Foam::packingDispersionModel> Foam::packingDispersionModel::New
                 << abort(FatalIOError);
         }
 
+        printDictionary(dict, dict.optionalTypeDict(modelType));
+
         return
             autoPtr<packingDispersionModel>
             (
                 cstrIter()
                 (
-                    dict.optionalSubDict(modelType + "Coeffs"),
+                    dict.optionalTypeDict(modelType),
                     relativeVelocity
                 )
             );

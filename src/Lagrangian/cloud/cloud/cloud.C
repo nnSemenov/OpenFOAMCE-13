@@ -64,7 +64,7 @@ Foam::LagrangianMesh& Foam::cloud::mesh
             const polyPatch& pPatch = pMesh.boundary()[patchi];
 
             wantedPatchTypes[patchi] =
-                polyPatch::constraintType(pPatch.type())
+                pPatch.constraint()
               ? pPatch.type()
               : cloudVelocityLagrangianPatch::typeName;
         }
@@ -473,13 +473,7 @@ Foam::cloud::cloud(LagrangianMesh& mesh, const contextType context)
     statePtr_(readStates()),
     cellLengthScaleVf_(mag(cbrt(mesh_.poly().cellVolumes()))),
     context(context),
-    tracking
-    (
-        cloudTrackingNames
-        [
-            mesh.schemes().schemesDict().lookup<word>("tracking")
-        ]
-    ),
+    tracking(cloudTrackingNames[mesh.schemes().lookup<word>("tracking")]),
     U
     (
         IOobject
@@ -508,12 +502,7 @@ Foam::cloud::cloud
     statePtr_(readStates()),
     cellLengthScaleVf_(mag(cbrt(mesh_.poly().cellVolumes()))),
     context(context),
-    tracking
-    (
-        cloudTrackingNames
-        [
-            mesh.schemes().schemesDict().lookup<word>("tracking")
-        ]
+    tracking(cloudTrackingNames[mesh.schemes().lookup<word>("tracking")]
     ),
     U
     (
@@ -543,7 +532,7 @@ Foam::autoPtr<Foam::cloud> Foam::cloud::New
     const IOobject::writeOption writeOption
 )
 {
-    Info<< "Selecting " << typeName
+    Info<< indentOrNl << "Selecting " << typeName
         << " with name " << name
         << " of type " << type << endl;
 
@@ -727,7 +716,7 @@ void Foam::cloud::solve(const bool initial, const bool final)
                 if                                                             \
                 (                                                              \
                     patch.mesh().size()                                        \
-                 && !polyPatch::constraintType(patch.type())                   \
+                && !patch.poly().constraint()                                  \
                 )                                                              \
                 {                                                              \
                     iter()->boundaryFieldRef()[patchi].evaluate                \

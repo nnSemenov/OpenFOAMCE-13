@@ -49,8 +49,6 @@ void Foam::solvers::XiFluid::burn()
     // Unburnt gas density
     const volScalarField& rhou(thermo_.uThermo().rho());
 
-    const volScalarField Db(XiModel_->Db());
-
     // Calculate flame normal etc.
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -76,6 +74,8 @@ void Foam::solvers::XiFluid::burn()
     nfVec /= max(mag(nfVec), dMgb);
     const surfaceScalarField nf("nf", mesh.Sf() & nfVec);
     n /= mgb;
+
+    const volScalarField Db(XiModel_->Db());
 
     // Turbulent flame speed volumetric flux
     const surfaceScalarField phivSt("phivSt", fvc::interpolate(Su*Xi)*nf);
@@ -225,6 +225,7 @@ void Foam::solvers::XiFluid::burn()
     // for the solution of the unburnt and burnt gas energy and species
     const volScalarField::Internal bSource
     (
+        "bSource",
         tSu() + tSp()*b()
       - fvc::div(tbPhiStUD() + bPhiStCorr)()
     );
@@ -509,11 +510,11 @@ void Foam::solvers::XiFluid::HbSolve
       + fvc::ddt(c, rho(), K) + fvc::div(phic, K)
       + (c + cStab)*rhoByRhob*pressureWork(-dpdt)
 
-        // Diffusive transport within the unburnt gas
-      + uThermophysicalTransport_->divq(hb)
+        // Diffusive transport within the burnt gas
+      + bThermophysicalTransport_->divq(hb)
      ==
         // Combustion source
-      - bSource*(uThermo.ha()() - bThermo.hf()())()
+      - bSource*(uThermo.he()() + uThermo.hf()()() - bThermo.hf()()())
 
         // Other sources
       + fvModels().source(c, rho(), hb)
@@ -564,7 +565,7 @@ void Foam::solvers::XiFluid::thermophysicalPredictor()
             }
         }
 
-        thermo_.bThermo().he() = uThermo.ha() - bThermo.hf();
+        thermo_.bThermo().he() = uThermo.he() + uThermo.hf() - bThermo.hf();
         thermo_.bThermo().correct();
     }
 

@@ -33,7 +33,6 @@ License
 #include "debug.H"
 #include "typeInfo.H"
 #include "globalMeshData.H"
-#include "pointFields.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 

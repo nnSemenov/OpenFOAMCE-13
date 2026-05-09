@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2013-2022 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2013-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -60,7 +60,8 @@ Foam::externalDisplacementMeshMover::New
     pointVectorField& pointDisplacement
 )
 {
-    Info<< "Selecting externalDisplacementMeshMover " << type << endl;
+    Info<< indentOrNl
+        << "Selecting externalDisplacementMeshMover " << type << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find(type);

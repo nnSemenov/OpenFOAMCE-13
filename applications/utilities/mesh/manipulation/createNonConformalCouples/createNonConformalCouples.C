@@ -346,7 +346,7 @@ int main(int argc, char *argv[])
         );
     }
 
-    #include "setRootCase.H"
+    #include "setRootCaseNoFunctionObjects.H"
     #include "setMeshPath.H"
     #include "createTimeNoFunctionObjects.H"
 
@@ -686,7 +686,6 @@ int main(int argc, char *argv[])
                     regionFirstProcFaceis[regioni],
                     newPatches[regioni].size(),
                     regionMeshes[regioni].poly().boundary(),
-                    nonConformalErrorPolyPatch::typeName,
                     origPatchName
                 )
             );

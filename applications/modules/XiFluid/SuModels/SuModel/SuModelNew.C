@@ -39,7 +39,8 @@ Foam::autoPtr<Foam::SuModel> Foam::SuModel::New
 
     const word modelType(SuDict.lookup("model"));
 
-    Info<< "Selecting flame-wrinkling Su model " << modelType << endl;
+    Info<< indentOrNl
+        << "Selecting flame-wrinkling Su model " << modelType << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find(modelType);
@@ -54,11 +55,17 @@ Foam::autoPtr<Foam::SuModel> Foam::SuModel::New
             << exit(FatalIOError);
     }
 
+    printDictionary print
+    (
+        SuDict,
+        SuDict.optionalTypeDict(modelType)
+    );
+
     return autoPtr<SuModel>
     (
         cstrIter()
         (
-            SuDict.optionalSubDict(modelType + "Coeffs"),
+            SuDict.optionalTypeDict(modelType),
             thermo,
             momentumTransport
         )

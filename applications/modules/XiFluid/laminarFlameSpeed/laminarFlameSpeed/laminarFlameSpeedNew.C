@@ -35,7 +35,8 @@ Foam::autoPtr<Foam::laminarFlameSpeed> Foam::laminarFlameSpeed::New
 {
     const word model(dict.lookup("model"));
 
-    Info<< "Selecting laminar flame speed model " << model << endl;
+    Info<< indentOrNl
+        << "Selecting laminar flame speed model " << model << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find(model);
@@ -55,8 +56,14 @@ Foam::autoPtr<Foam::laminarFlameSpeed> Foam::laminarFlameSpeed::New
     const dictionary& coeffDict
     (
         dict
-       .optionalSubDict(model + "Coeffs")
+       .optionalTypeDict(model)
        .optionalSubDict(dict.lookupOrDefault<word>("fuel", "unknown"))
+    );
+
+    printDictionary print
+    (
+        dict,
+        dict.optionalTypeDict(model)
     );
 
     return autoPtr<laminarFlameSpeed>(cstrIter()(dict, coeffDict, uThermo));

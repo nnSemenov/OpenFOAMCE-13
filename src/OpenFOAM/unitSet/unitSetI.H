@@ -24,13 +24,38 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "unitSet.H"
-#include "mathematicalConstants.H"
+
+// * * * * * * * * * * * * * Static Member Functions * * * * * * * * * * * * //
+
+inline Foam::unitSet Foam::unitSet::newUnitless()
+{
+    return unitSet(dimensionSet(0, 0, 0, 0, 0), 0, 0, 1);
+}
+
+
+inline Foam::unitSet Foam::unitSet::newAny()
+{
+    return unitSet(dimensionSet(0, 0, 0, 0, 0), 0, 0, 0);
+}
+
+
+inline Foam::unitSet Foam::unitSet::newNone()
+{
+    return unitSet(dimensionSet(0, 0, 0, 0, 0), 0, 0, -1);
+}
+
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 inline const Foam::dimensionSet& Foam::unitSet::dimensions() const
 {
     return dimensions_;
+}
+
+
+inline bool Foam::unitSet::dimensionless() const
+{
+    return dimensions_.dimensionless();
 }
 
 

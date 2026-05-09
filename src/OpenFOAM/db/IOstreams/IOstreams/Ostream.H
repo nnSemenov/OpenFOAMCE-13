@@ -166,6 +166,12 @@ public:
                 return indentLevel_;
             }
 
+            //- Return the number of characters in an indent
+            unsigned short indentSize() const
+            {
+                return indentLevel_*indentSize_;
+            }
+
             //- Incrememt the indent level
             void incrIndent()
             {
@@ -238,6 +244,21 @@ inline Ostream& operator<<(Ostream& os, IOstreamManip f)
 inline Ostream& indent(Ostream& os)
 {
     os.indent();
+    return os;
+}
+
+//- Indent stream or add newline if indent level == 0
+inline Ostream& indentOrNl(Ostream& os)
+{
+    if (os.indentLevel() == 0)
+    {
+        os.endl();
+    }
+    else
+    {
+        os.indent();
+    }
+
     return os;
 }
 

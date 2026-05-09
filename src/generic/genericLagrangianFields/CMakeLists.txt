@@ -18,6 +18,7 @@ target_link_libraries(genericLagrangianFields PRIVATE
     genericFields
     genericLagrangianPatches
     Lagrangian
+    finiteVolume
 )
 
 target_compile_definitions(genericLagrangianFields PRIVATE

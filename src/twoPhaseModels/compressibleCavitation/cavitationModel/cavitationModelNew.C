@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2022-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2022-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -37,7 +37,7 @@ Foam::compressible::cavitationModel::New
 {
     const word modelType(dict.lookup("model"));
 
-    Info<< "Selecting cavitation model " << modelType << endl;
+    Info<< indentOrNl << "Selecting cavitation model " << modelType << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find(modelType);
@@ -56,7 +56,7 @@ Foam::compressible::cavitationModel::New
     (
         cstrIter()
         (
-            dict.optionalSubDict(modelType + "Coeffs"),
+            dict.optionalTypeDict(modelType),
             phases,
             liquidIndex
         )

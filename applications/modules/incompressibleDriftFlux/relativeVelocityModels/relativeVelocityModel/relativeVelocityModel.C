@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2014-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2014-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -106,7 +106,8 @@ Foam::autoPtr<Foam::relativeVelocityModel> Foam::relativeVelocityModel::New
 {
     const word modelType(dict.lookup(typeName));
 
-    Info<< "Selecting relative velocity model " << modelType << endl;
+    Info<< indentOrNl
+        << "Selecting relative velocity model " << modelType << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find(modelType);
@@ -121,12 +122,14 @@ Foam::autoPtr<Foam::relativeVelocityModel> Foam::relativeVelocityModel::New
             << abort(FatalIOError);
     }
 
+    printDictionary(dict, dict.optionalTypeDict(modelType));
+
     return
         autoPtr<relativeVelocityModel>
         (
             cstrIter()
             (
-                dict.optionalSubDict(modelType + "Coeffs"),
+                dict.optionalTypeDict(modelType),
                 mixture,
                 g
             )

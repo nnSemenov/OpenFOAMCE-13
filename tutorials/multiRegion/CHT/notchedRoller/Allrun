@@ -9,7 +9,7 @@ runApplication blockMesh
 runApplication createBaffles
 runApplication splitBaffles
 
-runApplication splitMeshRegions -cellZonesOnly
+runApplication splitMeshRegions -cellZones all
 
 rm -f 0/cellToRegion 0/*/cellToRegion constant/cellToRegion
 
@@ -39,7 +39,5 @@ case $mode in
         exit 1
         ;;
 esac
-
-paraFoam -touchAll
 
 #------------------------------------------------------------------------------

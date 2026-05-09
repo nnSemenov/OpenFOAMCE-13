@@ -140,7 +140,7 @@ ${typeName}DimensionedFieldFunction${DimensionedFieldTypeName}::evaluate()
     using namespace dimensions;
 
     // Local reference to time
-    const dimensionedScalar& t(field.db().time());
+    const dimensionedScalar& t(field.time());
     ignore(t);
 
     // Local reference to the field value locations
@@ -154,13 +154,15 @@ ${typeName}DimensionedFieldFunction${DimensionedFieldTypeName}::evaluate()
 }
 
 
-void Foam::DimensionedFieldFunctions::
+bool Foam::DimensionedFieldFunctions::
 ${typeName}DimensionedFieldFunction${DimensionedFieldTypeName}::update()
 {
     using namespace dimensions;
 
 //{{{ begin code
+    bool updated = false;
     ${update}
+    return updated;
 //}}} end code
 }
 

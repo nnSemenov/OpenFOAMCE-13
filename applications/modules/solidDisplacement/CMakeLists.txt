@@ -7,6 +7,7 @@ set(target_name solidDisplacementSolver)
 add_library(${target_name} SHARED
     derivedFvPatchFields/tractionDisplacement/tractionDisplacementFvPatchVectorField.C
     derivedFvPatchFields/hydrostaticDisplacement/hydrostaticDisplacementFvPatchVectorField.C
+    derivedFvPatchFields/displacementGapHeatTransferCoefficient/displacementGapHeatTransferCoefficient_DimensionedFieldFunction.C
     solidDisplacement.C
 )
 

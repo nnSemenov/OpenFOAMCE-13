@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2013-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2013-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -57,10 +57,10 @@ Foam::LESModel<BasicMomentumTransportModel>::LESModel
 
     viscosityModel_
     (
-        coeffDict().found("viscosityModel")
+        typeDict(type).found("viscosityModel")
       ? laminarModels::generalisedNewtonianViscosityModel::New
         (
-            coeffDict(),
+            typeDict(type),
             viscosity,
             U
         )
@@ -68,7 +68,7 @@ Foam::LESModel<BasicMomentumTransportModel>::LESModel
         (
             new laminarModels::generalisedNewtonianViscosityModels::Newtonian
             (
-                coeffDict(),
+                typeDict(type),
                 viscosity,
                 U
             )
@@ -121,7 +121,7 @@ Foam::LESModel<BasicMomentumTransportModel>::New
         {"model", "LESModel"}
     );
 
-    Info<< indent
+    Info<< indentOrNl
         << "Selecting LES turbulence model " << modelType << endl;
 
     libs.open(LESdict, "libs", dictionaryConstructorTablePtr_);
@@ -139,16 +139,13 @@ Foam::LESModel<BasicMomentumTransportModel>::New
             << exit(FatalError);
     }
 
-    Info<< incrIndent;
-
-    autoPtr<LESModel> modelPtr
+    printDictionary print
     (
-        cstrIter()(alpha, rho, U, alphaRhoPhi, phi, viscosity)
+        LESdict.name(),
+        LESdict.optionalTypeDict(modelType).name()
     );
 
-    Info<< decrIndent;
-
-    return modelPtr;
+    return cstrIter()(alpha, rho, U, alphaRhoPhi, phi, viscosity);
 }
 
 
@@ -164,9 +161,17 @@ Foam::LESModel<BasicMomentumTransportModel>::LESDict() const
 
 template<class BasicMomentumTransportModel>
 const Foam::dictionary&
-Foam::LESModel<BasicMomentumTransportModel>::coeffDict() const
+Foam::LESModel<BasicMomentumTransportModel>::typeDict() const
 {
-    return this->LESDict().optionalSubDict(type() + "Coeffs");
+    return typeDict(this->type());
+}
+
+
+template<class BasicMomentumTransportModel>
+const Foam::dictionary&
+Foam::LESModel<BasicMomentumTransportModel>::typeDict(const word& type) const
+{
+    return this->LESDict().optionalTypeDict(type);
 }
 
 

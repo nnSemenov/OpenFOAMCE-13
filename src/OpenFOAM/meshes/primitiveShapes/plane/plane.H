@@ -39,6 +39,7 @@ SourceFiles
 #include "point.H"
 #include "scalarList.H"
 #include "dictionary.H"
+#include "NamedEnum.H"
 #include "line.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

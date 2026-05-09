@@ -72,8 +72,9 @@ class objectRegistry
         //- Table of temporary object names with current state
         mutable HashTable<Pair<bool>> cacheTemporaryObjects_;
 
-        //- State of cacheTemporaryObjects_, set true after reading
-        mutable bool cacheTemporaryObjectsSet_;
+        //- State of cacheTemporaryObjects_. 0 means as yet uninitialised. 1
+        //  means initialised. -1 means deactivated (during destruction).
+        mutable label cacheTemporaryObjectsState_;
 
         //- Accumulated list of temporary objects available to cache
         //  Used to provide diagnostics in case the requested object is not
@@ -256,12 +257,15 @@ public:
             //- Remove all regIOobject owned by the registry
             void clear();
 
-            //- Return true if given name is in the cacheTemporaryObjects set
-            bool cacheTemporaryObject(const word& name) const;
+            //- Add the given name to the cacheTemporaryObjects set
+            void cacheTemporary(const word& name) const;
 
             //- Cache the given object
             template<class Object>
             bool cacheTemporaryObject(Object& ob) const;
+
+            //- Return true if given name is in the cacheTemporaryObjects set
+            bool temporaryObjectCached(const word& name) const;
 
             //- Reset the cache state of the given object
             //  in the cacheTemporaryObjects set

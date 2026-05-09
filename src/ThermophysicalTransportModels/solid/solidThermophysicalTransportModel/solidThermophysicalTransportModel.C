@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2022-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2022-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -68,7 +68,7 @@ Foam::solidThermophysicalTransportModel::New(const solidThermo& thermo)
     {
         const word modelType(IOdictionary(header).lookup("model"));
 
-        Info<< "Selecting solid thermophysical transport model "
+        Info<< indentOrNl << "Selecting solid thermophysical transport model "
             << modelType << endl;
 
         typename dictionaryConstructorTable::iterator cstrIter =
@@ -91,7 +91,8 @@ Foam::solidThermophysicalTransportModel::New(const solidThermo& thermo)
     }
     else
     {
-        Info<< "Selecting default solid thermophysical transport model "
+        Info<< indentOrNl
+            << "Selecting default solid thermophysical transport model "
             << solidThermophysicalTransportModels::
                isotropic<solidThermophysicalTransportModel>::typeName
             << endl;
@@ -112,9 +113,16 @@ Foam::solidThermophysicalTransportModel::New(const solidThermo& thermo)
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 const Foam::dictionary&
-Foam::solidThermophysicalTransportModel::coeffDict() const
+Foam::solidThermophysicalTransportModel::typeDict() const
 {
-    return optionalSubDict(type() + "Coeffs");
+    return typeDict(type());
+}
+
+
+const Foam::dictionary&
+Foam::solidThermophysicalTransportModel::typeDict(const word& type) const
+{
+    return optionalTypeDict(type);
 }
 
 

@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2013-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2013-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -57,10 +57,10 @@ Foam::RASModel<BasicMomentumTransportModel>::RASModel
 
     viscosityModel_
     (
-        coeffDict().found("viscosityModel")
+        typeDict(type).found("viscosityModel")
       ? laminarModels::generalisedNewtonianViscosityModel::New
         (
-            coeffDict(),
+            typeDict(type),
             viscosity,
             U
         )
@@ -68,7 +68,7 @@ Foam::RASModel<BasicMomentumTransportModel>::RASModel
         (
             new laminarModels::generalisedNewtonianViscosityModels::Newtonian
             (
-                coeffDict(),
+                typeDict(type),
                 viscosity,
                 U
             )
@@ -111,7 +111,7 @@ Foam::RASModel<BasicMomentumTransportModel>::New
         {"model", "RASModel"}
     );
 
-    Info<< indent
+    Info<< indentOrNl
         << "Selecting RAS turbulence model " << modelType << endl;
 
     libs.open(RASdict, "libs", dictionaryConstructorTablePtr_);
@@ -129,16 +129,13 @@ Foam::RASModel<BasicMomentumTransportModel>::New
             << exit(FatalError);
     }
 
-    Info<< incrIndent;
-
-    autoPtr<RASModel> modelPtr
+    printDictionary print
     (
-        cstrIter()(alpha, rho, U, alphaRhoPhi, phi, viscosity)
+        RASdict.name(),
+        RASdict.optionalTypeDict(modelType).name()
     );
 
-    Info<< decrIndent;
-
-    return modelPtr;
+    return cstrIter()(alpha, rho, U, alphaRhoPhi, phi, viscosity);
 }
 
 
@@ -154,9 +151,17 @@ Foam::RASModel<BasicMomentumTransportModel>::RASDict() const
 
 template<class BasicMomentumTransportModel>
 const Foam::dictionary&
-Foam::RASModel<BasicMomentumTransportModel>::coeffDict() const
+Foam::RASModel<BasicMomentumTransportModel>::typeDict() const
 {
-    return this->RASDict().optionalSubDict(type() + "Coeffs");
+    return typeDict(this->type());
+}
+
+
+template<class BasicMomentumTransportModel>
+const Foam::dictionary&
+Foam::RASModel<BasicMomentumTransportModel>::typeDict(const word& type) const
+{
+    return this->RASDict().optionalTypeDict(type);
 }
 
 

@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -37,7 +37,7 @@ Foam::autoPtr<Foam::XiProfile> Foam::XiProfile::New
 
     const word modelType(XiProfileDict.lookup("model"));
 
-    Info<< "Selecting equilibrium flame-wrinkling profile model "
+    Info<< indentOrNl << "Selecting equilibrium flame-wrinkling profile model "
         << modelType << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
@@ -53,11 +53,17 @@ Foam::autoPtr<Foam::XiProfile> Foam::XiProfile::New
             << exit(FatalIOError);
     }
 
+    printDictionary print
+    (
+        XiProfileDict,
+        XiProfileDict.optionalTypeDict(modelType)
+    );
+
     return autoPtr<XiProfile>
     (
         cstrIter()
         (
-            XiProfileDict.optionalSubDict(modelType + "Coeffs"),
+            XiProfileDict.optionalTypeDict(modelType),
             b
         )
     );

@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -198,7 +198,7 @@ const Type& Foam::objectRegistry::lookupObject(const word& name) const
             << " are" << nl
             << toc<Type>();
 
-        if (cacheTemporaryObject(name))
+        if (temporaryObjectCached(name))
         {
             FatalErrorInFunction
                 << nl
@@ -240,33 +240,24 @@ const Type& Foam::objectRegistry::lookupType(const word& group) const
 template<class Object>
 bool Foam::objectRegistry::cacheTemporaryObject(Object& ob) const
 {
+    if (cacheTemporaryObjectsState_ == -1) return false;
+
     const objectRegistry& root = time_;
 
     root.readCacheTemporaryObjects();
-
-    if (root.cacheTemporaryObjects_.empty())
-    {
-        return false;
-    }
+    if (root.cacheTemporaryObjects_.empty()) return false;
 
     temporaryObjects_.insert(ob.name());
 
-    HashTable<Pair<bool>>::iterator rootIter
-    (
-        root.cacheTemporaryObjects_.find(ob.name())
-    );
-
+    HashTable<Pair<bool>>::iterator rootIter =
+        root.cacheTemporaryObjects_.find(ob.name());
     if (rootIter == root.cacheTemporaryObjects_.end()) return false;
 
-    HashTable<Pair<bool>>::iterator iter
-    (
-        cacheTemporaryObjects_.find(ob.name())
-    );
-
+    HashTable<Pair<bool>>::iterator iter =
+        cacheTemporaryObjects_.find(ob.name());
     if (iter == cacheTemporaryObjects_.end())
     {
         cacheTemporaryObjects_.insert(rootIter.key(), rootIter());
-
         iter = cacheTemporaryObjects_.find(ob.name());
     }
 

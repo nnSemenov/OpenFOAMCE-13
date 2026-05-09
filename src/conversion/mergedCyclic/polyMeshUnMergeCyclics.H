@@ -27,7 +27,7 @@ License
 #define polyMeshUnMergeCyclics_H
 
 #include "polyMesh.H"
-#include "unitSet.H"
+#include "units.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

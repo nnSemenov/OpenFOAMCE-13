@@ -132,7 +132,7 @@ autoPtr<refinementSurfaces> createRefinementSurfaces
             const word scsFuncName =
                 shapeDict.lookup("surfaceCellSizeFunction");
             const dictionary& scsDict =
-                shapeDict.optionalSubDict(scsFuncName + "Coeffs");
+                shapeDict.optionalTypeDict(scsFuncName);
 
             const scalar surfaceCellSize =
                 scsDict.lookup<scalar>("surfaceCellSizeCoeff");
@@ -216,10 +216,7 @@ autoPtr<refinementSurfaces> createRefinementSurfaces
                                 "surfaceCellSizeFunction"
                             );
                         const dictionary& scsDict =
-                            shapeControlRegionDict.subDict
-                            (
-                                scsFuncName + "Coeffs"
-                            );
+                            shapeControlRegionDict.typeDict(scsFuncName);
 
                         const scalar surfaceCellSize =
                                 scsDict.lookup<scalar>("surfaceCellSizeCoeff");
@@ -571,7 +568,7 @@ void removeZeroSizedPatches(fvMesh& mesh)
 
         if
         (
-            polyPatch::constraintType(pp.type())
+            pp.constraint()
          || returnReduce(pp.size(), sumOp<label>())
         )
         {
@@ -632,7 +629,6 @@ void writeMesh
 
 int main(int argc, char *argv[])
 {
-    Foam::argList::removeOption("noFunctionObjects");
     #include "addNoOverwriteOption.H"
     Foam::argList::addBoolOption
     (
@@ -661,7 +657,7 @@ int main(int argc, char *argv[])
     #include "addMeshOption.H"
     #include "addRegionOption.H"
 
-    #include "setRootCase.H"
+    #include "setRootCaseNoFunctionObjects.H"
     #include "createTimeNoFunctionObjects.H"
     #include "createSpecifiedMeshNoChangers.H"
 

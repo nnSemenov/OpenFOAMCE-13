@@ -60,7 +60,10 @@ protected:
         const dictionary& laminarDict() const;
 
         //- Const access to the coefficients dictionary
-        const dictionary& coeffDict() const;
+        const dictionary& typeDict() const;
+
+        //- Const access to the coefficients dictionary
+        const dictionary& typeDict(const word&) const;
 
 
 public:

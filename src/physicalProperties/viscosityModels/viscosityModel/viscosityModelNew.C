@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -34,11 +34,11 @@ Foam::autoPtr<Foam::viscosityModel> Foam::viscosityModel::New
     const word& group
 )
 {
-    IOdictionary dict( viscosityModel::findModelDict(mesh, group));
+    IOdictionary dict(viscosityModel::findModelDict(mesh, group));
 
     const word modelType(dict.lookup("viscosityModel"));
 
-    Info<< "Selecting viscosity model " << modelType << endl;
+    Info<< indentOrNl << "Selecting viscosity model " << modelType << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find(modelType);
@@ -51,6 +51,8 @@ Foam::autoPtr<Foam::viscosityModel> Foam::viscosityModel::New
             << dictionaryConstructorTablePtr_->sortedToc()
             << exit(FatalIOError);
     }
+
+    printDictionary print(dict.dictionary::name());
 
     return autoPtr<viscosityModel>(cstrIter()(mesh, group));
 }

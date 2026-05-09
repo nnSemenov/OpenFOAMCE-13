@@ -34,7 +34,7 @@ boundaryField
     {
         type           functionalFixedValue;
 
-        function
+        value
         {
             $internalField;
         }
@@ -43,7 +43,6 @@ boundaryField
     outlet
     {
         type            pressureInletOutletVelocity;
-        value           uniform (1 0 0);
     }
 
     walls

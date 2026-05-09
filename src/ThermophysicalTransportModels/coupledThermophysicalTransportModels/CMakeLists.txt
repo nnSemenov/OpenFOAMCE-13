@@ -6,6 +6,8 @@ add_library(${target_name} SHARED
     externalTemperature/externalTemperatureFvPatchScalarField.C
     coupledTemperature/coupledTemperatureFvPatchScalarField.C
     lumpedMassTemperature/lumpedMassTemperatureFvPatchScalarField.C
+    wallLayersHeatTransferCoefficient/wallLayersHeatTransferCoefficient_DimensionedFieldFunction.C
+    externalWallLayersHeatTransferCoefficient/externalWallLayersHeatTransferCoefficient_DimensionedFieldFunction.C
 )
 
 target_include_directories(${target_name} PUBLIC

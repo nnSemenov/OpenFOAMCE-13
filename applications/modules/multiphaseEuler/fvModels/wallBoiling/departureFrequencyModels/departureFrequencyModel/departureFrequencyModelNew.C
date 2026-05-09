@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2016-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2016-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -35,7 +35,7 @@ Foam::wallBoilingModels::departureFrequencyModel::New
 {
     word departureFrequencyModelType(dict.lookup("type"));
 
-    Info<< "Selecting departureFrequencyModel: "
+    Info<< indentOrNl << "Selecting departureFrequencyModel "
         << departureFrequencyModelType << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
@@ -50,6 +50,8 @@ Foam::wallBoilingModels::departureFrequencyModel::New
             << dictionaryConstructorTablePtr_->sortedToc()
             << exit(FatalIOError);
     }
+
+    printDictionary print(dict);
 
     return cstrIter()(dict);
 }

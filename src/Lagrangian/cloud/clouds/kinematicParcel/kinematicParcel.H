@@ -64,6 +64,7 @@ namespace clouds
 class kinematicParcel
 :
     public cloud,
+    public carried,
     public grouped,
     public spherical,
     public coupledToConstantDensityFluid,

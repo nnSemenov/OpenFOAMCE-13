@@ -56,8 +56,6 @@ heatTransferLimitedPhaseChange
             columns         (1 0);
             mergeSeparators no;
             file "$FOAM_TUTORIALS/resources/thermoData/wallBoiling-saturation.csv";
-            outOfBounds     clamp;
-            interpolationScheme linear;
         }
     }
 }
@@ -94,9 +92,6 @@ wallBoiling
     departureDiameterModel
     {
         type            TolubinskiKostanchuk;
-        dRef            0.00024;
-        dMax            0.0014;
-        dMin            1e-06;
     }
 
     departureFrequencyModel
@@ -104,6 +99,8 @@ wallBoiling
         type            KocamustafaogullariIshii;
         Cf              1.18;
     }
+
+    #print
 }
 
 

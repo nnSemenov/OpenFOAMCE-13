@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2021-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2021-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -53,15 +53,17 @@ Foam::IOobject Foam::fvModels::createIOobject
 
     if (io.headerOk())
     {
-        Info<< "Creating fvModels from "
-            << io.instance()/io.name() << nl
-            << endl;
+        Info<< indentOrNl << "Constructing " << typeName << " from "
+            << io.relativeObjectPath().c_str() << endl;
 
         io.readOpt() = IOobject::MUST_READ_IF_MODIFIED;
         return io;
     }
     else
     {
+        const fileName preferredPath =
+            mesh.time().constant()/io.db().dbDir()/io.local()/io.name();
+
         // For backward-compatibility
         // check if the fvOptions file is in constant
         io.rename("fvOptions");
@@ -69,9 +71,9 @@ Foam::IOobject Foam::fvModels::createIOobject
         if (io.headerOk())
         {
             Warning
-                << "Creating fvModels from "
-                << io.instance()/io.name() << nl
-                << endl;
+                << indentOrNl << "Constructing " << typeName << " from "
+                << io.relativeObjectPath() << " rather than "
+                << preferredPath << endl;
 
             io.readOpt() = IOobject::MUST_READ_IF_MODIFIED;
             return io;
@@ -85,10 +87,9 @@ Foam::IOobject Foam::fvModels::createIOobject
             if (io.headerOk())
             {
                 Warning
-                    << "Creating fvModels from "
-                    << io.instance()/io.name()
-                    << " rather than constant/fvModels"
-                    << endl;
+                    << indentOrNl << "Constructing " << typeName << " from "
+                    << io.relativeObjectPath() << " rather than "
+                    << preferredPath << endl;
 
                 io.readOpt() = IOobject::MUST_READ_IF_MODIFIED;
                 return io;
@@ -156,9 +157,9 @@ Foam::fvModels::fvModels
 {
     readHeaderOk(IOstream::ASCII, typeName);
 
-    const bool readFromFvModels(IOobject::name() == typeName);
+    const bool readFromFvModels = IOobject::name() == typeName;
 
-    const dictionary& dict(*this);
+    const dictionary& dict = *this;
 
     // Count number of active fvModels
     label count = 0;
@@ -173,6 +174,8 @@ Foam::fvModels::fvModels
     PtrListDictionary<fvModel>::setSize(count);
 
     addSupFields_.setSize(count);
+
+    printDictionary print(*this);
 
     label i = 0;
     forAllConstIter(dictionary, dict, iter)

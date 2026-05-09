@@ -52,17 +52,18 @@ template<class TurbulenceThermophysicalTransportModel>
 eddyDiffusivity<TurbulenceThermophysicalTransportModel>::eddyDiffusivity
 (
     const momentumTransportModel& momentumTransport,
-    const thermoModel& thermo
+    const thermoModel& thermo,
+    const word& type
 )
 :
     TurbulenceThermophysicalTransportModel
     (
-        typeName,
+        type,
         momentumTransport,
         thermo
     ),
 
-    Prt_("Prt", dimless, this->coeffDict()),
+    Prt_("Prt", dimless, this->typeDict(type)),
 
     alphat_
     (
@@ -90,7 +91,7 @@ bool eddyDiffusivity<TurbulenceThermophysicalTransportModel>::read()
 {
     if (TurbulenceThermophysicalTransportModel::read())
     {
-        Prt_.read(this->coeffDict());
+        Prt_.read(this->typeDict());
 
         return true;
     }

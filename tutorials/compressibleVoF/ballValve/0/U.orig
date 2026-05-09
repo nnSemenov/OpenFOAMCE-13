@@ -30,12 +30,10 @@ boundaryField
     lowerOutlet
     {
         type            pressureInletOutletVelocity;
-        value           $internalField;
     }
     upperOutlet
     {
         type            pressureInletOutletVelocity;
-        value           $internalField;
     }
     wall
     {

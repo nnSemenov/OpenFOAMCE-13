@@ -37,9 +37,6 @@ add_library(triSurface SHARED
     triSurface/surfacePatch/surfacePatchIOList.C
 
     tools/labelledTri/sortLabelledTri.C
-
-    triSurfaceFields/triSurfaceFields.C
-    triSurfaceFields/makeTriSurfaceFieldFunctions.C
 )
 
 flex_target(triSurfaceFlex

@@ -42,6 +42,12 @@ Foam::autoPtr<Foam::Function1<Type>> Foam::Function1<Type>::New
 
         const word Function1Type(coeffDict.lookup("type"));
 
+        if (printDictionary::prints(coeffDict))
+        {
+            Info<< indent << "Selecting " << typeName << " "
+                << Function1Type << endl;
+        }
+
         typename dictionaryConstructorTable::iterator cstrIter =
             dictionaryConstructorTablePtr_->find(Function1Type);
 
@@ -55,6 +61,8 @@ Foam::autoPtr<Foam::Function1<Type>> Foam::Function1<Type>::New
                 << dictionaryConstructorTablePtr_->sortedToc() << nl
                 << exit(FatalIOError);
         }
+
+        printDictionary print(coeffDict);
 
         return cstrIter()(name, units, coeffDict);
     }
@@ -92,28 +100,7 @@ Foam::autoPtr<Foam::Function1<Type>> Foam::Function1<Type>::New
             << exit(FatalIOError);
     }
 
-    const bool haveCoeffsDict = dict.found(name + "Coeffs");
-
-    autoPtr<Function1<Type>> funcPtr
-    (
-        dictCstrIter()
-        (
-            name,
-            units,
-            haveCoeffsDict ? dict.subDict(name + "Coeffs") : dict
-        )
-    );
-
-    if (haveCoeffsDict)
-    {
-        IOWarningInFunction(dict)
-            << "Using deprecated "
-            << (name + "Coeffs") << " sub-dictionary."<< nl
-            << "    Please use the simpler form" << endl;
-        funcPtr->write(Info, units);
-    }
-
-    return funcPtr;
+    return dictCstrIter()(name, units, dict);
 }
 
 
@@ -144,6 +131,12 @@ Foam::autoPtr<Foam::Function1<Type>> Foam::Function1<Type>::New
 
         const word Function1Type(coeffDict.lookup("type"));
 
+        if (printDictionary::prints(coeffDict))
+        {
+            Info<< indent << "Selecting " << typeName << " "
+                << Function1Type << endl;
+        }
+
         typename dictionaryConstructorTable::iterator cstrIter =
             dictionaryConstructorTablePtr_->find(Function1Type);
 
@@ -157,6 +150,8 @@ Foam::autoPtr<Foam::Function1<Type>> Foam::Function1<Type>::New
                 << dictionaryConstructorTablePtr_->sortedToc() << nl
                 << exit(FatalIOError);
         }
+
+        printDictionary print(coeffDict);
 
         return cstrIter()(e.keyword(), units, coeffDict);
     }
@@ -180,9 +175,8 @@ Foam::autoPtr<Foam::Function1<Type>> Foam::Function1<Type>::New
     }
 
     FatalIOErrorInFunction(e.stream())
-        << "A " << (e.keyword() + "Coeffs") << " sub-dictionary is not "
-        << "supported. The " << e.keyword() << " entry should be the "
-        << "sub-dictionary." << exit(FatalIOError);
+        << "Unable to construct Function1 for " << e.keyword()
+        << exit(FatalIOError);
 
     return autoPtr<Function1<Type>>(nullptr);
 }

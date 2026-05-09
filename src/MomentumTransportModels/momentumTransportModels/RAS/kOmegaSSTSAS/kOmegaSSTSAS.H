@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2015-2021 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2015-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -38,7 +38,7 @@ Description
 
     The model coefficients are
     \verbatim
-        kOmegaSSTSASCoeffs
+        kOmegaSSTSAS
         {
             // Default SST coefficients
             alphaK1     0.85;
@@ -65,7 +65,7 @@ Description
             // Delta must be specified for SAS e.g.
             delta cubeRootVol;
 
-            cubeRootVolCoeffs
+            cubeRootVol
             {}
         }
     \endverbatim

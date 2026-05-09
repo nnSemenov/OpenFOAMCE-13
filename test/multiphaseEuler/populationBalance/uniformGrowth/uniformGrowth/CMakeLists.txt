@@ -13,6 +13,26 @@ add_library(uniformGrowth SHARED
     uniformGrowth.C
 )
 
+target_include_directories(uniformGrowth PRIVATE
+    $ENV{LIB_SRC}/finiteVolume/lnInclude
+    #    ${LIB_SRC}/meshTools/lnInclude
+    #    ${LIB_SRC}/sampling/lnInclude
+    $ENV{LIB_SRC}/physicalProperties/lnInclude
+    $ENV{LIB_SRC}/thermophysicalModels/solidThermo/lnInclude
+#    $ENV{LIB_SRC}/thermophysicalModels/specie/lnInclude
+    $ENV{LIB_SRC}/thermophysicalModels/basic/lnInclude
+    $ENV{LIB_SRC}/thermophysicalModels/multicomponentThermo/lnInclude
+    $ENV{LIB_SRC}/twoPhaseModels/twoPhaseMixture/lnInclude
+    $ENV{LIB_SRC}/twoPhaseModels/compressibleTwoPhases/lnInclude
+    $ENV{LIB_SRC}/MomentumTransportModels/momentumTransportModels/lnInclude
+    $ENV{LIB_SRC}/MomentumTransportModels/compressible/lnInclude
+    $ENV{LIB_SRC}/ThermophysicalTransportModels/thermophysicalTransportModel/lnInclude
+    $ENV{LIB_SRC}/ThermophysicalTransportModels/fluid/lnInclude
+    #    ${LIB_SRC}/fvModels/general/lnInclude
+    #    ${FOAM_MODULES}/multiphaseEuler/phaseSystem/lnInclude
+    #    ${FOAM_MODULES}/multiphaseEuler/populationBalance/lnInclude
+)
+
 target_link_libraries(uniformGrowth PRIVATE
     Mikeno::OpenFOAM_Defines
     Mikeno::OpenFOAM
@@ -27,24 +47,4 @@ target_link_libraries(uniformGrowth PRIVATE
     Mikeno::fvModels
     Mikeno::phaseSystem
     Mikeno::populationBalance
-)
-
-target_include_directories(uniformGrowth PRIVATE
-#    ${LIB_SRC}/finiteVolume/lnInclude
-#    ${LIB_SRC}/meshTools/lnInclude 
-#    ${LIB_SRC}/sampling/lnInclude 
-    $ENV{LIB_SRC}/physicalProperties/lnInclude
-    $ENV{LIB_SRC}/thermophysicalModels/solidThermo/lnInclude
-    $ENV{LIB_SRC}/thermophysicalModels/specie/lnInclude
-    $ENV{LIB_SRC}/thermophysicalModels/basic/lnInclude
-    $ENV{LIB_SRC}/thermophysicalModels/multicomponentThermo/lnInclude
-    $ENV{LIB_SRC}/twoPhaseModels/twoPhaseMixture/lnInclude
-    $ENV{LIB_SRC}/twoPhaseModels/compressibleTwoPhases/lnInclude
-    $ENV{LIB_SRC}/MomentumTransportModels/momentumTransportModels/lnInclude
-    $ENV{LIB_SRC}/MomentumTransportModels/compressible/lnInclude
-    $ENV{LIB_SRC}/ThermophysicalTransportModels/thermophysicalTransportModel/lnInclude
-    $ENV{LIB_SRC}/ThermophysicalTransportModels/fluid/lnInclude
-#    ${LIB_SRC}/fvModels/general/lnInclude
-#    ${FOAM_MODULES}/multiphaseEuler/phaseSystem/lnInclude
-#    ${FOAM_MODULES}/multiphaseEuler/populationBalance/lnInclude
 )

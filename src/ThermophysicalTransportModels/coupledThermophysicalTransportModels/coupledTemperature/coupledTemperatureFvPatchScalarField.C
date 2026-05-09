@@ -25,8 +25,7 @@ License
 
 #include "coupledTemperatureFvPatchScalarField.H"
 #include "thermophysicalTransportModel.H"
-#include "volFields.H"
-#include "fieldMapper.H"
+#include "FunctionalDimensionedField.H"
 #include "mappedFvPatchBaseBase.H"
 #include "addToRunTimeSelectionTable.H"
 
@@ -79,28 +78,6 @@ void Foam::coupledTemperatureFvPatchScalarField::getNbr
 }
 
 
-void Foam::coupledTemperatureFvPatchScalarField::getNbr
-(
-    tmp<scalarField>& TrefNbr,
-    tmp<scalarField>& qNbr
-) const
-{
-    const thermophysicalTransportModel& ttm =
-        patch().mesh()
-       .lookupType<thermophysicalTransportModel>();
-
-    const fvPatchScalarField& Tp =
-        patch().lookupPatchField<volScalarField, scalar>
-        (
-            internalField().name()
-        );
-
-    TrefNbr = Tp;
-
-    qNbr = ttm.qCorr(patch().index());
-}
-
-
 void Foam::coupledTemperatureFvPatchScalarField::add
 (
     tmp<scalarField>& result,
@@ -148,11 +125,21 @@ coupledTemperatureFvPatchScalarField
       : scalarField(p.size(), 0)
       : scalarField()
     ),
-    thicknessLayers_(0),
-    kappaLayers_(0),
+    h_
+    (
+        dict.found("h")
+      ? new FunctionalDimensionedField<scalar, fvPatch>
+        (
+            iF.name(),
+            "h",
+            p,
+            dimPower/dimArea/dimTemperature,
+            dict
+        )
+      : nullptr
+    ),
     qs_(),
-    Qs_(0),
-    wallKappaByDelta_(0)
+    Qs_(0)
 {
     mappedPatchBaseBase::validateMapForField
     (
@@ -161,22 +148,6 @@ coupledTemperatureFvPatchScalarField
         dict,
         mappedPatchBaseBase::from::differentPatch
     );
-
-    if (dict.found("thicknessLayers"))
-    {
-        dict.lookup("thicknessLayers") >> thicknessLayers_;
-        dict.lookup("kappaLayers") >> kappaLayers_;
-
-        if (thicknessLayers_.size() > 0)
-        {
-            // Calculate effective thermal resistance by harmonic averaging
-            forAll(thicknessLayers_, i)
-            {
-                wallKappaByDelta_ += thicknessLayers_[i]/kappaLayers_[i];
-            }
-            wallKappaByDelta_ = 1/wallKappaByDelta_;
-        }
-    }
 
     if (dict.found("qs"))
     {
@@ -245,11 +216,18 @@ coupledTemperatureFvPatchScalarField
       ? mapper(psf.qrPrevious_)()
       : scalarField()
     ),
-    thicknessLayers_(psf.thicknessLayers_),
-    kappaLayers_(psf.kappaLayers_),
+    h_
+    (
+        psf.h_.valid()
+      ? new FunctionalDimensionedField<scalar, fvPatch>
+        (
+            psf.h_(),
+            p
+        )
+      : nullptr
+    ),
     qs_(psf.qs_.valid() ? new scalarField(p.size()) : nullptr),
-    Qs_(psf.Qs_),
-    wallKappaByDelta_(psf.wallKappaByDelta_)
+    Qs_(psf.Qs_)
 {
     map(psf, mapper);
 }
@@ -268,11 +246,37 @@ coupledTemperatureFvPatchScalarField
     qrName_(psf.qrName_),
     qrRelax_(psf.qrRelax_),
     qrPrevious_(psf.qrPrevious_),
-    thicknessLayers_(psf.thicknessLayers_),
-    kappaLayers_(psf.kappaLayers_),
+    h_
+    (
+        psf.h_.valid()
+      ? new FunctionalDimensionedField<scalar, fvPatch>
+        (
+            psf.h_()
+        )
+      : nullptr
+    ),
     qs_(psf.qs_, false),
-    Qs_(psf.Qs_),
-    wallKappaByDelta_(psf.wallKappaByDelta_)
+    Qs_(psf.Qs_)
+{}
+
+
+Foam::tmp<Foam::fvPatchScalarField>
+Foam::coupledTemperatureFvPatchScalarField::clone
+(
+    const DimensionedField<scalar, fvMesh>& iF
+) const
+{
+    return tmp<fvPatchScalarField>
+    (
+        new coupledTemperatureFvPatchScalarField(*this, iF)
+    );
+}
+
+
+// * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
+
+Foam::coupledTemperatureFvPatchScalarField::
+~coupledTemperatureFvPatchScalarField()
 {}
 
 
@@ -305,6 +309,11 @@ void Foam::coupledTemperatureFvPatchScalarField::map
 )
 {
     map(refCast<const coupledTemperatureFvPatchScalarField>(ptf), mapper);
+
+    if (h_.valid())
+    {
+        h_->map(!mapper.direct());
+    }
 }
 
 
@@ -321,6 +330,11 @@ void Foam::coupledTemperatureFvPatchScalarField::reset
     if (tiptf.qs_.valid())
     {
         qs_().reset(tiptf.qs_());
+    }
+
+    if (h_.valid())
+    {
+        h_->reset();
     }
 }
 
@@ -400,31 +414,52 @@ void Foam::coupledTemperatureFvPatchScalarField::updateCoeffs()
         tmp<scalarField> sumKappaByDeltaNbr;
         tmp<scalarField> qNbr;
 
-        if (wallKappaByDelta_ == 0)
-        {
-            coupledTemperatureNbr.getNbr
-            (
-                sumKappaTByDeltaNbr,
-                sumKappaByDeltaNbr,
-                qNbr
-            );
+        coupledTemperatureNbr.getNbr
+        (
+            sumKappaTByDeltaNbr,
+            sumKappaByDeltaNbr,
+            qNbr
+        );
 
-            add(sumKappaTByDelta, mapper.fromNeighbour(sumKappaTByDeltaNbr));
-            add(sumKappaByDelta, mapper.fromNeighbour(sumKappaByDeltaNbr));
-        }
-        else
+        // Include the effect of the optional neighbour insulation layer
+        if (coupledTemperatureNbr.h_.valid())
         {
-            // Get the neighbour wall temperature and flux correction
-            tmp<scalarField> TwNbr;
-            coupledTemperatureNbr.getNbr(TwNbr, qNbr);
-
-            add(sumKappaByDelta, scalarField(size(), wallKappaByDelta_));
-            add
+            const_cast<coupledTemperatureFvPatchScalarField&>
             (
-                sumKappaTByDelta,
-                wallKappaByDelta_*mapper.fromNeighbour(TwNbr)
+                coupledTemperatureNbr
+            ).h_->update();
+
+            const scalarField hFactor
+            (
+                coupledTemperatureNbr.h_()
+               /(coupledTemperatureNbr.h_() + sumKappaByDeltaNbr())
             );
+            sumKappaTByDeltaNbr.ref() *= hFactor;
+            sumKappaByDeltaNbr.ref() *= hFactor;
         }
+
+        tmp<scalarField> sumKappaTByDeltaNbrMapped
+        (
+            mapper.fromNeighbour(sumKappaTByDeltaNbr)
+        );
+
+        tmp<scalarField> sumKappaByDeltaNbrMapped
+        (
+            mapper.fromNeighbour(sumKappaByDeltaNbr)
+        );
+
+        // Include the effect of the optional insulation layer
+        if (h_.valid())
+        {
+            h_->update();
+
+            const scalarField hFactor(h_()/(h_() + sumKappaByDeltaNbrMapped()));
+            sumKappaTByDeltaNbrMapped.ref() *= hFactor;
+            sumKappaByDeltaNbrMapped.ref() *= hFactor;
+        }
+
+        add(sumKappaTByDelta, sumKappaTByDeltaNbrMapped);
+        add(sumKappaByDelta, sumKappaByDeltaNbrMapped);
 
         if (qNbr.valid())
         {
@@ -490,10 +525,9 @@ void Foam::coupledTemperatureFvPatchScalarField::write
         writeEntry(os, "qs", qs_());
     }
 
-    if (thicknessLayers_.size())
+    if (h_.valid())
     {
-        writeEntry(os, "thicknessLayers", thicknessLayers_);
-        writeEntry(os, "kappaLayers", kappaLayers_);
+        writeEntry(os, h_());
     }
 }
 

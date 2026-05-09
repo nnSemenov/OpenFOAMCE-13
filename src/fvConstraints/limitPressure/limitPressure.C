@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2021-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2021-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -133,21 +133,6 @@ void Foam::fv::limitPressure::readCoeffs(const dictionary& dict)
             limitMaxP_ = true;
         }
     }
-
-    if (limitMinP_ || limitMaxP_)
-    {
-        if (limitMinP_)
-        {
-            Info<< "    min " << pMin_.value() << nl;
-        }
-
-        if (limitMaxP_)
-        {
-            Info<< "    max " << pMax_.value() << nl;
-        }
-
-        Info << endl;
-    }
 }
 
 
@@ -192,7 +177,7 @@ bool Foam::fv::limitPressure::constrain(volScalarField& p) const
 
             if (pMin < pMin_.value())
             {
-                Info<< "limitPressure: min " << pMin << endl;
+                Info<< indent << "limitPressure: min " << pMin << endl;
                 p = max(p, pMin_);
                 constrained = true;
             }
@@ -204,7 +189,7 @@ bool Foam::fv::limitPressure::constrain(volScalarField& p) const
 
             if (pMax > pMax_.value())
             {
-                Info<< "limitPressure: max " << pMax << endl;
+                Info<< indent << "limitPressure: max " << pMax << endl;
                 p = min(p, pMax_);
                 constrained = true;
             }

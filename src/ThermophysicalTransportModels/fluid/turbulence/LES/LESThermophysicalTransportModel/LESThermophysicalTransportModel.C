@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2020-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2020-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -80,9 +80,12 @@ Foam::LESThermophysicalTransportModel
     {
         IOdictionary modelDict(header);
 
-        const word modelType(modelDict.subDict("LES").lookup( "model"));
+        const dictionary& LESdict(modelDict.subDict("LES"));
 
-        Info<< "Selecting LES thermophysical transport model "
+        const word modelType(LESdict.lookup("model"));
+
+        Info<< indentOrNl
+            << "Selecting LES thermophysical transport model "
             << modelType << endl;
 
         typename dictionaryConstructorTable::iterator cstrIter =
@@ -97,6 +100,12 @@ Foam::LESThermophysicalTransportModel
                 << dictionaryConstructorTablePtr_->sortedToc()
                 << exit(FatalError);
         }
+
+        printDictionary print
+        (
+            LESdict.name(),
+            LESdict.optionalTypeDict(modelType).name()
+        );
 
         return autoPtr<LESThermophysicalTransportModel>
         (
@@ -114,7 +123,8 @@ Foam::LESThermophysicalTransportModel
                 >
             > LESunityLewisEddyDiffusivity;
 
-        Info<< "Selecting default LES thermophysical transport model "
+        Info<< indentOrNl
+            << "Selecting default LES thermophysical transport model "
             <<  LESunityLewisEddyDiffusivity::typeName << endl;
 
         return autoPtr<LESThermophysicalTransportModel>
@@ -137,9 +147,19 @@ template<class BasicThermophysicalTransportModel>
 const Foam::dictionary& Foam::LESThermophysicalTransportModel
 <
     BasicThermophysicalTransportModel
->::coeffDict() const
+>::typeDict() const
 {
-    return this->subOrEmptyDict("LES").optionalSubDict(type() + "Coeffs");
+    return typeDict(this->type());
+}
+
+
+template<class BasicThermophysicalTransportModel>
+const Foam::dictionary& Foam::LESThermophysicalTransportModel
+<
+    BasicThermophysicalTransportModel
+>::typeDict(const word& type) const
+{
+    return this->subOrEmptyDict("LES").optionalTypeDict(type);
 }
 
 

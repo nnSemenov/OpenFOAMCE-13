@@ -143,6 +143,7 @@ target_link_libraries(Lagrangian PRIVATE
 
     meshTools
     tracking
+    finiteVolume
 )
 
 target_compile_definitions(Lagrangian PRIVATE

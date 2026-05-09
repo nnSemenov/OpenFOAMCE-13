@@ -151,10 +151,9 @@ public:
                 const label size,
                 const label start,
                 const label index,
-                const polyBoundaryMesh& bm,
-                const word& patchType
+                const polyBoundaryMesh& bm
             ),
-            (name, size, start, index, bm, patchType)
+            (name, size, start, index, bm)
         );
 
         declareRunTimeSelectionTable
@@ -166,10 +165,9 @@ public:
                 const word& name,
                 const dictionary& dict,
                 const label index,
-                const polyBoundaryMesh& bm,
-                const word& patchType
+                const polyBoundaryMesh& bm
             ),
-            (name, dict, index, bm, patchType)
+            (name, dict, index, bm)
         );
 
 
@@ -182,8 +180,7 @@ public:
             const label size,
             const label start,
             const label index,
-            const polyBoundaryMesh& bm,
-            const word& patchType
+            const polyBoundaryMesh& bm
         );
 
         //- Construct from dictionary
@@ -192,8 +189,7 @@ public:
             const word& name,
             const dictionary& dict,
             const label index,
-            const polyBoundaryMesh& bm,
-            const word& patchType
+            const polyBoundaryMesh& bm
         );
 
         //- Copy constructor, resetting the boundary mesh
@@ -290,18 +286,18 @@ public:
         //- Return mesh reference
         const polyMesh& mesh() const;
 
+        //- Return false as this patch is not a constraint type
+        virtual bool constraint() const
+        {
+            return false;
+        }
+
         //- Return true if this patch is geometrically coupled (i.e. faces and
         //  points correspondence)
         virtual bool coupled() const
         {
             return false;
         }
-
-        //- Return true if the given type is a constraint type
-        static bool constraintType(const word& pt);
-
-        //- Return a list of all the constraint patch types
-        static wordList constraintTypes();
 
         //- Extract face cell data
         template<class T>
@@ -384,6 +380,9 @@ public:
             labelList& faceMap,
             labelList& rotation
         ) const;
+
+        //- Reset the size and start of the patch
+        void reset(const label size, const label start);
 
 
     // Member Operators

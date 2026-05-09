@@ -35,7 +35,6 @@ InClass
 
 // OpenFOAM includes
 #include "domainDecomposition.H"
-#include "emptyFvsPatchField.H"
 #include "faceSet.H"
 #include "surfaceFields.H"
 #include "fvFieldReconstructor.H"
@@ -96,7 +95,12 @@ void Foam::vtkPVFoam::convertSurfaceField
             const label patchi = mesh.poly().boundary().whichPatch(facei);
             const label pFacei =
                 mesh.poly().boundary()[patchi].whichFace(facei);
-            const Type& t = tf.boundaryField()[patchi][pFacei];
+            const fvPatchField<Type>& ptf =  tf.boundaryField()[patchi];
+
+            const Type& t =
+                isType<emptyFvPatchField<Type>>(ptf)
+              ? tf[faceOwner[facei]]
+              : ptf[pFacei];
 
             for (direction d=0; d<nComp; ++d)
             {
@@ -149,14 +153,17 @@ void Foam::vtkPVFoam::convertSurfaceField
     SubField<Type>(flatFld, nInternalFaces) = tf.internalField();
     forAll(tf.boundaryField(), patchi)
     {
-        const fvsPatchField<Type>& fvs = tf.boundaryField()[patchi];
+        const fvsPatchField<Type>& ptf = tf.boundaryField()[patchi];
 
-        SubField<Type>
-        (
-            flatFld,
-            fvs.size(),
-            fvs.patch().start()
-        ) = fvs;
+        forAll(ptf, patchFacei)
+        {
+            const label facei = mesh.polyFacesBf()[patchi][patchFacei];
+            const scalar fraction =
+                mesh.magSf().boundaryField()[patchi][patchFacei]
+               /mesh.magFaceAreas()[facei];
+
+            flatFld[facei] += fraction*ptf[patchFacei];
+        }
     }
 
     forAll(faceLabels, i)

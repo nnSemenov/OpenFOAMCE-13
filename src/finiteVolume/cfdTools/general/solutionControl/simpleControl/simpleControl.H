@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2018-2023 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2018-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -85,7 +85,7 @@ public:
     // Constructors
 
         //- Construct from a mesh and the name of the algorithm
-        simpleControl(fvMesh& mesh, const word& algorithmName="SIMPLE");
+        simpleControl(const fvMesh& mesh, const word& algorithmName="SIMPLE");
 
 
     //- Destructor
@@ -93,6 +93,18 @@ public:
 
 
     // Member Functions
+
+        // Access
+
+            using singleRegionSolutionControl::dict;
+
+            //- Return the solution dictionary
+            static const dictionary& dict
+            (
+                const fvMesh& mesh,
+                const word& algorithmName="SIMPLE"
+            );
+
 
         // Evolution
 

@@ -26,6 +26,25 @@ License
 #include "thermal.H"
 #include "CloudTypes.H"
 
+// * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
+
+template<class Thermo>
+Foam::clouds::Thermal<Thermo>::Thermal
+(
+    const cloud& c,
+    const shaped& shapedCloud,
+    const carried& carriedCloud
+)
+:
+    thermal
+    (
+        c,
+        shapedCloud,
+        Thermo::New(c.mesh(), carriedCloud.phaseName()).ptr()
+    )
+{}
+
+
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
 template<class Thermo, class ... Thermos>
@@ -57,7 +76,7 @@ void Foam::clouds::thermal::assertThermo(const LagrangianModel& model) const
     if (!isThermo<Thermo, Thermos ...>())
     {
         FatalErrorInFunction
-            << "The Larangian model '" << model.name() << "' of cloud '"
+            << "The Lagrangian model '" << model.name() << "' of cloud '"
             << cloud_.mesh().name() << "' requires a thermodynamic model "
             << "derived from "
             << CloudTypes<Thermo, Thermos ...>::typesString("or").c_str()

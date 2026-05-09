@@ -2,6 +2,7 @@ lnInclude(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(genericFvFields SHARED
     genericFvPatchField/genericFvPatchFields.C
+    genericPointPatchField/genericPointPatchFields.C
     genericFvFieldSource/genericFvFieldSources.C
 )
 

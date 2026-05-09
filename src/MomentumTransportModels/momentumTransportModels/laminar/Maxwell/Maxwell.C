@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2016-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2016-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -45,13 +45,26 @@ Maxwell<BasicMomentumTransportModel>::readModeCoefficients
     const dimensionSet& dims
 ) const
 {
+    return readModeCoefficients(this->type(), name, dims);
+}
+
+
+template<class BasicMomentumTransportModel>
+PtrList<dimensionedScalar>
+Maxwell<BasicMomentumTransportModel>::readModeCoefficients
+(
+    const word& type,
+    const word& name,
+    const dimensionSet& dims
+) const
+{
     PtrList<dimensionedScalar> modeCoeffs(nModes_);
 
     if (modeCoefficients_.size())
     {
-        if (this->coeffDict().found(name))
+        if (this->typeDict(type).found(name))
         {
-            IOWarningInFunction(this->coeffDict())
+            IOWarningInFunction(this->typeDict(type))
                 << "Using 'modes' list, '" << name << "' entry will be ignored."
                 << endl;
         }
@@ -80,7 +93,7 @@ Maxwell<BasicMomentumTransportModel>::readModeCoefficients
             (
                 name,
                 dims,
-                this->coeffDict().lookup(name)
+                this->typeDict(type).lookup(name)
             )
         );
     }
@@ -146,7 +159,7 @@ Maxwell<BasicMomentumTransportModel>::Maxwell
         viscosity
     ),
 
-    modeCoefficients_(this->coeffDict().subOrEmptyDict("modes")),
+    modeCoefficients_(this->typeDict(type).subOrEmptyDict("modes")),
 
     nModes_(modeCoefficients_.size() ? modeCoefficients_.size() : 1),
 
@@ -239,7 +252,7 @@ bool Maxwell<BasicMomentumTransportModel>::read()
     {
         if (modeCoefficients_.size())
         {
-            this->coeffDict().lookup("modes") >> modeCoefficients_;
+            this->typeDict().lookup("modes") >> modeCoefficients_;
         }
 
         nuM_ = readModeCoefficients("nuM", dimKinematicViscosity);

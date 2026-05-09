@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -235,7 +235,7 @@ int main(int argc, char *argv[])
         "Refine all cells"
     );
 
-    #include "setRootCase.H"
+    #include "setRootCaseNoFunctionObjects.H"
     #include "createTimeNoFunctionObjects.H"
     #include "createSpecifiedPolyMesh.H"
     const word oldInstance = mesh.pointsInstance();
@@ -310,7 +310,7 @@ int main(int argc, char *argv[])
         dictionary coeffDict;
         coeffDict.add("e1", vector(1, 0, 0));
         coeffDict.add("e2", vector(0, 1, 0));
-        refineDict.add("globalCoeffs", coeffDict);
+        refineDict.add("global", coeffDict);
 
         refineDict.add("geometricCut", "false");
         refineDict.add("writeMesh", "false");

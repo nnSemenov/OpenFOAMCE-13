@@ -70,7 +70,6 @@ class dictionary;
 class primitiveEntry;
 class regExp;
 class SHA1Digest;
-class unitSet;
 
 Istream& operator>>(Istream&, dictionary&);
 Ostream& operator<<(Ostream&, const dictionary&);
@@ -126,7 +125,7 @@ public:
         {
             const word scopedName = name_.name();
 
-            string::size_type i = scopedName.rfind('/');
+            const string::size_type i = scopedName.find_last_of("/!");
 
             if (i == scopedName.npos)
             {
@@ -182,6 +181,16 @@ class dictionary
 
     // Private Member Functions
 
+        //- Construct the path name from the name of the parent dictionary
+        //  and the given name.
+        //  A '/' separator is used unless the parent dictionary is top-level
+        //  and hence has the name of the file in which case a '!' is used
+        fileName pathName
+        (
+            const dictionary& parentDict,
+            const fileName& name
+        ) const;
+
         //- Find and return an entry data stream pointer if present
         //  otherwise return nullptr.
         //  Allows scoping using '/' with special handling for '!' and '..'.
@@ -210,36 +219,13 @@ class dictionary
             DLList<autoPtr<regExp>>::iterator& reLink
         );
 
-        //- Check that no unit conversions are being performed
-        void assertNoConvertUnits
-        (
-            const char* typeName,
-            const word& keyword,
-            const unitSet& defaultUnits,
-            ITstream& is
-        ) const;
+        //- Return true if there is a defaults dictionary corresponding to the
+        //  given dictionary if printDictionary is active
+        static bool haveDefaults(const dictionary& dict);
 
-        //- Read a value, check its dimensions and convert its units
-        template<class T>
-        T readTypeAndConvertUnits
-        (
-            const word& keyword,
-            const unitSet& defaultUnits,
-            ITstream& is
-        ) const;
-
-        //- Read a value from the token stream
-        template<class T>
-        T readType
-        (
-            const word& keyword,
-            const unitSet& defaultUnits,
-            ITstream& is
-        ) const;
-
-        //- Read a value from the token stream
-        template<class T>
-        T readType(const word& keyword, ITstream& is) const;
+        //- Return the defaults dictionary corresponding to the given dictionary
+        //  if printDictionary is active
+        static dictionary& defaults(const dictionary& dict);
 
         //- Assign multiple entries, overwriting any existing entries
         template<class ... Entries, size_t ... Indices>
@@ -256,6 +242,7 @@ class dictionary
 
     // Private Classes
 
+        //- ...
         class includedDictionary;
 
 
@@ -273,10 +260,6 @@ public:
 
         //- Null dictionary
         static const dictionary null;
-
-        //- If true write optional keywords and values
-        //  if not present in dictionary
-        static int writeOptionalEntries;
 
 
     // Static Member Functions
@@ -380,6 +363,10 @@ public:
         //- Return the scoped keyword with which this dictionary can be
         //  accessed from the top dictionary in the tree
         word topDictKeyword() const;
+
+        //- Return the dictionary name, or the name of the file if the
+        //  dictionary is currently reading
+        const fileName& currentName() const;
 
         //- Return line number of first token in dictionary
         virtual label startLineNumber() const;
@@ -497,11 +484,11 @@ public:
             //  conversions, and if not found throw a fatal error.
             //  If recursive, search parent dictionaries.
             //  If patternMatch, use regular expressions.
-            template<class T>
+            template<class T, class DefaultUnits>
             T lookup
             (
                 const word&,
-                const unitSet&,
+                const DefaultUnits&,
                 bool recursive=false,
                 bool patternMatch=true
             ) const;
@@ -525,11 +512,11 @@ public:
             //  keyword.
             //  If recursive, search parent dictionaries.
             //  If patternMatch, use regular expressions.
-            template<class T>
+            template<class T, class DefaultUnits>
             T lookupBackwardsCompatible
             (
                 const wordList&,
-                const unitSet&,
+                const DefaultUnits&,
                 bool recursive=false,
                 bool patternMatch=true
             ) const;
@@ -537,25 +524,14 @@ public:
             //- Find and return a T, if not found return the given default
             //  value.
             template<class T>
-            T lookupOrDefault
-            (
-                const word&,
-                const T&,
-                const bool writeDefault = writeOptionalEntries > 0
-            ) const;
+            T lookupOrDefault(const word&, const T&) const;
 
             //- Find and return a T with dimension checking and unit
             //  conversions, and if not found return the given default value.
             //  If recursive, search parent dictionaries.
             //  If patternMatch, use regular expressions.
-            template<class T>
-            T lookupOrDefault
-            (
-                const word&,
-                const unitSet&,
-                const T&,
-                const bool writeDefault = writeOptionalEntries > 0
-            ) const;
+            template<class T, class DefaultUnits>
+            T lookupOrDefault(const word&, const DefaultUnits&, const T&) const;
 
             //- Find and return a T, trying a list of keywords in sequence,
             //  and if not found throw a fatal error relating to the first
@@ -575,11 +551,11 @@ public:
             //  keyword
             //  If recursive, search parent dictionaries.
             //  If patternMatch, use regular expressions.
-            template<class T>
+            template<class T, class DefaultUnits>
             T lookupOrDefaultBackwardsCompatible
             (
                 const wordList&,
-                const unitSet&,
+                const DefaultUnits&,
                 const T&
             ) const;
 
@@ -612,11 +588,11 @@ public:
             //  Returns true if the entry was found.
             //  If recursive, search parent dictionaries.
             //  If patternMatch, use regular expressions.
-            template<class T>
+            template<class T, class DefaultUnits>
             bool readIfPresent
             (
                 const word&,
-                const unitSet&,
+                const DefaultUnits&,
                 T&,
                 bool recursive=false,
                 bool patternMatch=true
@@ -692,6 +668,19 @@ public:
             //- Find and return a sub-dictionary if found
             //  otherwise return this dictionary
             const dictionary& optionalSubDict(const word&) const;
+
+            //- Find and return a type sub-dictionary
+            //  looked-up from typeName with optional "Coeffs" appended
+            const dictionary& typeDict(const word& typeName) const;
+
+            //- Find and return a type sub-dictionary
+            //  looked-up from typeName with optional "Coeffs" appended
+            //  or empty dictionary if the sub-dictionary does not exist
+            const dictionary& typeOrEmptyDict(const word& typeName) const;
+
+            //- Find and return an optional type sub-dictionary
+            //  looked-up from typeName with optional "Coeffs" appended
+            const dictionary& optionalTypeDict(const word& typeName) const;
 
             //- Find and return a sub-dictionary by scoped lookup
             //  i.e. the keyword may contain scope characters.
@@ -899,41 +888,6 @@ public:
 };
 
 
-// Template Specialisations
-
-//- Specialise readType for types for which unit conversions can be performed
-#define DECLARE_SPECIALISED_READ_TYPE(T, nullArg)                              \
-                                                                               \
-    template<>                                                                 \
-    T Foam::dictionary::readType                                               \
-    (                                                                          \
-        const word& keyword,                                                   \
-        const unitSet& defaultUnits,                                    \
-        ITstream& is                                                           \
-    ) const;                                                                   \
-                                                                               \
-    template<>                                                                 \
-    T Foam::dictionary::readType                                               \
-    (                                                                          \
-        const word& keyword,                                                   \
-        ITstream& is                                                           \
-    ) const;
-
-#define DECLARE_SPECIALISED_READ_PAIR_TYPE(T, nullArg)                         \
-    DECLARE_SPECIALISED_READ_TYPE(Pair<T>, nullArg)
-
-#define DECLARE_SPECIALISED_READ_LIST_TYPE(T, nullArg)                         \
-    DECLARE_SPECIALISED_READ_TYPE(List<T>, nullArg)
-
-FOR_ALL_FIELD_TYPES(DECLARE_SPECIALISED_READ_TYPE);
-FOR_ALL_FIELD_TYPES(DECLARE_SPECIALISED_READ_PAIR_TYPE);
-FOR_ALL_FIELD_TYPES(DECLARE_SPECIALISED_READ_LIST_TYPE);
-
-#undef DECLARE_SPECIALISED_READ_TYPE
-#undef DECLARE_SPECIALISED_READ_PAIR_TYPE
-#undef DECLARE_SPECIALISED_READ_LIST_TYPE
-
-
 // Global Operators
 
 //- Combine dictionaries.
@@ -1073,12 +1027,12 @@ template<class EntryType>
 void writeEntry(Ostream& os, const word& entryName, const EntryType& value);
 
 //- Helper function to write the keyword and entry
-template<class EntryType>
+template<class EntryType, class DefaultUnits>
 void writeEntry
 (
     Ostream& os,
     const word& entryName,
-    const unitSet& defaultUnits,
+    const DefaultUnits& defaultUnits,
     const EntryType& value
 );
 
@@ -1095,12 +1049,12 @@ void writeEntryIfDifferent
 
 //- Helper function to write the keyword and entry only if the
 //  values are not equal. The value is then output as value2
-template<class EntryType>
+template<class EntryType, class DefaultUnits>
 void writeEntryIfDifferent
 (
     Ostream& os,
     const word& entryName,
-    const unitSet& defaultUnits,
+    const DefaultUnits& defaultUnits,
     const EntryType& value1,
     const EntryType& value2
 );

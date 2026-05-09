@@ -12,14 +12,13 @@ FoamFile
     location    "system";
     object      decomposeParDict;
 }
-
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 numberOfSubdomains 4;
 
 method          hierarchical;
 
-hierarchicalCoeffs
+hierarchical
 {
     n           (1 4 1);
     order       xyz;

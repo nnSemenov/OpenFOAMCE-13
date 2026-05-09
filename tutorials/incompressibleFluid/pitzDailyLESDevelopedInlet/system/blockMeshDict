@@ -14,7 +14,7 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-convertToMeters 0.001;
+units [mm];
 
 vertices
 (
@@ -90,7 +90,7 @@ boundary
     inlet
     {
         type mappedInternal;
-        offset (0.0495 0 0);
+        offset (49.5 0 0);
         faces
         (
             (0 1 12 11)

@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -37,7 +37,8 @@ Foam::radiationModels::absorptionEmissionModel::New
 {
     const word modelType(dict.lookup("absorptionEmissionModel"));
 
-    Info<< "Selecting absorptionEmissionModel " << modelType << endl;
+    Info<< indentOrNl
+        << "Selecting absorptionEmissionModel " << modelType << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find(modelType);
@@ -54,7 +55,7 @@ Foam::radiationModels::absorptionEmissionModel::New
 
     return autoPtr<absorptionEmissionModel>
     (
-        cstrIter()(dict.optionalSubDict(modelType + "Coeffs"), mesh)
+        cstrIter()(dict.optionalTypeDict(modelType), mesh)
     );
 }
 

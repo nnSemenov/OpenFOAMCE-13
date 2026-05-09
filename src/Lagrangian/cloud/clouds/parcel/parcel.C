@@ -271,11 +271,12 @@ Foam::clouds::parcel::parcel
 )
 :
     cloud(mesh, context),
+    carried(*this, dict),
     grouped(static_cast<const cloud&>(*this)),
     spherical(static_cast<const cloud&>(*this)),
-    coupledToThermalFluid(static_cast<const cloud&>(*this), dict),
     thermal(*this, *this, *this),
-    sphericalCoupled(*this, *this, *this),
+    coupledToThermalFluid(*this, *this, *this),
+    sphericalCoupled(*this, *this, *this, *this),
     massiveCoupledToFluid(*this, *this, *this)
 {
     thermo().initialise();

@@ -381,9 +381,13 @@ Foam::Time::Time
     (
         *this,
         enableFunctionObjects
-      ? argList::validOptions.found("functionObjects")
-        ? args.optionFound("functionObjects")
-        : !args.optionFound("noFunctionObjects")
+      ? (
+            argList::validOptions.found("functionObjects")
+          ? args.optionFound("functionObjects")
+          : argList::validOptions.found("noFunctionObjects")
+          ? !args.optionFound("noFunctionObjects")
+          : true
+        )
       : false
     )
 {
@@ -401,9 +405,11 @@ Foam::Time::Time
                 "InfoSwitches",
                 "OptimisationSwitches",
                 "DebugSwitches",
-                "DimensionedConstants",
                 "DimensionSets",
-                "UnitSets"
+                "UnitSets",
+                "units",
+                "DimensionedConstants",
+                "dimensionedConstants"
             }
         );
 

@@ -559,7 +559,7 @@ int main(int argc, char *argv[])
         "do not update fields"
     );
 
-    #include "setRootCase.H"
+    #include "setRootCaseNoFunctionObjects.H"
     #include "createTimeNoFunctionObjects.H"
 
     // Get times list
@@ -684,7 +684,6 @@ int main(int argc, char *argv[])
     Info<< "Selecting renumberMethod " << renumberPtr().type() << nl << endl;
 
 
-
     // Read parallel reconstruct maps
     labelIOList cellProcAddressing
     (
@@ -767,7 +766,7 @@ int main(int argc, char *argv[])
         Info<< "nBlocks   = " << nBlocks << endl;
 
         // Read decompositionMethod dictionary
-        dictionary decomposeDict(renumberDictPtr().subDict("blockCoeffs"));
+        dictionary decomposeDict(renumberDictPtr().typeDict("block"));
         decomposeDict.set("numberOfSubdomains", nBlocks);
 
         bool oldParRun = UPstream::parRun();

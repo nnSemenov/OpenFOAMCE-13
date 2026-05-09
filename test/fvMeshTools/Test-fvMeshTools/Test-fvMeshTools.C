@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 
     #include "addMeshOption.H"
     #include "addRegionOption.H"
-    #include "setRootCase.H"
+    #include "setRootCaseNoFunctionObjects.H"
     #include "createTimeNoFunctionObjects.H"
     #include "createSpecifiedMesh.H"
 
@@ -74,8 +74,7 @@ int main(int argc, char *argv[])
             0,          // dummy
             0,          // dummy
             0,          // dummy
-            pbm,
-            wallPolyPatch::typeName
+            pbm
         );
 
         label newPatchi = fvMeshTools::addPatch(mesh, pp);
@@ -139,8 +138,7 @@ int main(int argc, char *argv[])
                 newPatchName,
                 dict,
                 0,          // dummy index
-                pbm,
-                processorPolyPatch::typeName
+                pbm
             );
 
             label newPatchi = fvMeshTools::addPatch(mesh, pp);

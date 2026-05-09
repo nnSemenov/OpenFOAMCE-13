@@ -105,7 +105,7 @@ inline Foam::scalar Foam::linear<Specie>::Cv(scalar p, scalar T) const
 template<class Specie>
 inline Foam::scalar Foam::linear<Specie>::sp(scalar p, scalar T) const
 {
-    return -log((rho0_ + psi_*p)/(rho0_ + psi_*constant::thermodynamic::Pstd))/(T*psi_);
+    return -log((rho0_ + psi_*p)/(rho0_ + psi_*constant::thermodynamic::pStd))/(T*psi_);
 }
 
 
@@ -153,7 +153,7 @@ inline void Foam::linear<Specie>::operator+=
     const linear<Specie>& pf
 )
 {
-    noCoefficientMixing(linear<Specie>());
+    noCoefficientMixing(linear);
 }
 
 
@@ -173,7 +173,7 @@ inline Foam::linear<Specie> Foam::operator+
     const linear<Specie>& pf2
 )
 {
-    noCoefficientMixing(linear<Specie>());
+    noCoefficientMixing(linear);
     return pf1;
 }
 
@@ -201,7 +201,7 @@ inline Foam::linear<Specie> Foam::operator==
     const linear<Specie>& pf2
 )
 {
-    noCoefficientMixing(linear<Specie>());
+    noCoefficientMixing(linear);
     return pf1;
 }
 

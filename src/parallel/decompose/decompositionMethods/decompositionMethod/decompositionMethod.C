@@ -147,7 +147,7 @@ Foam::decompositionMethod::NewDecomposer
         )
     );
 
-    Info<< "Selecting decomposer " << methodType << endl;
+    Info<< indentOrNl << "Selecting decomposer " << methodType << endl;
 
     libs.open
     (
@@ -176,7 +176,7 @@ Foam::decompositionMethod::NewDecomposer
         cstrIter()
         (
             decompositionDict,
-            decompositionDict.subOrEmptyDict(methodType + "Coeffs")
+            decompositionDict.typeOrEmptyDict(methodType)
         )
     );
 
@@ -200,7 +200,7 @@ Foam::decompositionMethod::NewDistributor
         )
     );
 
-    Info<< "Selecting distributor " << methodType << endl;
+    Info<< indentOrNl << "Selecting distributor " << methodType << endl;
 
     libs.open
     (
@@ -229,7 +229,7 @@ Foam::decompositionMethod::NewDistributor
         cstrIter()
         (
             distributionDict,
-            distributionDict.subOrEmptyDict(methodType + "Coeffs")
+            distributionDict.typeOrEmptyDict(methodType)
         )
     );
 

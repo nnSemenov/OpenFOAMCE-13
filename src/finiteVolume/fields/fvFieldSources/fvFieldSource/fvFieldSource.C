@@ -47,15 +47,7 @@ Foam::fvFieldSource<Type>::fvFieldSource
     const dictionary& dict
 )
 :
-    libs_
-    (
-        dict.lookupOrDefault
-        (
-            "libs",
-            fileNameList::null(),
-            dictionary::writeOptionalEntries > 1
-        )
-    ),
+    libs_(dict.lookupOrDefault("libs", fileNameList::null())),
     internalField_(iF)
 {}
 
@@ -148,6 +140,13 @@ template<class Type>
 const Foam::objectRegistry& Foam::fvFieldSource<Type>::db() const
 {
     return internalField_.mesh();
+}
+
+
+template<class Type>
+const Foam::Time& Foam::fvFieldSource<Type>::time() const
+{
+    return internalField_.mesh().time();
 }
 
 

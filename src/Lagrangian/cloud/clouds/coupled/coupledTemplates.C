@@ -35,14 +35,15 @@ Foam::CarrierEqn<Type>& Foam::clouds::coupled::carrierEqn
     const CloudDerivedField<Type>& psic
 )
 {
-    const word key = carrierNameToName(psic.name());
+    const word key = carried::carrierNameToName(psic.name());
 
     typename HashPtrTable<CarrierEqn<Type>>::iterator iter =
         carrierEqns<Type>().find(key);
 
     if (iter != carrierEqns<Type>().end()) return **iter;
 
-    CarrierEqn<Type>* ptr = new CarrierEqn<Type>(key, Uc.psi().mesh());
+    CarrierEqn<Type>* ptr =
+        new CarrierEqn<Type>(key, carriedCloud_.Uc.psi().mesh());
     carrierEqns<Type>().insert(key, ptr);
 
     return *ptr;
@@ -114,7 +115,7 @@ template<class Type>
 const Foam::CarrierEqn<Type>&
 Foam::clouds::coupled::carrierEqn(const word& key) const
 {
-    return *carrierEqns<Type>()[key];
+    return carrierEqns<Type>()[key];
 }
 
 

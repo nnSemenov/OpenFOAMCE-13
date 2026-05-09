@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2023 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2023-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -147,7 +147,8 @@ Foam::waveSpectrum::New(const dictionary& dict, const scalar g)
 
     if (debug)
     {
-        Info<< "Selecting " << waveSpectrum::typeName << " " << type << endl;
+        Info<< indentOrNl
+            << "Selecting " << waveSpectrum::typeName << " " << type << endl;
     }
 
     dictionaryConstructorTable::iterator cstrIter =
@@ -162,7 +163,7 @@ Foam::waveSpectrum::New(const dictionary& dict, const scalar g)
             << exit(FatalError);
     }
 
-    return cstrIter()(dict.optionalSubDict(type + "Coeffs"), g);
+    return cstrIter()(dict.optionalTypeDict(type), g);
 }
 
 

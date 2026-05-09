@@ -18,11 +18,11 @@ mover
 {
     type            motionSolver;
 
-    libs            ("libsixDoFRigidBodyMotion.so");
+    libs            ("libsixDoFRigidBodyMeshMotion.so");
 
-    motionSolver        sixDoFRigidBodyMotion;
+    motionSolver        sixDoFRigidBodyMeshMotion;
 
-    sixDoFRigidBodyMotionCoeffs
+    sixDoFRigidBodyMotion
     {
         patches         (floatingObject);
         innerDistance   0.05;

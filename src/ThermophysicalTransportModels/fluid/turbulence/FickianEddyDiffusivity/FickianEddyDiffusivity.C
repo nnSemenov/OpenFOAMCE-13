@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2020-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2020-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -39,17 +39,18 @@ FickianEddyDiffusivity<TurbulenceThermophysicalTransportModel>::
 FickianEddyDiffusivity
 (
     const momentumTransportModel& momentumTransport,
-    const thermoModel& thermo
+    const thermoModel& thermo,
+    const word& type
 )
 :
     Fickian<unityLewisEddyDiffusivity<TurbulenceThermophysicalTransportModel>>
     (
-        typeName,
+        type,
         momentumTransport,
         thermo
     ),
 
-    Sct_("Sct", dimless, this->coeffDict())
+    Sct_("Sct", dimless, this->typeDict(type))
 {
     read();
 }
@@ -69,7 +70,7 @@ FickianEddyDiffusivity<TurbulenceThermophysicalTransportModel>::read()
         >::read()
     )
     {
-        Sct_.read(this->coeffDict());
+        Sct_.read(this->typeDict());
 
         return true;
     }

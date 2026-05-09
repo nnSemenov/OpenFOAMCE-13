@@ -25,7 +25,7 @@ boundaryField
     external
     {
         type            externalTemperature;
-        h               1e3 [W/m^2/K];
+        h               uniform 1e3 [W/m^2/K];
         Ta              $internalField;
         value           $internalField;
     }

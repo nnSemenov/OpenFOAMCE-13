@@ -39,9 +39,10 @@ Description
 
 Usage
     \table
-        Property     | Description             | Required    | Default value
-        phi          | flux field name         | no          | phi
-        tangentialVelocity | tangential velocity | no  |
+        Property     | Description               | Required | Default value
+        phi          | flux field name           | no       | phi
+        tangentialVelocity | tangential velocity | no       |
+        value        | initial velocity          | no       | evaluated
     \endtable
 
     Example of the boundary condition specification:
@@ -49,20 +50,21 @@ Usage
     <patchName>
     {
         type            pressureInletOutletVelocity;
-        phi             phi;
-        tangentialVelocity (0 0 0);
-        value           uniform (0 0 0);
+        tangentialVelocity $internalField;
     }
     \endverbatim
 
-    The \c tangentialVelocity entry is a Function1 of time, see
-    Foam::Function1s.
+    The \c tangentialVelocity entry is a \c UFunctionalDimensionedField
+    providing total flexibility in the specification of the tangential velocity,
+    the normal component is removed automatically from the field returned by the
+    function.
 
 See also
+    Foam::DimensionedFieldFunction
+    Foam::UFunctionalDimensionedField
     Foam::directionMixedFvPatchVectorField
     Foam::totalPressureFvPatchScalarField
     Foam::entrainmentPressureFvPatchScalarField
-    Foam::fixedValueFvPatchField
 
 SourceFiles
     pressureInletOutletVelocityFvPatchVectorField.C
@@ -72,9 +74,8 @@ SourceFiles
 #ifndef pressureInletOutletVelocityFvPatchVectorField_H
 #define pressureInletOutletVelocityFvPatchVectorField_H
 
-#include "fvPatchFields.H"
 #include "directionMixedFvPatchFields.H"
-#include "Function1.H"
+#include "UFunctionalDimensionedField.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -91,11 +92,11 @@ class pressureInletOutletVelocityFvPatchVectorField
 {
     // Private Data
 
+        //- Optional tangential velocity
+        UFunctionalDimensionedField<vector, fvPatch> tangentialVelocity_;
+
         //- Flux field name
         word phiName_;
-
-        //- Optional tangential velocity component
-        autoPtr<Function1<vector>> tangentialVelocity_;
 
 
 public:
@@ -176,10 +177,20 @@ public:
             }
 
             //- Return the tangential velocity Function1
-            const autoPtr<Function1<vector>>& tangentialVelocity() const
+            const DimensionedField<vector, fvPatch>& tangentialVelocity() const
             {
                 return tangentialVelocity_;
             }
+
+
+        // Mapping functions
+
+            //- Map the given fvPatchField onto this fvPatchField
+            virtual void map(const fvPatchField<vector>&, const fieldMapper&);
+
+            //- Reset the fvPatchField to the given fvPatchField
+            //  Used for mesh to mesh mapping
+            virtual void reset(const fvPatchField<vector>&);
 
 
         //- Update the coefficients associated with the patch field

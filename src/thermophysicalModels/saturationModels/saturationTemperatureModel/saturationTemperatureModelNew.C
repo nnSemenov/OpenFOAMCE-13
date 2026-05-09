@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2015-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2015-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -28,24 +28,18 @@ License
 // * * * * * * * * * * * * * * * * Selector  * * * * * * * * * * * * * * * * //
 
 Foam::autoPtr<Foam::saturationTemperatureModel>
-Foam::saturationTemperatureModel::New(const dictionary& dict)
-{
-    return New(NullObjectRef<word>(), dict);
-}
-
-
-Foam::autoPtr<Foam::saturationTemperatureModel>
 Foam::saturationTemperatureModel::New
 (
     const word& name,
     const dictionary& dict
 )
 {
-    if (!isNull(name) && !dict.isDict(name))
-    {
-        Istream& is(dict.lookup(name, false));
+    const bool isDict = dict.isDict(name);
 
-        token firstToken(is);
+    if (!isDict)
+    {
+        token firstToken(dict.lookup(name, false));
+
         if (!firstToken.isWord())
         {
             return autoPtr<saturationTemperatureModel>
@@ -58,20 +52,15 @@ Foam::saturationTemperatureModel::New
         }
     }
 
-    const bool isType = isNull(name);
-    const bool isDict = !isType && dict.isDict(name);
+    const dictionary& modelDict = dict.subDict(name);
 
-    const word modelTypeName =
-        isType ? dict.lookup<word>("type")
-      : isDict ? dict.subDict(name).lookup<word>("type")
-      : dict.lookup<word>(name);
+    const word modelTypeName = modelDict.lookup<word>("type");
 
-    const dictionary& coeffDict =
-        isType ? dict
-      : isDict ? dict.subDict(name)
-      : dict.optionalSubDict(name + "Coeffs");
+    const dictionary& modelCoeffsDict =
+        modelDict.optionalTypeDict(modelTypeName);
 
-    Info<< "Selecting " << typeName << " " << modelTypeName << endl;
+    Info<< indentOrNl << "Selecting " << typeName
+        << " " << modelTypeName << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find(modelTypeName);
@@ -79,14 +68,16 @@ Foam::saturationTemperatureModel::New
     if (cstrIter == dictionaryConstructorTablePtr_->end())
     {
         FatalIOErrorInFunction(dict)
-            << "Unknown " << typeName << " << type "
+            << "Unknown " << typeName << " type "
             << modelTypeName << endl << endl
             << "Valid " << typeName << " types are : " << endl
             << dictionaryConstructorTablePtr_->sortedToc()
             << exit(FatalIOError);
     }
 
-    return cstrIter()(coeffDict);
+    printDictionary print(modelDict, modelCoeffsDict);
+
+    return cstrIter()(modelCoeffsDict);
 }
 
 

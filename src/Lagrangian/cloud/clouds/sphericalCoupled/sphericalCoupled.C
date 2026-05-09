@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2025-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -40,6 +40,7 @@ namespace clouds
 Foam::clouds::sphericalCoupled::sphericalCoupled
 (
     const cloud& c,
+    const carried& carriedCloud,
     const spherical& sphericalCloud,
     const coupled& coupledCloud
 )
@@ -55,7 +56,7 @@ Foam::clouds::sphericalCoupled::sphericalCoupled
             )
             {
                 return
-                    mag(coupledCloud.Uc(model, subMesh) - c.U(model, subMesh))
+                    mag(carriedCloud.Uc(model, subMesh) - c.U(model, subMesh))
                    *sphericalCloud.d(model, subMesh)
                    /coupledCloud.nuc(model, subMesh);
             }
