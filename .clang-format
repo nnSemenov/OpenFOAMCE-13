@@ -1,0 +1,97 @@
+# OpenFOAM C++ Style Guide - clang-format Configuration
+# 基于: https://clang.llvm.org/docs/ClangFormatStyleOptions.html
+
+# 基础风格: LLVM
+BasedOnStyle: LLVM
+
+##### 常规 #####
+# 最大行宽: 80
+ColumnLimit: 80
+# 缩进宽度: 4 个空格
+IndentWidth: 4
+# 使用空格缩进，禁用制表符
+UseTab: Never
+# 对齐连续行时使用的宽度
+ContinuationIndentWidth: 4
+
+##### 语言: Cpp #####
+Language: Cpp
+
+##### 花括号控制 #####
+# 函数定义、类、命名空间等左大括号另起一行；控制流语句(if/for/while)左大括号跟随在同行
+BreakBeforeBraces: Custom
+BraceWrapping:
+  # 类, 结构体, 枚举, 联合体, 命名空间, 函数: 左大括号另起一行
+  AfterClass: true
+  AfterStruct: true
+  AfterEnum: true
+  AfterUnion: true
+  AfterNamespace: true
+  AfterFunction: true
+  # 控制流语句(if, for, while, switch): 左大括号不另起一行
+  AfterControlStatement: Never
+  # case标签块左大括号不另起一行
+  AfterCaseLabel: false
+  # catch和else左大括号另起一行
+  BeforeCatch: true
+  BeforeElse: true
+  # 空函数/结构体可以保持在一行
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+
+##### 空格控制 #####
+# 关键字(if, for, while 等)后添加空格
+SpaceBeforeParens: ControlStatements
+# 函数名和参数列表之间不要空格
+SpaceBeforeParensOptions:
+  AfterFunctionDeclarationName: false
+  AfterFunctionDefinitionName: false
+# 指针和引用靠右 (int *a, int &b)
+PointerAlignment: Right
+# 位域冒号前不加空格，后加空格
+BitFieldColonSpacing: After
+
+##### 对齐 #####
+# 不强制对齐操作数
+AlignOperands: DontAlign
+# 不对齐连续声明/赋值
+AlignConsecutiveDeclarations: None
+AlignConsecutiveAssignments: None
+# 尾随注释对齐
+AlignTrailingComments: true
+
+##### 换行与断行 #####
+# 允许短函数放在一行
+AllowShortFunctionsOnASingleLine: All
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortBlocksOnASingleLine: Never
+
+# 函数返回类型后换行: 自动 (长行时才换行)
+AlwaysBreakAfterReturnType: None
+PenaltyReturnTypeOnItsOwnLine: 1000
+
+# 模板声明换行
+BreakTemplateDeclarations: Yes
+
+# 构造函数初始化列表的缩进
+ConstructorInitializerIndentWidth: 4
+
+##### 其他 #####
+# 标准: C++11
+Standard: c++11
+# 注释前加空格
+SpacesBeforeTrailingComments: 1
+# 预处理指令不缩进
+IndentPPDirectives: None
+# 暂不自动排序include
+SortIncludes: false
+# 允许短命名空间在同一行
+AllowShortNamespacesOnASingleLine: true
+# 不允许短枚举在同一行
+AllowShortEnumsOnASingleLine: false
+# case 标签不额外缩进
+IndentCaseLabels: false
+# 宏定义对齐 (可按需开启)
+AlignConsecutiveMacros: false
