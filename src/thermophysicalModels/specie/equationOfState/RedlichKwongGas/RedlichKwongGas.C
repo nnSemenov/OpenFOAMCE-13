@@ -28,43 +28,32 @@ License
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-template<class Specie>
-Foam::RedlichKwongGas<Specie>::RedlichKwongGas
-        (
-                const word& name,
-                const dictionary& dict
-        )
-        :
-        Specie(name, dict),
-        property_(dict) {
-  property_.requireRealGasEOS(name, false);
+template <class Specie>
+Foam::RedlichKwongGas<Specie>::RedlichKwongGas(const word &name,
+                                               const dictionary &dict)
+    : Specie(name, dict), property_(dict)
+{
+    property_.requireRealGasEOS(name, false);
 }
-
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-
-template<class Specie>
-void Foam::RedlichKwongGas<Specie>::write(Ostream& os) const {
-  Specie::write(os);
-  dictionary dict("equationOfState");
-  property_.write(dict);
-  os<<indent<<dict.dictName()<<dict;
+template <class Specie>
+void Foam::RedlichKwongGas<Specie>::write(Ostream &os) const
+{
+    Specie::write(os);
+    dictionary dict("equationOfState");
+    property_.write(dict);
+    os << indent << dict.dictName() << dict;
 }
-
 
 // * * * * * * * * * * * * * * * Ostream Operator  * * * * * * * * * * * * * //
 
-template<class Specie>
-Foam::Ostream& Foam::operator<<
-        (
-                Ostream& os,
-                const RedlichKwongGas<Specie>& pg
-        )
+template <class Specie>
+Foam::Ostream &Foam::operator<<(Ostream &os, const RedlichKwongGas<Specie> &pg)
 {
     pg.write(os);
     return os;
 }
-
 
 // ************************************************************************* //

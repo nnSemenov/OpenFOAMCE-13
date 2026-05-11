@@ -39,16 +39,14 @@ SourceFiles
 #include "multicomponentMixture.H"
 #include "FieldListSlice.H"
 
-namespace Foam {
-
-
-template<class ThermoType>
-class idealLiquidMulticomponentMixture
-        :
-                public multicomponentMixture<ThermoType>
+namespace Foam
 {
-public:
 
+template <class ThermoType>
+class idealLiquidMulticomponentMixture
+    : public multicomponentMixture<ThermoType>
+{
+  public:
     // Public Classes
 
     //- Mixing type for thermodynamic properties
@@ -57,7 +55,7 @@ public:
         // Private Data
 
         //- List of specie thermo
-        const PtrList<ThermoType>& specieThermos_;
+        const PtrList<ThermoType> &specieThermos_;
 
         //- List of mass fractions
         mutable List<scalar> Y_;
@@ -65,39 +63,29 @@ public:
         mutable List<scalar> X_;
 
         //- Calculate a mass-fraction-weighted property
-        template<class Method, class ... Args>
-        scalar massWeighted
-                (
-                        Method psiMethod,
-                        const Args& ... args
-                ) const;
+        template <class Method, class... Args>
+        scalar massWeighted(Method psiMethod, const Args &...args) const;
 
-        //- Calculate a harmonic mass-fraction-weighted property, also known as volume fraction weighted
-        template<class Method, class ... Args>
-        scalar harmonicMassWeighted
-                (
-                        Method psiMethod,
-                        const Args& ... args
-                ) const;
+        //- Calculate a harmonic mass-fraction-weighted property, also known as
+        // volume fraction weighted
+        template <class Method, class... Args>
+        scalar harmonicMassWeighted(Method psiMethod,
+                                    const Args &...args) const;
 
         //- Limit the given temperature
         scalar limit(const scalar T) const;
 
-    protected:
-    public:
+      protected:
+      public:
         friend class idealLiquidMulticomponentMixture;
-
 
         // Constructors
 
         //- Construct from list of specie thermo
-        thermoMixtureType(const PtrList<ThermoType>& specieThermos)
-                :
-                specieThermos_(specieThermos),
-                Y_(specieThermos.size()),
-                X_(specieThermos.size())
+        thermoMixtureType(const PtrList<ThermoType> &specieThermos)
+            : specieThermos_(specieThermos), Y_(specieThermos.size()),
+              X_(specieThermos.size())
         {}
-
 
         // Fundamental properties
 
@@ -131,7 +119,6 @@ public:
         // Absolute internal energy [J/kg]
         scalar ea(const scalar p, const scalar T) const;
 
-
         // Mass specific derived properties
 
         //- Heat capacity at constant pressure/volume [J/kg/K]
@@ -143,26 +130,21 @@ public:
         //- Enthalpy/Internal energy [J/kg]
         scalar he(const scalar p, const scalar T) const;
 
-
         //- Return isothermal enthalpy-pressure derivative [m^3/kg]
         scalar dhdp_T(const scalar p, const scalar T) const;
 
         //- Return isothermal internal energy-pressure derivative [m^3/kg]
         scalar dedp_T(const scalar p, const scalar T) const;
 
-        //- Return isothermal enthalpy/internal-energy pressure derivative [m^3/kg]
+        //- Return isothermal enthalpy/internal-energy pressure derivative
+        //[m^3/kg]
         scalar dhedp_T(const scalar p, const scalar T) const;
 
         // Energy->temperature  inversion functions
 
         //- Temperature from enthalpy or internal energy
         //  given an initial temperature T0
-        scalar The
-                (
-                        const scalar he,
-                        const scalar p,
-                        const scalar T0
-                ) const;
+        scalar The(const scalar he, const scalar p, const scalar T0) const;
     };
 
     //- Mixing type for transport properties
@@ -171,51 +153,47 @@ public:
         // Private Data
 
         //- List of specie thermo
-        const PtrList<ThermoType>& specieThermos_;
+        const PtrList<ThermoType> &specieThermos_;
 
         //- List of mole fractions
         mutable List<scalar> X_;
         //- List of mass fractions
         mutable List<scalar> Y_;
 
-//        mutable List<scalar> PHI_;
+        //        mutable List<scalar> PHI_;
 
-        template<class Method, class ... Args>
-        inline scalar moleWeighed(const Method &prop,
-                           const Args &... args) const {
-            scalar sum=0;
-            forAll(this->X_,i) {
-                sum += X_[i] * (prop(this->specieThermos_[i],args...));
+        template <class Method, class... Args>
+        inline scalar moleWeighed(const Method &prop, const Args &...args) const
+        {
+            scalar sum = 0;
+            forAll(this->X_, i)
+            {
+                sum += X_[i] * (prop(this->specieThermos_[i], args...));
             }
             return sum;
         }
 
-        template<class Method, class ... Args>
-        inline scalar massWeighed(const Method &prop,
-                         const Args &... args) const {
-          scalar sum=0;
-          forAll(this->Y_,i) {
-              sum += Y_[i] * (prop(this->specieThermos_[i],args...));
-          }
-          return sum;
+        template <class Method, class... Args>
+        inline scalar massWeighed(const Method &prop, const Args &...args) const
+        {
+            scalar sum = 0;
+            forAll(this->Y_, i)
+            {
+                sum += Y_[i] * (prop(this->specieThermos_[i], args...));
+            }
+            return sum;
         }
 
-
-    public:
-
+      public:
         friend class idealLiquidMulticomponentMixture;
-
 
         // Constructors
 
         //- Construct from list of specie thermo
-        transportMixtureType(const PtrList<ThermoType>& specieThermos)
-                :
-                specieThermos_(specieThermos),
-                X_(specieThermos.size()),
-                Y_(specieThermos.size())
+        transportMixtureType(const PtrList<ThermoType> &specieThermos)
+            : specieThermos_(specieThermos), X_(specieThermos.size()),
+              Y_(specieThermos.size())
         {}
-
 
         // Transport properties
 
@@ -226,9 +204,7 @@ public:
         scalar kappa(const scalar p, const scalar T) const;
     };
 
-
-private:
-
+  private:
     // Private Data
 
     //- Mutable storage for the cell/face mixture thermo data
@@ -237,54 +213,39 @@ private:
     //- Mutable storage for the cell/face mixture transport data
     mutable transportMixtureType transportMixture_;
 
-
-public:
-
+  public:
     // Constructors
 
     //- Construct from a dictionary
-    idealLiquidMulticomponentMixture(const dictionary&);
+    idealLiquidMulticomponentMixture(const dictionary &);
 
     //- Disallow default bitwise copy construction
-    idealLiquidMulticomponentMixture
-            (
-                    const idealLiquidMulticomponentMixture<ThermoType>&
-            ) = delete;
-
+    idealLiquidMulticomponentMixture(
+        const idealLiquidMulticomponentMixture<ThermoType> &) = delete;
 
     //- Destructor
-    virtual ~idealLiquidMulticomponentMixture()
-    {}
-
+    virtual ~idealLiquidMulticomponentMixture() {}
 
     // Member Functions
 
     //- Return the instantiated type name
     static word typeName()
     {
-        return "idealLiquidMulticomponentMixture<" + ThermoType::typeName() + '>';
+        return "idealLiquidMulticomponentMixture<" + ThermoType::typeName() +
+            '>';
     }
 
     //- Return the mixture for thermodynamic properties
-    const thermoMixtureType& thermoMixture
-            (
-                    const scalarFieldListSlice&
-            ) const;
+    const thermoMixtureType &thermoMixture(const scalarFieldListSlice &) const;
 
     //- Return the mixture for transport properties
-    const transportMixtureType& transportMixture
-            (
-                    const scalarFieldListSlice&
-            ) const;
+    const transportMixtureType &transportMixture(
+        const scalarFieldListSlice &) const;
 
     //- Return the mixture for transport properties
-    const transportMixtureType& transportMixture
-            (
-                    const scalarFieldListSlice&,
-                    const thermoMixtureType&
-            ) const;
+    const transportMixtureType &transportMixture(
+        const scalarFieldListSlice &, const thermoMixtureType &) const;
 };
-
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -296,5 +257,4 @@ public:
 #include "idealLiquidMulticomponentMixture.C"
 #endif
 
-
-#endif //idealLiquidMulticomponentMixture_H
+#endif // idealLiquidMulticomponentMixture_H

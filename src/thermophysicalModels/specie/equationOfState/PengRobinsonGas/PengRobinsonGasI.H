@@ -75,14 +75,14 @@ inline void Foam::PengRobinsonGas<Specie>::operator+=
     const PengRobinsonGas<Specie>& pg
 )
 {
-    noCoefficientMixing(RedlichKwongGas);
+    noCoefficientMixing(PengRobinsonGas);
 }
 
 
 template<class Specie>
 inline void Foam::PengRobinsonGas<Specie>::operator*=(const scalar s)
 {
-    noCoefficientMixing(RedlichKwongGas);
+    noCoefficientMixing(PengRobinsonGas);
 }
 
 
@@ -96,7 +96,7 @@ Foam::PengRobinsonGas<Specie> Foam::operator+
     const PengRobinsonGas<Specie>& pg2
 )
 {
-    noCoefficientMixing(RedlichKwongGas);
+    noCoefficientMixing(PengRobinsonGas);
 }
 
 
@@ -107,7 +107,7 @@ Foam::PengRobinsonGas<Specie> Foam::operator*
     const PengRobinsonGas<Specie>& pg
 )
 {
-    noCoefficientMixing(RedlichKwongGas);
+    noCoefficientMixing(PengRobinsonGas);
 }
 
 
@@ -118,7 +118,7 @@ Foam::PengRobinsonGas<Specie> Foam::operator==
     const PengRobinsonGas<Specie>& pg2
 )
 {
-    noCoefficientMixing(RedlichKwongGas);
+    noCoefficientMixing(PengRobinsonGas);
 }
 
 

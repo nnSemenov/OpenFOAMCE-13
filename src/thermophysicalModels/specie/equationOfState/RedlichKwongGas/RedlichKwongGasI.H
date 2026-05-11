@@ -4,91 +4,65 @@
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-template<class Specie>
-inline Foam::RedlichKwongGas<Specie>::RedlichKwongGas
-        (
-          const Specie &sp,
-          const realFluidProperty&prop
-        )
-        :
-        Specie(sp), property_(prop) {
+template <class Specie>
+inline Foam::RedlichKwongGas<Specie>::RedlichKwongGas(
+    const Specie &sp, const realFluidProperty &prop)
+    : Specie(sp), property_(prop)
+{
 
-    static_assert(Foam::is_cubic_EOS<Foam::RedlichKwongGas<Specie>>::value, "RK must be cubic EOS");
+    static_assert(Foam::is_cubic_EOS<Foam::RedlichKwongGas<Specie>>::value,
+                  "RK must be cubic EOS");
 }
 
+template <class Specie>
+inline Foam::RedlichKwongGas<Specie>::RedlichKwongGas(const word &name,
+                                                      const RedlichKwongGas &pg)
+    : Specie(name, pg), property_(pg.property_)
+{}
 
-template<class Specie>
-inline Foam::RedlichKwongGas<Specie>::RedlichKwongGas
-        (
-                const word &name,
-                const RedlichKwongGas &pg
-        )
-        :
-        Specie(name, pg),
-        property_(pg.property_) {
+template <class Specie>
+inline Foam::autoPtr<Foam::RedlichKwongGas<Specie>> Foam::RedlichKwongGas<
+    Specie>::clone() const
+{
+    return autoPtr<RedlichKwongGas<Specie>>(new RedlichKwongGas<Specie>(*this));
 }
-
-
-template<class Specie>
-inline Foam::autoPtr<Foam::RedlichKwongGas<Specie>>
-Foam::RedlichKwongGas<Specie>::clone() const {
-    return autoPtr<RedlichKwongGas<Specie>>
-            (
-                    new RedlichKwongGas<Specie>(*this)
-            );
-}
-
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-
-
 // * * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * //
 
-template<class Specie>
-inline void Foam::RedlichKwongGas<Specie>::operator+=
-        (
-                const RedlichKwongGas<Specie> &pg
-        ) {
+template <class Specie>
+inline void Foam::RedlichKwongGas<Specie>::operator+=(
+    const RedlichKwongGas<Specie> &pg)
+{
     noCoefficientMixing(RedlichKwongGas);
 }
 
-
-template<class Specie>
-inline void Foam::RedlichKwongGas<Specie>::operator*=(const scalar s) {
+template <class Specie>
+inline void Foam::RedlichKwongGas<Specie>::operator*=(const scalar s)
+{
     noCoefficientMixing(RedlichKwongGas);
 }
-
 
 // * * * * * * * * * * * * * * * Friend Operators  * * * * * * * * * * * * * //
 
-
-template<class Specie>
-Foam::RedlichKwongGas<Specie> Foam::operator+
-        (
-                const RedlichKwongGas<Specie> &pg1,
-                const RedlichKwongGas<Specie> &pg2
-        ) {
+template <class Specie>
+Foam::RedlichKwongGas<Specie> Foam::operator+(
+    const RedlichKwongGas<Specie> &pg1, const RedlichKwongGas<Specie> &pg2)
+{
     noCoefficientMixing(RedlichKwongGas);
 }
 
-
-template<class Specie>
-Foam::RedlichKwongGas<Specie> Foam::operator*
-        (
-                const scalar s,
-                const RedlichKwongGas<Specie> &pg
-        ) {
+template <class Specie>
+Foam::RedlichKwongGas<Specie> Foam::operator*(const scalar s,
+                                              const RedlichKwongGas<Specie> &pg)
+{
     noCoefficientMixing(RedlichKwongGas);
 }
 
-
-template<class Specie>
-Foam::RedlichKwongGas<Specie> Foam::operator==
-        (
-                const RedlichKwongGas<Specie> &pg1,
-                const RedlichKwongGas<Specie> &pg2
-        ) {
+template <class Specie>
+Foam::RedlichKwongGas<Specie> Foam::operator==(
+    const RedlichKwongGas<Specie> &pg1, const RedlichKwongGas<Specie> &pg2)
+{
     noCoefficientMixing(RedlichKwongGas);
 }
-

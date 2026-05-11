@@ -30,42 +30,32 @@ License
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-template<class Specie>
-Foam::PengRobinsonGas<Specie>::PengRobinsonGas
-        (
-                const word &name,
-                const dictionary &dict
-        )
-        :
-        Specie(name, dict),
-        property_(dict) {
-  property_.requireRealGasEOS(name, true);
+template <class Specie>
+Foam::PengRobinsonGas<Specie>::PengRobinsonGas(const word &name,
+                                               const dictionary &dict)
+    : Specie(name, dict), property_(dict)
+{
+    property_.requireRealGasEOS(name, true);
 }
-
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-
-template<class Specie>
-void Foam::PengRobinsonGas<Specie>::write(Ostream &os) const {
+template <class Specie>
+void Foam::PengRobinsonGas<Specie>::write(Ostream &os) const
+{
     Specie::write(os);
     dictionary dict("equationOfState");
     property_.write(dict);
-    os<<indent<<dict.dictName()<<dict;
+    os << indent << dict.dictName() << dict;
 }
-
 
 // * * * * * * * * * * * * * * * Ostream Operator  * * * * * * * * * * * * * //
 
-template<class Specie>
-Foam::Ostream &Foam::operator<<
-        (
-                Ostream &os,
-                const PengRobinsonGas<Specie> &pg
-        ) {
+template <class Specie>
+Foam::Ostream &Foam::operator<<(Ostream &os, const PengRobinsonGas<Specie> &pg)
+{
     pg.write(os);
     return os;
 }
-
 
 // ************************************************************************* //

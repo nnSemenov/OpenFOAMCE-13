@@ -4,15 +4,15 @@
 #include "fluid.H"
 #include "porousPhaseInfo.H"
 
-namespace Foam {
+namespace Foam
+{
 
+namespace solvers
+{
 
-namespace solvers {
-
-class porousMediaFluid : public fluid {
-protected:
-
-
+class porousMediaFluid : public fluid
+{
+  protected:
     volVectorField U_physical;
     volScalarField porosity_;
     porousPhaseInfo porousPhases;
@@ -20,31 +20,35 @@ protected:
     scalar alpha_small_{1e-6};
 
     void updatePorosity();
-    
-    tmp<volScalarField::Internal> TEqnNonIdealityPressureTerm(const volScalarField& dhedp_T) const;
 
-    fvScalarMatrix TEqnCore(porousPhaseInfo::heatTransferInfoNode& node);
+    tmp<volScalarField::Internal> TEqnNonIdealityPressureTerm(
+        const volScalarField &dhedp_T) const;
 
-    volScalarField& getTFieldRef(const word & phaseName) {
-        if(phaseName==porousPhaseInfo::FLUID_PHASE_NAME) {
+    fvScalarMatrix TEqnCore(porousPhaseInfo::heatTransferInfoNode &node);
+
+    volScalarField &getTFieldRef(const word &phaseName)
+    {
+        if (phaseName == porousPhaseInfo::FLUID_PHASE_NAME) {
             return this->thermoPtr_->T();
         }
         return this->porousPhases.porousPhases().at(phaseName).thermo->T();
     }
 
-    basicThermo& getThermo(const word & phaseName) {
-        if(phaseName==porousPhaseInfo::FLUID_PHASE_NAME) {
+    basicThermo &getThermo(const word &phaseName)
+    {
+        if (phaseName == porousPhaseInfo::FLUID_PHASE_NAME) {
             return this->thermoPtr_();
         }
         return this->porousPhases.porousPhases().at(phaseName).thermo();
     }
-public:
+
+  public:
     TypeName("porousMediaFluid");
 
     // Constructors
-    porousMediaFluid(fvMesh & mesh);
+    porousMediaFluid(fvMesh &mesh);
 
-    porousMediaFluid(const porousMediaFluid&)=delete;
+    porousMediaFluid(const porousMediaFluid &) = delete;
 
     // tmp<volScalarField> porosity() const;
 
@@ -55,15 +59,14 @@ public:
     void thermophysicalPredictor() override;
 
     // void prePredictor() override;
-  
+
     // void postCorrector() override;
 
-
     //- Disallow default bitwise assignment
-    void operator=(const porousMediaFluid&) = delete;
+    void operator=(const porousMediaFluid &) = delete;
 };
 
-}
-}
+} // namespace solvers
+} // namespace Foam
 
 #endif
