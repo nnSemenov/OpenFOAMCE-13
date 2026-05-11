@@ -79,7 +79,7 @@ inline Stream& Foam::IOobject::writeBanner(Stream& os, bool noHint)
     os  <<
     "  =========                 |\n"
     "  \\\\      /  F ield         | Mikeno: A Frankensteined OpenFOAM fork for chemical usage\n"
-    "   \\\\    /   O peration     | Website:  https://github.com/nnSemenov/Mikeno-13\n"
+    "   \\\\    /   O peration     | Website:  https://github.com/nnSemenov/Mikeno\n"
     "    \\\\  /    A nd           | Version:  " << FOAMversion << "\n"
     "     \\\\/     M anipulation  |\n"
     "\\*-----------------------------------------"
