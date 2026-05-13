@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,75 +23,71 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "psiThermo.H"
+#include "none_solidBodyMotionFunction.H"
+#include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
 namespace Foam
 {
-    defineTypeNameAndDebug(psiThermo, 0);
-    defineRunTimeSelectionTable(psiThermo, fvMesh);
+namespace solidBodyMotionFunctions
+{
+    defineTypeNameAndDebug(none, 0);
+    addToRunTimeSelectionTable
+    (
+        solidBodyMotionFunction,
+        none,
+        dictionary
+    );
+}
 }
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::psiThermo::implementation::implementation
+Foam::solidBodyMotionFunctions::none::none
 (
-    const dictionary& dict,
-    const fvMesh& mesh,
-    const word& phaseName
+    const word& name,
+    const Time& runTime
 )
+:
+    solidBodyMotionFunction(name, dictionary::null, runTime)
 {}
 
 
-// * * * * * * * * * * * * * * * * Selectors * * * * * * * * * * * * * * * * //
-
-Foam::autoPtr<Foam::psiThermo> Foam::psiThermo::New
+Foam::solidBodyMotionFunctions::none::none
 (
-    const fvMesh& mesh,
-    const word& phaseName
+    const word& name,
+    const dictionary& SBMFCoeffs,
+    const Time& runTime
 )
-{
-    return basicThermo::New<psiThermo>(mesh, phaseName);
-}
+:
+    solidBodyMotionFunction(name, SBMFCoeffs, runTime)
+{}
 
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
-Foam::psiThermo::~psiThermo()
+Foam::solidBodyMotionFunctions::none::~none()
 {}
 
 
-Foam::psiThermo::implementation::~implementation()
+// * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
+
+Foam::septernion Foam::solidBodyMotionFunctions::none::transformation() const
+{
+    return septernion::I;
+}
+
+
+bool Foam::solidBodyMotionFunctions::none::read(const dictionary&)
+{
+    return true;
+}
+
+
+void Foam::solidBodyMotionFunctions::none::writeData(Ostream& os) const
 {}
-
-
-// * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
-
-Foam::tmp<Foam::volScalarField> Foam::psiThermo::renameRho()
-{
-    return rho();
-}
-
-
-void Foam::psiThermo::correctRho(const Foam::volScalarField& dp)
-{}
-
-
-Foam::tmp<Foam::volScalarField> Foam::psiThermo::implementation::rho() const
-{
-    return p()*psi();
-}
-
-
-Foam::tmp<Foam::scalarField> Foam::psiThermo::implementation::rho
-(
-    const label patchi
-) const
-{
-    return p().boundaryField()[patchi]*psi().boundaryField()[patchi];
-}
 
 
 // ************************************************************************* //
