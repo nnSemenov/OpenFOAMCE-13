@@ -18,10 +18,10 @@ target_compile_features(${target_name} PUBLIC
 )
 
 target_include_directories(${target_name} PRIVATE
-    ${LIB_SRC}/finiteVolume/lnInclude
-    ${LIB_SRC}/meshTools/lnInclude
-    ${LIB_SRC}/sampling/lnInclude
-    ${LIB_SRC}/physicalProperties/lnInclude
+    #    ${LIB_SRC}/finiteVolume/lnInclude
+    #    ${LIB_SRC}/meshTools/lnInclude
+    #    ${LIB_SRC}/sampling/lnInclude
+    #    ${LIB_SRC}/physicalProperties/lnInclude
     ${LIB_SRC}/thermophysicalModels/basic/lnInclude
     ${LIB_SRC}/MomentumTransportModels/momentumTransportModels/lnInclude
     ${LIB_SRC}/MomentumTransportModels/compressible/lnInclude
@@ -29,7 +29,7 @@ target_include_directories(${target_name} PRIVATE
     ${LIB_SRC}/ThermophysicalTransportModels/fluid/lnInclude
     ${LIB_SRC}/ThermophysicalTransportModels/fluidThermo/lnInclude
     ${LIB_SRC}/ThermophysicalTransportModels/solid/lnInclude
-    ${LIB_SRC}/thermophysicalModels/specie/lnInclude
+    #    ${LIB_SRC}/thermophysicalModels/specie/lnInclude
 )
 
 target_link_libraries(${target_name} PRIVATE
@@ -37,11 +37,13 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM
     OSspecific
 
-    basicFluidSolver
-    fluidSolver
-    isothermalFluidSolver
+)
 
-    solidThermo 
+target_link_libraries(${target_name} PRIVATE
+    fluidSolver
+
+    specie
+    solidThermo
     solidThermophysicalTransportModels
 )
 

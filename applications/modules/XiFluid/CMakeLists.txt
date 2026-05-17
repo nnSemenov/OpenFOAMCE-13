@@ -90,7 +90,7 @@ target_include_directories(${target_name} PUBLIC
 )
 
 target_include_directories(${target_name} PRIVATE
-    ${LIB_SRC}/physicalProperties/lnInclude
+    #    ${LIB_SRC}/physicalProperties/lnInclude
     ${LIB_SRC}/MomentumTransportModels/momentumTransportModels/lnInclude
     ${LIB_SRC}/MomentumTransportModels/compressible/lnInclude
     ${LIB_SRC}/ThermophysicalTransportModels/thermophysicalTransportModel/lnInclude
@@ -107,24 +107,25 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM_Defines
     OpenFOAM
     OSspecific
+)
 
-    basicFluidSolver 
+target_link_libraries(${target_name} PUBLIC
     isothermalFluidSolver
 
-    fluidThermophysicalTransportModel
-    momentumTransportModels 
-    compressibleMomentumTransportModels 
-    phaseCompressibleMomentumTransportModels 
-    phaseFluidThermophysicalTransportModels 
-    coupledThermophysicalTransportModels 
-    multicomponentThermophysicalModels
     reactionModels
-    specie 
-    finiteVolume 
-    fvModels 
-    fvConstraints 
-    sampling 
-    meshTools
+    specie
+    fluidThermophysicalTransportModel
+    momentumTransportModels
+    compressibleMomentumTransportModels
+    phaseCompressibleMomentumTransportModels
+    phaseFluidThermophysicalTransportModels
+    coupledThermophysicalTransportModels
+    multicomponentThermophysicalModels
+    #    finiteVolume
+    #    fvModels
+    #    fvConstraints
+    #    sampling
+    #    meshTools
 )
 
 target_compile_definitions(${target_name} PRIVATE
