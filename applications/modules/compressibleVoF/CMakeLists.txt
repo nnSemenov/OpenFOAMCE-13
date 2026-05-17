@@ -30,21 +30,23 @@ target_include_directories(${target_name} PRIVATE
     ${LIB_SRC}/MomentumTransportModels/phaseCompressible/lnInclude
     ${LIB_SRC}/ThermophysicalTransportModels/thermophysicalTransportModel/lnInclude
 
-    ${FOAM_MODULES}/twoPhaseSolver/lnInclude
-    ${FOAM_MODULES}/VoFSolver/lnInclude
-    ${FOAM_MODULES}/basicFluidSolver/lnInclude
+    #    ${FOAM_MODULES}/twoPhaseSolver/lnInclude
+    #    ${FOAM_MODULES}/VoFSolver/lnInclude
+    #    ${FOAM_MODULES}/basicFluidSolver/lnInclude
 )
 
 target_link_libraries(${target_name} PRIVATE
     OpenFOAM_Defines
     OpenFOAM
     OSspecific
+)
 
+target_link_libraries(${target_name} PUBLIC
     twoPhaseVoFSolver
 
-    physicalProperties
+    #    physicalProperties
     fluidThermophysicalModels
-    interfaceCompression
+    #    interfaceCompression
     compressibleInterfaceProperties
     compressibleTwoPhases
     momentumTransportModels
@@ -52,11 +54,11 @@ target_link_libraries(${target_name} PRIVATE
     phaseCompressibleMomentumTransportModels
     thermophysicalTransportModel
     coupledThermophysicalTransportModels
-    finiteVolume
-    meshTools
-    fvModels
-    fvConstraints
-    sampling
+    #    finiteVolume
+    #    meshTools
+    #    fvModels
+    #    fvConstraints
+    #    sampling
 )
 
 target_compile_definitions(${target_name} PRIVATE
