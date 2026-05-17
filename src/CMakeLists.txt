@@ -55,7 +55,6 @@ add_subdirectory(reactionModels)
 
 add_subdirectory(renumber)
 add_subdirectory(fvAgglomerationMethods)
-add_subdirectory(fvMotionSolver)
 
 add_subdirectory(fvConstraints)
 
