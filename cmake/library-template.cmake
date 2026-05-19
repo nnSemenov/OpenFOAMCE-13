@@ -9,7 +9,7 @@ add_library(${target_name} SHARED
 )
 
 target_include_directories(${target_name} PUBLIC
-    "${CMAKE_CURRENT_SOURCE_DIR}/lnInclude"
+    ${CMAKE_CURRENT_SOURCE_DIR}/lnInclude
 )
 
 target_include_directories(${target_name} PRIVATE
@@ -20,6 +20,9 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM_Defines
     OpenFOAM
     OSspecific
+)
+
+target_link_libraries(${target_name} PUBLIC
 )
 
 target_compile_definitions(${target_name} PRIVATE
