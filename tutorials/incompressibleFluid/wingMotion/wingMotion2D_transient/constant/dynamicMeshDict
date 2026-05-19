@@ -16,11 +16,9 @@ FoamFile
 
 mover
 {
-    type            motionSolver;
+    type            sixDoFRigidBodyMotion;
 
-    libs            ("libsixDoFRigidBodyMeshMotion.so");
-
-    motionSolver    sixDoFRigidBodyMotion;
+    libs            ("libsixDoFRigidBodyMotion_pointMeshMovers.so");
 
     patches         (wing);
     innerDistance   0.3;

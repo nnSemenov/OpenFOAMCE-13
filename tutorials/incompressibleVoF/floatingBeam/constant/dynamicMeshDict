@@ -16,11 +16,9 @@ FoamFile
 
 mover
 {
-    type            motionSolver;
+    type            rigidBodyMotion;
 
     libs            ("librigidBodyMeshMotion.so");
-
-    motionSolver    rigidBodyMotion;
 
     report          on;
 
