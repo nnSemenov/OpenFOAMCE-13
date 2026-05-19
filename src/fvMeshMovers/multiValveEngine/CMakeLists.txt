@@ -25,10 +25,12 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM_Defines
     OpenFOAM
     OSspecific
+)
 
+target_link_libraries(${target_name} PUBLIC
     finiteVolume
     meshTools
-    motionSolvers
+    pointMeshMovers
 )
 
 target_compile_definitions(${target_name} PRIVATE

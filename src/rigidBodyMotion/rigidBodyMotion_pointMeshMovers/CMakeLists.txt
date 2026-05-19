@@ -1,10 +1,13 @@
 lnInclude(${CMAKE_CURRENT_SOURCE_DIR})
 
-set(target_name rigidBodyPropellerDisk)
+set(target_name rigidBodyMeshMotion)
+
+#wmake_parse_files(${CMAKE_CURRENT_SOURCE_DIR}/Make/files sources_from_wmake)
 
 add_library(${target_name} SHARED
-    rigidBodyPropellerDisk.C
-    propellerDiskForce/propellerDiskForce.C
+    #    ${sources_from_wmake}
+    rigidBodyMotion/rigidBodyMotion_pointMeshMover.C
+    rigidBodyDisplacement/rigidBodyDisplacement_pointMeshMover.C
 )
 
 target_include_directories(${target_name} PUBLIC
@@ -12,9 +15,8 @@ target_include_directories(${target_name} PUBLIC
 )
 
 target_include_directories(${target_name} PRIVATE
-    ${LIB_SRC}/functionObjects/forces/lnInclude
+    ${LIB_SRC}/rigidBodyMotion/rigidBodyDynamics/lnInclude
     ${LIB_SRC}/finiteVolume/lnInclude
-    ${LIB_SRC}/meshTools/lnInclude
 )
 
 target_link_libraries(${target_name} PRIVATE
@@ -23,11 +25,12 @@ target_link_libraries(${target_name} PRIVATE
     OSspecific
 )
 
-target_link_libraries(${target_name} PRIVATE
-    propellerDisk
-    pointMeshMovers
+target_link_libraries(${target_name} PUBLIC
     rigidBodyDynamics
-    rigidBodyMeshMotion
+    forces
+    meshTools
+    fileFormats
+    pointMeshMovers
 )
 
 target_compile_definitions(${target_name} PRIVATE

@@ -26,10 +26,9 @@ add_subdirectory(generic)
 
 add_subdirectory(sampling)
 add_subdirectory(meshCheck)
-#add_subdirectory(topoSetSources)
-#add_subdirectory(fvTopoSetSources)
 
-add_subdirectory(motionSolvers)
+#add_subdirectory(motionSolvers)
+add_subdirectory(pointMeshMovers)
 
 add_subdirectory(mesh)
 add_subdirectory(polyTopoChange)

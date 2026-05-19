@@ -1,5 +1,5 @@
-add_subdirectory(motionSolver)
-add_subdirectory(fvMotionSolver)
+#add_subdirectory(motionSolver)
+add_subdirectory(fvMotionSolvers)
 add_subdirectory(interpolator)
 add_subdirectory(multiValveEngine)
 add_subdirectory(inkJet)

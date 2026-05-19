@@ -14,18 +14,19 @@ target_include_directories(${target_name} PUBLIC
 
 target_include_directories(${target_name} PRIVATE
     ${LIB_SRC}/finiteVolume/lnInclude
-    ${LIB_SRC}/motionSolvers/lnInclude
+    ${LIB_SRC}/pointMeshMovers/lnInclude
 )
 
 target_link_libraries(${target_name} PRIVATE
     OpenFOAM_Defines
     OpenFOAM
     OSspecific
+)
 
-    forces 
-    meshTools 
-    fileFormats 
-    motionSolver_fvMeshMover
+target_link_libraries(${target_name} PUBLIC
+    forces
+    meshTools
+    fileFormats
 )
 
 target_compile_definitions(${target_name} PRIVATE

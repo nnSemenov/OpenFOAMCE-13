@@ -23,13 +23,15 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM_Defines
     OpenFOAM
     OSspecific
+)
 
+target_link_libraries(${target_name} PUBLIC
     sampling
-    forces 
-    finiteVolume 
-    motionSolvers 
-    motionSolver_fvMeshMover 
+    forces
+    finiteVolume
+    pointMeshMovers
     rigidBodyDynamics
+
 )
 
 target_compile_definitions(${target_name} PRIVATE
