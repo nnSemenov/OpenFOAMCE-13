@@ -26,6 +26,8 @@ License
 #include "MulticomponentThermo.H"
 #include "fvMesh.H"
 
+#include "fieldDelegate.h"
+
 // * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * * //
 
 template<class BaseThermo>
@@ -216,7 +218,7 @@ Foam::MulticomponentThermo<BaseThermo>::rhoi
         dimDensity,
         &BaseThermo::mixtureType::thermoType::rho,
         speciei,
-        p,
+        absolutePressureVol(p, BaseThermo::pOffset()),
         T
     );
 }
@@ -249,7 +251,7 @@ Foam::MulticomponentThermo<BaseThermo>::Cpi
         dimEnergy/dimMass/dimTemperature,
         &BaseThermo::mixtureType::thermoType::Cp,
         speciei,
-        p,
+        absolutePressureVol(p, BaseThermo::pOffset()),
         T
     );
 }
@@ -279,7 +281,7 @@ Foam::tmp<Foam::scalarField> Foam::MulticomponentThermo<BaseThermo>::hei
     (
         &BaseThermo::mixtureType::thermoType::he,
         speciei,
-        p,
+        absolutePressurePatch(p, BaseThermo::pOffset()),
         T
     );
 }
@@ -300,7 +302,7 @@ Foam::MulticomponentThermo<BaseThermo>::hei
         dimEnergy/dimMass,
         &BaseThermo::mixtureType::thermoType::he,
         speciei,
-        p,
+        absolutePressurePatch(p, BaseThermo::pOffset()),
         T
     );
 }
@@ -321,7 +323,7 @@ Foam::MulticomponentThermo<BaseThermo>::hei
         dimEnergy/dimMass,
         &BaseThermo::mixtureType::thermoType::he,
         speciei,
-        p,
+        absolutePressureVol(p, BaseThermo::pOffset()),
         T
     );
 }
@@ -351,7 +353,7 @@ Foam::tmp<Foam::scalarField> Foam::MulticomponentThermo<BaseThermo>::hsi
     (
         &BaseThermo::mixtureType::thermoType::hs,
         speciei,
-        p,
+        absolutePressurePatch(p, BaseThermo::pOffset()),
         T
     );
 }
@@ -372,7 +374,7 @@ Foam::MulticomponentThermo<BaseThermo>::hsi
         dimEnergy/dimMass,
         &BaseThermo::mixtureType::thermoType::hs,
         speciei,
-        p,
+        absolutePressurePatch(p, BaseThermo::pOffset()),
         T
     );
 }
@@ -393,7 +395,7 @@ Foam::MulticomponentThermo<BaseThermo>::hsi
         dimEnergy/dimMass,
         &BaseThermo::mixtureType::thermoType::hs,
         speciei,
-        p,
+        absolutePressureVol(p, BaseThermo::pOffset()),
         T
     );
 }
@@ -423,7 +425,7 @@ Foam::tmp<Foam::scalarField> Foam::MulticomponentThermo<BaseThermo>::hai
     (
         &BaseThermo::mixtureType::thermoType::ha,
         speciei,
-        p,
+        absolutePressurePatch(p, BaseThermo::pOffset()),
         T
     );
 }
@@ -444,7 +446,7 @@ Foam::MulticomponentThermo<BaseThermo>::hai
         dimEnergy/dimMass,
         &BaseThermo::mixtureType::thermoType::ha,
         speciei,
-        p,
+        absolutePressurePatch(p, BaseThermo::pOffset()),
         T
     );
 }
@@ -465,7 +467,7 @@ Foam::MulticomponentThermo<BaseThermo>::hai
         dimEnergy/dimMass,
         &BaseThermo::mixtureType::thermoType::ha,
         speciei,
-        p,
+        absolutePressureVol(p, BaseThermo::pOffset()),
         T
     );
 }
@@ -524,7 +526,7 @@ Foam::MulticomponentThermo<BaseThermo>::kappai
         dimThermalConductivity,
         &BaseThermo::mixtureType::thermoType::kappa,
         speciei,
-        p,
+        absolutePressureVol(p, BaseThermo::pOffset()),
         T
     );
 }
