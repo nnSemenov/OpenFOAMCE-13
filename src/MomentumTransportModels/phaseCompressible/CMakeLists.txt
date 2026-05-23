@@ -14,8 +14,8 @@ target_include_directories(${target_name} PUBLIC
 )
 
 target_include_directories(${target_name} PRIVATE
-    ../momentumTransportModels/lnInclude
-    ../compressible/lnInclude
+#    ../momentumTransportModels/lnInclude
+#    ../compressible/lnInclude
 )
 
 target_link_libraries(${target_name} PRIVATE
@@ -23,9 +23,13 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM
     OSspecific
 
-    physicalProperties
-    finiteVolume
-    meshTools
+)
+
+target_link_libraries(${target_name} PUBLIC
+    compressibleMomentumTransportModels
+#    physicalProperties
+#    finiteVolume
+#    meshTools
 )
 
 target_compile_definitions(${target_name} PRIVATE

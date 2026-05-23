@@ -9,10 +9,10 @@ add_library(${target_name} SHARED
 
 target_include_directories(${target_name} PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/lnInclude"
+#    ${CMAKE_CURRENT_SOURCE_DIR}/../momentumTransportModels/lnInclude
 )
 
 target_include_directories(${target_name} PRIVATE
-    ../momentumTransportModels/lnInclude
 )
 
 target_link_libraries(${target_name} PRIVATE
@@ -20,9 +20,13 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM
     OSspecific
 
-    physicalProperties 
-    finiteVolume 
-    meshTools
+)
+
+target_link_libraries(${target_name} PUBLIC
+    momentumTransportModels
+    physicalProperties
+#    finiteVolume
+#    meshTools
 )
 
 target_compile_definitions(${target_name} PRIVATE

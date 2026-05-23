@@ -120,6 +120,9 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM
     OSspecific
 
+)
+
+target_link_libraries(${target_name} PUBLIC
     finiteVolume
     meshTools
     Pstream_best
