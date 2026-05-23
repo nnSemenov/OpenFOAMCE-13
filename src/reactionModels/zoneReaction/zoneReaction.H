@@ -55,7 +55,7 @@ class zoneReaction
 :
     public reactionModel
 {
-    // Private Data
+protected:
 
         //- The reaction model to be zone-filtered
         autoPtr<reactionModel> reactionModelPtr_;
