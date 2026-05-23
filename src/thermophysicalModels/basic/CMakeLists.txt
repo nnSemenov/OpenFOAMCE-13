@@ -43,6 +43,10 @@ target_link_libraries(fluidThermophysicalModels PRIVATE
     OpenFOAM
     OSspecific
 
+)
+
+
+target_link_libraries(fluidThermophysicalModels PUBLIC
     physicalProperties
     specie
     thermophysicalProperties
