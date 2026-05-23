@@ -72,7 +72,7 @@ Foam::ubRhoThermo::ubRhoThermo(const fvMesh& mesh)
     dhedp_T_(
         IOobject
             (
-                phasePropertyName("dhedp_T", unburntPhaseName_),
+                phasePropertyName("dhedp_T", unburntPhaseName),
                 mesh.time().name(),
                 mesh,
                 IOobject::NO_READ,
