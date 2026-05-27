@@ -2,8 +2,10 @@ lnInclude(${CMAKE_CURRENT_SOURCE_DIR})
 
 set(target_name topoSet)
 
+wmake_parse_files(${CMAKE_CURRENT_SOURCE_DIR}/Make/files sources_from_wmake)
+
 add_executable(${target_name}
-    topoSet.C
+    ${sources_from_wmake}
 )
 
 target_include_directories(${target_name} PRIVATE
@@ -17,9 +19,9 @@ target_link_libraries(${target_name} PRIVATE
 
     finiteVolume 
     genericPatches 
+    triSurface 
     meshTools 
-    topoSetSources 
-    fvTopoSetSources     
+    meshCheck
     Pstream_best
 )
 
