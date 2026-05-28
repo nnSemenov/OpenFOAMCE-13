@@ -29,6 +29,9 @@ License
 // OpenFOAM includes
 #include "fvMesh.H"
 
+#ifdef Log
+#undef Log
+#endif
 // VTK includes
 #include "vtkPoints.h"
 #include "vtkPolyData.h"

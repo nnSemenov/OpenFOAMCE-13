@@ -32,10 +32,15 @@ License
 #include "cellModeller.H"
 #include "polygonTriangulate.H"
 
+#ifdef Log
+#undef Log
+#endif
 // VTK includes
+#define HAS_VTK_POLYHEDRON
 #include "vtkCellArray.h"
 #include "vtkIdTypeArray.h"
 #include "vtkUnstructuredGrid.h"
+#include "vtkPolyhedron.h"
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
