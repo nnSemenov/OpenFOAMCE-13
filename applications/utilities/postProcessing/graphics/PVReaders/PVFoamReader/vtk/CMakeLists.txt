@@ -24,4 +24,4 @@ target_link_libraries(
     ParaView::pqApplicationComponents
 )
 
-set(FOAM_special_libraries "${FOAM_special_libraries};PVFoamReader_VTK" PARENT_SCOPE)
+set(FOAM_regular_libraries "${FOAM_regular_libraries};PVFoamReader_VTK" PARENT_SCOPE)

@@ -50,8 +50,6 @@ target_compile_definitions(${target_name} PRIVATE
     LIB_NAME=lib${target_name}.so
 )
 
-message(WARNING "TODO: Install vtkPVFoam to correct destination, should be under $(PV_PLUGIN_PATH)/lib")
-
-set(FOAM_special_libraries "${FOAM_special_libraries};${target_name}" PARENT_SCOPE)
+set(FOAM_regular_libraries "${FOAM_regular_libraries};${target_name}" PARENT_SCOPE)
 
 
