@@ -82,6 +82,8 @@ public:
 
     // Member Functions
 
+        static bool enabled(const fvMesh& mesh);
+
         //- Return mesh reference
         const fvMesh& mesh() const
         {

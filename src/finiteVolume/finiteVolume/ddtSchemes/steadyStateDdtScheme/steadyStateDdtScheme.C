@@ -39,6 +39,13 @@ namespace fv
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+template <class Type>
+bool steadyStateDdtScheme<Type>::enabled(const fvMesh &mesh)
+{
+    return word(mesh.schemes().ddt("default")) ==
+        fv::steadyStateDdtScheme<Type>::typeName;
+}
+
 template<class Type>
 tmp<VolField<Type>>
 steadyStateDdtScheme<Type>::fvcDdt
