@@ -1,5 +1,5 @@
 find_package(wmakeParse
-    0.1.3
+    0.2.2
     COMPONENTS wmakeParse parse-wmake
     CONFIG
     REQUIRED

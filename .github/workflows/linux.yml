@@ -56,7 +56,7 @@ jobs:
         cd 3rdParty
         git clone https://github.com/nnSemenov/wmakeParse
         cd wmakeParse
-        git checkout v0.1.3
+        git checkout v0.2.2
         cmake -S . -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -G Ninja -DCMAKE_C_COMPILER=$c_compiler -DCMAKE_CXX_COMPILER=$cxx_compiler
         cmake --build build --parallel
         sudo cmake --install build
