@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) YEAR OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,76 +23,29 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-// Specie
-#include "${specie}.H"
+#include "fluidLagrangianThermo.H"
 
-// EoS
-#include "${equationOfState}.H"
+#include "pureMixture.H"
 
-// Thermo
-#include "${thermo}Thermo.H"
-#include "${energy}.H"
-
-// Transport
-#include "${transport}Transport.H"
-
-// psi/rho
-#include "${type}.H"
-
-// Mixture
-#include "${mixture}.H"
-
+#include "liquidPropertiesSelector.H"
+#include "sensibleInternalEnergy.H"
 #include "thermo.H"
-#include "typedefThermo.H"
-#include "makeThermo.H"
 
-
-// * * * * * * * * * * * * * * * Global Functions  * * * * * * * * * * * * * //
-
-extern "C"
-{
-    // Unique function name that can be checked
-    // to ensure the correct library version has been loaded
-    void ${uniqueFunctionName}(bool load)
-    {
-        if (load)
-        {
-            // code that can be explicitly executed after loading
-        }
-        else
-        {
-            // code that can be explicitly executed before unloading
-        }
-    }
-}
-
+#include "makeLagrangianThermo.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
 {
-    typedefThermo
-    (
-        ${transport}Transport,
-        ${energy},
-        ${thermo}Thermo,
-        ${equationOfState},
-        ${specie}
-    );
+    typedef
+        species::thermo<liquidPropertiesSelector, sensibleInternalEnergy>
+        liquidSensibleInternalEnergy;
 
-    defineThermo
+    makeLagrangianThermo
     (
-        ${type},
-        ${mixture},
-        ${transport}Transport${energy}${thermo}Thermo${equationOfState}${specie}
-    );
-
-    addThermo
-    (
-        ${type},
-        ${type},
-        ${mixture},
-        ${transport}Transport${energy}${thermo}Thermo${equationOfState}${specie}
+        fluidLagrangianThermo,
+        pureMixture,
+        liquidSensibleInternalEnergy
     );
 }
 
