@@ -4,11 +4,13 @@ Mikeno is a fork of OpenFOAM, it's Frankensteined for chemical engineering usage
 [简体中文](README.md) [English]
 
 ## Goal of this fork
-1. Better support for modeling chemical engineering process
+
+1. Better support for modelling chemical engineering process
 2. Continually merge upstream updates
 3. Build system migration: Replace wmake with CMake
-4. Fix unexpected SIGFPE trapping, mainly for double-precision.
-   - Compiler optimizes float-point computation with SIMD, but they generates unexpected NAN sometimes. These NANs are never used, but emit SIGFPE.
+4. Fix unexpected SIGFPE trapping, mainly for single-precision.
+   - Compiler optimises float-point computation with SIMD, but they generate unexpected NAN sometimes. These NANs are
+     never used, but emit SIGFPE.
 
 ## Modifications
 
@@ -21,8 +23,8 @@ Mikeno is a fork of OpenFOAM, it's Frankensteined for chemical engineering usage
    - More convenient to import external dependencies.
    - More efficient parallel build.
    - More convenient for secondary development with `find_package(Mikeno CONFIG)`.
-2. Performance optimization
-   - Add `-march=native` for optimization mode, enabling more vectorization from compiler.
+2. Performance optimisation
+   - Add `-march=native` for optimisation mode, enabling more vectorisation from compiler.
 3. Support `AOCC`
 4. Remove redundant reference in solver modules.
    1. Currently cleaned `isothermalFluidSolver` `fluidSolver` `multicomponentFluidSolver` `XiFluidSolver`
