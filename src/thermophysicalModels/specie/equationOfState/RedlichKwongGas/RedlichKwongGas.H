@@ -253,7 +253,15 @@ class RedlichKwongGas : public Specie
         }
 
         //- Return volumetric coefficient of thermal expansion [1/T]
-        inline scalar alphav(const scalar p, const scalar T) const;
+        inline scalar alphav(scalar p, scalar T, scalar W) const
+        {
+            const scalar Z = this->Z(this->dimlessCoeff(p, T));
+            const scalar V = Z * RR * T / p;
+            const scalar dVdT_const_p = this->dVdT_p(p, T, Z);
+
+            const scalar alpha_v = dVdT_const_p / V;
+            return alpha_v;
+        }
 
         //- Return isobaric expansion coeff [m^3/mol/K]
         inline scalar dVdT_p(const scalar p, const scalar T,

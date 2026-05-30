@@ -89,6 +89,22 @@ Foam::scalar Foam::idealLiquidMulticomponentMixture<
 
 template <class ThermoType>
 Foam::scalar Foam::idealLiquidMulticomponentMixture<
+    ThermoType>::thermoMixtureType::alphav(scalar p, scalar T) const
+{
+    scalar volume_frac = 0, alphav_volume_frac = 0;
+    forAll(Y_, i)
+    {
+        const scalar rhoi = specieThermos_[i].rho(p, T);
+        const scalar Yi_over_rhoi = Y_[i] / rhoi;
+        volume_frac += Yi_over_rhoi;
+        alphav_volume_frac += specieThermos_[i].alphav(p, T) * Yi_over_rhoi;
+    }
+
+    return alphav_volume_frac / volume_frac;
+}
+
+template <class ThermoType>
+Foam::scalar Foam::idealLiquidMulticomponentMixture<
     ThermoType>::thermoMixtureType::hf() const
 {
     return massWeighted(&ThermoType::hf);

@@ -270,7 +270,15 @@ class PengRobinsonGas : public Specie
                 this->R(W);
         }
 
-        inline scalar alphav(const scalar p, const scalar T) const;
+        inline scalar alphav(scalar p, scalar T, scalar W) const
+        {
+            const scalar Z = this->Z(this->dimlessCoeff(p, T));
+            const scalar V = Z * RR * T / p;
+            const scalar dVdT_const_p = this->dVdT_p(p, T, Z);
+
+            const scalar alpha_v = dVdT_const_p / V;
+            return alpha_v;
+        }
 
         inline scalar dpdT_V(const scalar p, const scalar T,
                              const scalar z) const

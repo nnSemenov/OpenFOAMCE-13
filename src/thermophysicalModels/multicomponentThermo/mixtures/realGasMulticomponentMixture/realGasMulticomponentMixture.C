@@ -138,6 +138,14 @@ Foam::scalar Foam::realGasMulticomponentMixture<
 
 template <class ThermoType>
 Foam::scalar Foam::realGasMulticomponentMixture<
+    ThermoType>::thermoMixtureType::alphav(scalar p, scalar T) const
+{
+    auto mixedCore = this->mixedCore(p, T);
+    return mixedCore.alphav(p, T, this->W());
+}
+
+template <class ThermoType>
+Foam::scalar Foam::realGasMulticomponentMixture<
     ThermoType>::thermoMixtureType::hf() const
 {
     return massWeighted(&ThermoType::hf);

@@ -99,6 +99,9 @@ class idealLiquidMulticomponentMixture
         //- Return compressibility [s^2/m^2]
         scalar psi(scalar p, scalar T) const;
 
+        //- Return volumetric coefficient of thermal expansion [1/T]
+        scalar alphav(const scalar p, const scalar T) const;
+
         // Heat capacity at constant pressure [J/kg/K]
         scalar Cp(const scalar p, const scalar T) const;
 
