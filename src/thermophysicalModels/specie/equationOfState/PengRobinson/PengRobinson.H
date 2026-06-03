@@ -17,10 +17,10 @@ License
     along with Mikeno.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::PengRobinsonGas
+    Foam::PengRobinson
 
 Description
-    PengRobinsonGas cubic equation of state for gases
+    PengRobinson cubic equation of state for gases
 
     Coefficient mixing is very inaccurate and not supported, so this equation of
     state can only be applied to mixtures by using a thermophysical properties
@@ -36,7 +36,7 @@ Usage
         phase        | Preferred phase (vapor/liquid)
     \endtable
 
-    Example specification of the PengRobinsonGas equation of state for methane:
+    Example specification of the PengRobinson equation of state for methane:
     \verbatim
     equationOfState
     {
@@ -49,13 +49,13 @@ Usage
     \endverbatim
 
 SourceFiles
-    PengRobinsonGasI.H
-    PengRobinsonGas.C
+    PengRobinsonI.H
+    PengRobinson.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef PengRobinsonGas_H
-#define PengRobinsonGas_H
+#ifndef PengRobinson_H
+#define PengRobinson_H
 
 #include "autoPtr.H"
 #include "speciesTable.H"
@@ -71,29 +71,29 @@ namespace Foam
 // Forward declaration of friend functions and operators
 
 template <class Specie>
-class PengRobinsonGas;
+class PengRobinson;
 
 template <class Specie>
-inline PengRobinsonGas<Specie> operator+(const PengRobinsonGas<Specie> &,
-                                         const PengRobinsonGas<Specie> &);
+inline PengRobinson<Specie> operator+(const PengRobinson<Specie> &,
+                                      const PengRobinson<Specie> &);
 
 template <class Specie>
-inline PengRobinsonGas<Specie> operator*(const scalar,
-                                         const PengRobinsonGas<Specie> &);
+inline PengRobinson<Specie> operator*(const scalar,
+                                      const PengRobinson<Specie> &);
 
 template <class Specie>
-inline PengRobinsonGas<Specie> operator==(const PengRobinsonGas<Specie> &,
-                                          const PengRobinsonGas<Specie> &);
+inline PengRobinson<Specie> operator==(const PengRobinson<Specie> &,
+                                       const PengRobinson<Specie> &);
 
 template <class Specie>
-Ostream &operator<<(Ostream &, const PengRobinsonGas<Specie> &);
+Ostream &operator<<(Ostream &, const PengRobinson<Specie> &);
 
 /*---------------------------------------------------------------------------*\
-                       Class PengRobinsonGas Declaration
+                       Class PengRobinson Declaration
 \*---------------------------------------------------------------------------*/
 
 template <class Specie>
-class PengRobinsonGas : public Specie
+class PengRobinson : public Specie
 {
     // Private Data
     realFluidProperty property_;
@@ -374,19 +374,19 @@ class PengRobinsonGas : public Specie
 
   public:
     // Constructors
-    inline PengRobinsonGas(const Specie &sp, const realFluidProperty &prop);
+    inline PengRobinson(const Specie &sp, const realFluidProperty &prop);
 
     //- Construct from components
-    inline PengRobinsonGas(const Specie &sp);
+    inline PengRobinson(const Specie &sp);
 
     //- Construct from name and dictionary
-    PengRobinsonGas(const word &name, const dictionary &dict);
+    PengRobinson(const word &name, const dictionary &dict);
 
     //- Construct as named copy
-    inline PengRobinsonGas(const word &name, const PengRobinsonGas &);
+    inline PengRobinson(const word &name, const PengRobinson &);
 
     //- Construct and return a clone
-    inline autoPtr<PengRobinsonGas> clone() const;
+    inline autoPtr<PengRobinson> clone() const;
 
     // Member Functions
 
@@ -400,7 +400,7 @@ class PengRobinsonGas : public Specie
     //- Return the instantiated type name
     static word typeName()
     {
-        return "PengRobinsonGas<" + word(Specie::typeName_()) + '>';
+        return "PengRobinson<" + word(Specie::typeName_()) + '>';
     }
 
     // Fundamental properties
@@ -621,24 +621,24 @@ class PengRobinsonGas : public Specie
 
     // Member Operators
 
-    inline void operator+=(const PengRobinsonGas &);
+    inline void operator+=(const PengRobinson &);
 
     inline void operator*=(const scalar);
 
     // Friend operators
 
-    friend PengRobinsonGas operator+
-        <Specie>(const PengRobinsonGas &, const PengRobinsonGas &);
+    friend PengRobinson operator+
+        <Specie>(const PengRobinson &, const PengRobinson &);
 
-    friend PengRobinsonGas operator*
-        <Specie>(const scalar s, const PengRobinsonGas &);
+    friend PengRobinson operator*
+        <Specie>(const scalar s, const PengRobinson &);
 
-    friend PengRobinsonGas operator==
-        <Specie>(const PengRobinsonGas &, const PengRobinsonGas &);
+    friend PengRobinson operator==
+        <Specie>(const PengRobinson &, const PengRobinson &);
 
     // Ostream Operator
 
-    friend Ostream &operator<< <Specie>(Ostream &, const PengRobinsonGas &);
+    friend Ostream &operator<< <Specie>(Ostream &, const PengRobinson &);
 };
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -647,10 +647,10 @@ class PengRobinsonGas : public Specie
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include "PengRobinsonGasI.H"
+#include "PengRobinsonI.H"
 
 #ifdef NoRepository
-#include "PengRobinsonGas.C"
+#include "PengRobinson.C"
 #endif
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

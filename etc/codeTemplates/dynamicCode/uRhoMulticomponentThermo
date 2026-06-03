@@ -64,7 +64,7 @@ thermo
 
 equationOfState
 (
-    PengRobinsonGas
+    PengRobinson
     perfectGas
 );
 

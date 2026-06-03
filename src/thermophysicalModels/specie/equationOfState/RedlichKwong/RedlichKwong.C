@@ -17,14 +17,14 @@ License
     along with Mikeno.  If not, see <http://www.gnu.org/licenses/>.
 \*---------------------------------------------------------------------------*/
 
-#include "RedlichKwongGas.H"
+#include "RedlichKwong.H"
 #include "IOstreams.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 template <class Specie>
-Foam::RedlichKwongGas<Specie>::RedlichKwongGas(const word &name,
-                                               const dictionary &dict)
+Foam::RedlichKwong<Specie>::RedlichKwong(const word &name,
+                                         const dictionary &dict)
     : Specie(name, dict), property_(dict)
 {
     property_.requireRealGasEOS(name, false);
@@ -33,7 +33,7 @@ Foam::RedlichKwongGas<Specie>::RedlichKwongGas(const word &name,
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 template <class Specie>
-void Foam::RedlichKwongGas<Specie>::write(Ostream &os) const
+void Foam::RedlichKwong<Specie>::write(Ostream &os) const
 {
     Specie::write(os);
     dictionary dict("equationOfState");
@@ -44,7 +44,7 @@ void Foam::RedlichKwongGas<Specie>::write(Ostream &os) const
 // * * * * * * * * * * * * * * * Ostream Operator  * * * * * * * * * * * * * //
 
 template <class Specie>
-Foam::Ostream &Foam::operator<<(Ostream &os, const RedlichKwongGas<Specie> &pg)
+Foam::Ostream &Foam::operator<<(Ostream &os, const RedlichKwong<Specie> &pg)
 {
     pg.write(os);
     return os;

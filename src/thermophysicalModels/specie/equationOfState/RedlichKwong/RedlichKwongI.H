@@ -17,32 +17,31 @@ License
     along with Mikeno.  If not, see <http://www.gnu.org/licenses/>.
 \*---------------------------------------------------------------------------*/
 
-#include "RedlichKwongGas.H"
+#include "RedlichKwong.H"
 #include "mathematicalConstants.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 template <class Specie>
-inline Foam::RedlichKwongGas<Specie>::RedlichKwongGas(
-    const Specie &sp, const realFluidProperty &prop)
+inline Foam::RedlichKwong<Specie>::RedlichKwong(const Specie &sp, const realFluidProperty &prop)
     : Specie(sp), property_(prop)
 {
 
-    static_assert(Foam::is_cubic_EOS<Foam::RedlichKwongGas<Specie>>::value,
+    static_assert(Foam::is_cubic_EOS<Foam::RedlichKwong<Specie>>::value,
                   "RK must be cubic EOS");
 }
 
 template <class Specie>
-inline Foam::RedlichKwongGas<Specie>::RedlichKwongGas(const word &name,
-                                                      const RedlichKwongGas &pg)
+inline Foam::RedlichKwong<Specie>::RedlichKwong(const word &name,
+                                                const RedlichKwong &pg)
     : Specie(name, pg), property_(pg.property_)
 {}
 
 template <class Specie>
-inline Foam::autoPtr<Foam::RedlichKwongGas<Specie>> Foam::RedlichKwongGas<
+inline Foam::autoPtr<Foam::RedlichKwong<Specie>> Foam::RedlichKwong<
     Specie>::clone() const
 {
-    return autoPtr<RedlichKwongGas<Specie>>(new RedlichKwongGas<Specie>(*this));
+    return autoPtr<RedlichKwong<Specie>>(new RedlichKwong<Specie>(*this));
 }
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
@@ -50,37 +49,37 @@ inline Foam::autoPtr<Foam::RedlichKwongGas<Specie>> Foam::RedlichKwongGas<
 // * * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * //
 
 template <class Specie>
-inline void Foam::RedlichKwongGas<Specie>::operator+=(
-    const RedlichKwongGas<Specie> &pg)
+inline void Foam::RedlichKwong<Specie>::operator+=(
+    const RedlichKwong<Specie> &pg)
 {
-    noCoefficientMixing(RedlichKwongGas);
+    noCoefficientMixing(RedlichKwong);
 }
 
 template <class Specie>
-inline void Foam::RedlichKwongGas<Specie>::operator*=(const scalar s)
+inline void Foam::RedlichKwong<Specie>::operator*=(const scalar s)
 {
-    noCoefficientMixing(RedlichKwongGas);
+    noCoefficientMixing(RedlichKwong);
 }
 
 // * * * * * * * * * * * * * * * Friend Operators  * * * * * * * * * * * * * //
 
 template <class Specie>
-Foam::RedlichKwongGas<Specie> Foam::operator+(
-    const RedlichKwongGas<Specie> &pg1, const RedlichKwongGas<Specie> &pg2)
+Foam::RedlichKwong<Specie> Foam::operator+(const RedlichKwong<Specie> &pg1,
+                                           const RedlichKwong<Specie> &pg2)
 {
-    noCoefficientMixing(RedlichKwongGas);
+    noCoefficientMixing(RedlichKwong);
 }
 
 template <class Specie>
-Foam::RedlichKwongGas<Specie> Foam::operator*(const scalar s,
-                                              const RedlichKwongGas<Specie> &pg)
+Foam::RedlichKwong<Specie> Foam::operator*(const scalar s,
+                                           const RedlichKwong<Specie> &pg)
 {
-    noCoefficientMixing(RedlichKwongGas);
+    noCoefficientMixing(RedlichKwong);
 }
 
 template <class Specie>
-Foam::RedlichKwongGas<Specie> Foam::operator==(
-    const RedlichKwongGas<Specie> &pg1, const RedlichKwongGas<Specie> &pg2)
+Foam::RedlichKwong<Specie> Foam::operator==(const RedlichKwong<Specie> &pg1,
+                                            const RedlichKwong<Specie> &pg2)
 {
-    noCoefficientMixing(RedlichKwongGas);
+    noCoefficientMixing(RedlichKwong);
 }

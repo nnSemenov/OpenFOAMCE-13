@@ -17,7 +17,7 @@ License
     along with Mikeno.  If not, see <http://www.gnu.org/licenses/>.
 \*---------------------------------------------------------------------------*/
 
-#include "PengRobinsonGas.H"
+#include "PengRobinson.H"
 #include "IOstreams.H"
 
 #include "cubicEOS.H"
@@ -25,8 +25,8 @@ License
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 template <class Specie>
-Foam::PengRobinsonGas<Specie>::PengRobinsonGas(const word &name,
-                                               const dictionary &dict)
+Foam::PengRobinson<Specie>::PengRobinson(const word &name,
+                                         const dictionary &dict)
     : Specie(name, dict), property_(dict)
 {
     property_.requireRealGasEOS(name, true);
@@ -35,7 +35,7 @@ Foam::PengRobinsonGas<Specie>::PengRobinsonGas(const word &name,
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 template <class Specie>
-void Foam::PengRobinsonGas<Specie>::write(Ostream &os) const
+void Foam::PengRobinson<Specie>::write(Ostream &os) const
 {
     Specie::write(os);
     dictionary dict("equationOfState");
@@ -46,7 +46,7 @@ void Foam::PengRobinsonGas<Specie>::write(Ostream &os) const
 // * * * * * * * * * * * * * * * Ostream Operator  * * * * * * * * * * * * * //
 
 template <class Specie>
-Foam::Ostream &Foam::operator<<(Ostream &os, const PengRobinsonGas<Specie> &pg)
+Foam::Ostream &Foam::operator<<(Ostream &os, const PengRobinson<Specie> &pg)
 {
     pg.write(os);
     return os;

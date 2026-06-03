@@ -16,10 +16,10 @@ License
     You should have received a copy of the GNU General Public License
     along with Mikeno.  If not, see <http://www.gnu.org/licenses/>.
 Class
-    Foam::RedlichKwongGas
+    Foam::RedlichKwong
 
 Description
-    RedlichKwongGas cubic equation of state for gases
+    RedlichKwong cubic equation of state for gases
 
     Coefficient mixing is very inaccurate and not supported, so this equation of
     state can only be applied to mixtures by using a thermophysical properties
@@ -34,7 +34,7 @@ Usage
         phase        | Preferred phase (vapor/liquid)
     \endtable
 
-    Example specification of the RedlichKwongGas equation of state for methane:
+    Example specification of the RedlichKwong equation of state for methane:
     \verbatim
     equationOfState
     {
@@ -46,13 +46,13 @@ Usage
     \endverbatim
 
 SourceFiles
-    RedlichKwongGasI.H
-    RedlichKwongGas.C
+    RedlichKwongI.H
+    RedlichKwong.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef RedlichKwongGas_H
-#define RedlichKwongGas_H
+#ifndef RedlichKwong_H
+#define RedlichKwong_H
 
 #include "autoPtr.H"
 #include "GeometricSymmTensorField.H"
@@ -62,25 +62,25 @@ namespace Foam
 {
 
 template <class Specie>
-class RedlichKwongGas;
+class RedlichKwong;
 
 template <class Specie>
-inline RedlichKwongGas<Specie> operator+(const RedlichKwongGas<Specie> &,
-                                         const RedlichKwongGas<Specie> &);
+inline RedlichKwong<Specie> operator+(const RedlichKwong<Specie> &,
+                                      const RedlichKwong<Specie> &);
 
 template <class Specie>
-inline RedlichKwongGas<Specie> operator*(const scalar,
-                                         const RedlichKwongGas<Specie> &);
+inline RedlichKwong<Specie> operator*(const scalar,
+                                      const RedlichKwong<Specie> &);
 
 template <class Specie>
-inline RedlichKwongGas<Specie> operator==(const RedlichKwongGas<Specie> &,
-                                          const RedlichKwongGas<Specie> &);
+inline RedlichKwong<Specie> operator==(const RedlichKwong<Specie> &,
+                                       const RedlichKwong<Specie> &);
 
 template <class Specie>
-Ostream &operator<<(Ostream &, const RedlichKwongGas<Specie> &);
+Ostream &operator<<(Ostream &, const RedlichKwong<Specie> &);
 
 template <class Specie>
-class RedlichKwongGas : public Specie
+class RedlichKwong : public Specie
 {
 
   public:
@@ -336,13 +336,13 @@ class RedlichKwongGas : public Specie
     };
 
   public:
-    inline RedlichKwongGas(const Specie &sp, const realFluidProperty &prop);
+    inline RedlichKwong(const Specie &sp, const realFluidProperty &prop);
 
-    RedlichKwongGas(const word &name, const dictionary &dict);
+    RedlichKwong(const word &name, const dictionary &dict);
 
-    inline RedlichKwongGas(const word &name, const RedlichKwongGas &);
+    inline RedlichKwong(const word &name, const RedlichKwong &);
 
-    inline autoPtr<RedlichKwongGas> clone() const;
+    inline autoPtr<RedlichKwong> clone() const;
 
     // Member Functions
     inline scalar Tc() const noexcept { return this->property_.Tc_; }
@@ -354,7 +354,7 @@ class RedlichKwongGas : public Specie
     //- Return the instantiated type name
     static word typeName()
     {
-        return "RedlichKwongGas<" + word(Specie::typeName_()) + '>';
+        return "RedlichKwong<" + word(Specie::typeName_()) + '>';
     }
     //    inline Foam::cubicEOSRawCoefficient coeffRaw(scalar p, scalar T)
     //    const;
@@ -495,31 +495,31 @@ class RedlichKwongGas : public Specie
 
     // Member Operators
 
-    inline void operator+=(const RedlichKwongGas &);
+    inline void operator+=(const RedlichKwong &);
     inline void operator*=(const scalar);
 
     // Friend operators
 
-    friend RedlichKwongGas operator+
-        <Specie>(const RedlichKwongGas &, const RedlichKwongGas &);
+    friend RedlichKwong operator+
+        <Specie>(const RedlichKwong &, const RedlichKwong &);
 
-    friend RedlichKwongGas operator*
-        <Specie>(const scalar s, const RedlichKwongGas &);
+    friend RedlichKwong operator*
+        <Specie>(const scalar s, const RedlichKwong &);
 
-    friend RedlichKwongGas operator==
-        <Specie>(const RedlichKwongGas &, const RedlichKwongGas &);
+    friend RedlichKwong operator==
+        <Specie>(const RedlichKwong &, const RedlichKwong &);
 
     // Ostream Operator
 
-    friend Ostream &operator<< <Specie>(Ostream &, const RedlichKwongGas &);
+    friend Ostream &operator<< <Specie>(Ostream &, const RedlichKwong &);
 };
 
 } // End namespace Foam
 
-#include "RedlichKwongGasI.H"
+#include "RedlichKwongI.H"
 
 #ifdef NoRepository
-#include "RedlichKwongGas.C"
+#include "RedlichKwong.C"
 #endif
 
-#endif // RedlichKwongGas_H
+#endif // RedlichKwong_H

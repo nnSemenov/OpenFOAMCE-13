@@ -2,8 +2,8 @@
 // Created by joseph on 2026/1/3.
 //
 #include "specie.H"
-#include "PengRobinsonGas.H"
-#include "RedlichKwongGas.H"
+#include "PengRobinson.H"
+#include "RedlichKwong.H"
 
 #include <cstdlib>
 #include <vector>
@@ -65,8 +65,8 @@ int main(int argc, char** argv) {
     return prop;
   }();
 
-  test_EOS<RedlichKwongGas<specie>>("RedlichKwongGas",sp,real_fluid_prop);
-  test_EOS<PengRobinsonGas<specie>>("PengRobinsonGas",sp,real_fluid_prop);
+  test_EOS<RedlichKwong<specie>>("RedlichKwong", sp, real_fluid_prop);
+  test_EOS<PengRobinson<specie>>("PengRobinson", sp, real_fluid_prop);
 
   Info<<"All test passed."<<endl;
   return 0;

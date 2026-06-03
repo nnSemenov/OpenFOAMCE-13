@@ -17,14 +17,13 @@ License
     along with Mikeno.  If not, see <http://www.gnu.org/licenses/>.
 \*---------------------------------------------------------------------------*/
 
-#include "PengRobinsonGas.H"
+#include "PengRobinson.H"
 #include "mathematicalConstants.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 template<class Specie>
-inline Foam::PengRobinsonGas<Specie>::PengRobinsonGas
-(
+inline Foam::PengRobinson<Specie>::PengRobinson(
     const Specie& sp,
     const realFluidProperty& prop
 )
@@ -37,11 +36,9 @@ inline Foam::PengRobinsonGas<Specie>::PengRobinsonGas
 
 
 template<class Specie>
-inline Foam::PengRobinsonGas<Specie>::PengRobinsonGas
-(
+inline Foam::PengRobinson<Specie>::PengRobinson(
     const word& name,
-    const PengRobinsonGas& pg
-)
+                                                const PengRobinson &pg)
 :
     Specie(name, pg),
     property_(pg.property_)
@@ -50,13 +47,10 @@ inline Foam::PengRobinsonGas<Specie>::PengRobinsonGas
 
 
 template<class Specie>
-inline Foam::autoPtr<Foam::PengRobinsonGas <Specie>>
-Foam::PengRobinsonGas<Specie>::clone() const
+inline Foam::autoPtr<Foam::PengRobinson<Specie>> Foam::PengRobinson<
+    Specie>::clone() const
 {
-    return autoPtr<PengRobinsonGas<Specie>>
-    (
-        new PengRobinsonGas<Specie>(*this)
-    );
+    return autoPtr<PengRobinson<Specie>>(new PengRobinson<Specie>(*this));
 }
 
 
@@ -64,19 +58,17 @@ Foam::PengRobinsonGas<Specie>::clone() const
 // * * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * //
 
 template<class Specie>
-inline void Foam::PengRobinsonGas<Specie>::operator+=
-(
-    const PengRobinsonGas<Specie>& pg
-)
+inline void Foam::PengRobinson<Specie>::operator+=(
+    const PengRobinson<Specie> &pg)
 {
-    noCoefficientMixing(PengRobinsonGas);
+    noCoefficientMixing(PengRobinson);
 }
 
 
 template<class Specie>
-inline void Foam::PengRobinsonGas<Specie>::operator*=(const scalar s)
+inline void Foam::PengRobinson<Specie>::operator*=(const scalar s)
 {
-    noCoefficientMixing(PengRobinsonGas);
+    noCoefficientMixing(PengRobinson);
 }
 
 
@@ -84,35 +76,27 @@ inline void Foam::PengRobinsonGas<Specie>::operator*=(const scalar s)
 
 
 template<class Specie>
-Foam::PengRobinsonGas<Specie> Foam::operator+
-(
-    const PengRobinsonGas<Specie>& pg1,
-    const PengRobinsonGas<Specie>& pg2
-)
+Foam::PengRobinson<Specie> Foam::operator+(const PengRobinson<Specie> &pg1,
+                                           const PengRobinson<Specie> &pg2)
 {
-    noCoefficientMixing(PengRobinsonGas);
+    noCoefficientMixing(PengRobinson);
 }
 
 
 template<class Specie>
-Foam::PengRobinsonGas<Specie> Foam::operator*
-(
+Foam::PengRobinson<Specie> Foam::operator*(
     const scalar s,
-    const PengRobinsonGas<Specie>& pg
-)
+                                           const PengRobinson<Specie> &pg)
 {
-    noCoefficientMixing(PengRobinsonGas);
+    noCoefficientMixing(PengRobinson);
 }
 
 
 template<class Specie>
-Foam::PengRobinsonGas<Specie> Foam::operator==
-(
-    const PengRobinsonGas<Specie>& pg1,
-    const PengRobinsonGas<Specie>& pg2
-)
+Foam::PengRobinson<Specie> Foam::operator==(const PengRobinson<Specie> &pg1,
+                                            const PengRobinson<Specie> &pg2)
 {
-    noCoefficientMixing(PengRobinsonGas);
+    noCoefficientMixing(PengRobinson);
 }
 
 
