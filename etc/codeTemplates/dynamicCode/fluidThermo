@@ -75,6 +75,7 @@ equationOfState
     linear
     PengRobinson
     RedlichKwong
+    PatelTejaValderrama
     perfectFluid
     perfectGas
     rhoConst

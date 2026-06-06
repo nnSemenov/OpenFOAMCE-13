@@ -10,3 +10,5 @@ export ENV_EOS=PengRobinson
 runApplication -s $ENV_EOS Test-cubicEOS -eos $ENV_EOS
 export ENV_EOS=RedlichKwong
 runApplication -s $ENV_EOS Test-cubicEOS -eos $ENV_EOS
+export ENV_EOS=PatelTejaValderrama
+runApplication -s $ENV_EOS Test-cubicEOS -eos $ENV_EOS

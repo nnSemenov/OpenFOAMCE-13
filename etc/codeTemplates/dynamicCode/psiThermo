@@ -61,6 +61,7 @@ equationOfState
 (
     PengRobinson
     RedlichKwong
+    PatelTejaValderrama
     perfectGas
 );
 
