@@ -20,11 +20,10 @@ Class
     Foam::PengRobinson
 
 Description
-    PengRobinson cubic equation of state for gases
+    PengRobinson cubic equation of state for gases and liquids.
 
-    Coefficient mixing is very inaccurate and not supported, so this equation of
-    state can only be applied to mixtures by using a thermophysical properties
-    model which mixes specie property value.
+    Coefficient mixing is disabled. Please use `realGasMulticomponentMixture` to
+    enable rigorous mixing rule.
 
 Usage
     \table
