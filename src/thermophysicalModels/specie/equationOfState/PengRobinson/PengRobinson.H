@@ -557,8 +557,8 @@ class PengRobinson : public Specie
                 }
                 return false;
             };
-            parseBinaryInteractionMatrix(*kDict, skipFun, this->kij, spTable,
-                                         symmetry);
+            this->kij = parseBinaryInteractionMatrix(*kDict, skipFun, spTable,
+                                                     symmetry);
 
             Info << "Binary interaction coefficient table for PR "
                     "equationOfState: \nk="

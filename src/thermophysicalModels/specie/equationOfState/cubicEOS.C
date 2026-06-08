@@ -168,12 +168,14 @@ word Foam::parseBinarySpeciePair(const word &str, word &sp0, word &sp1)
     return "";
 }
 
-void Foam::parseBinaryInteractionMatrix(
+Foam::scalarSquareMatrix Foam::parseBinaryInteractionMatrix(
     const dictionary &kDict, const std::function<bool(const word &)> &skipKey,
-    scalarSquareMatrix &mat, const speciesTable &spTable, bool symmetry)
+    const speciesTable &spTable, bool symmetry, scalar default_value)
 {
-    for (label r = 0; r < mat.m(); r++) {
-        for (label c = 0; c < mat.n(); c++) {
+    scalarSquareMatrix mat;
+    mat.setSize(spTable.size());
+    for (label r = 0; r < spTable.size(); r++) {
+        for (label c = 0; c < spTable.size(); c++) {
             mat(r, c) = std::numeric_limits<scalar>::signaling_NaN();
         }
     }
@@ -203,7 +205,7 @@ void Foam::parseBinaryInteractionMatrix(
         const label idxSp0 = spTable[sp0];
         const label idxSp1 = spTable[sp1];
 
-        const scalar k = kDict.template lookup<scalar>(speciePair);
+        const auto k = kDict.template lookup<scalar>(speciePair);
         set_k_ij(idxSp0, idxSp1, k);
         if (symmetry) {
             set_k_ij(idxSp1, idxSp0, k);
@@ -214,8 +216,9 @@ void Foam::parseBinaryInteractionMatrix(
         for (label c = 0; c < mat.n(); c++) {
             scalar &k = mat(r, c);
             if (not std::isfinite(k)) {
-                k = 0;
+                k = default_value;
             }
         }
     }
+    return mat;
 }

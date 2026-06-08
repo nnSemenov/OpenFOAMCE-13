@@ -136,6 +136,7 @@ inline int requiresCubicEOS(const EOS *eos)
         core.h(p, T, W) + core.Cp(p, T, W) + core.e(p, T, W) +
         core.Cv(p, T, W) + core.sp(p, T, W) + core.sv(p, T, W) +
         core.psi(p, T, W) + core.CpCv(p, T, W) + core.alphav(p, T, W);
+    [[maybe_unused]] const typename EOS::EOSMixer *mixer_ptr = nullptr;
     return 0;
 }
 
@@ -149,15 +150,15 @@ struct is_cubic_EOS
         std::is_same_v<decltype(internal::requiresCubicEOS(
                            static_cast<const EOS *>(nullptr))),
                        int> and
-        (not EOS::incompressible);
+        (not EOS::incompressible) and (not EOS::isochoric);
 };
 
 word parseBinarySpeciePair(const word &str, word &sp0, word &sp1);
 
-void parseBinaryInteractionMatrix(
-    const dictionary &coeffDict,
-    const std::function<bool(const word &)> &skipKey, scalarSquareMatrix &mat,
-    const speciesTable &spTable, bool symmetry);
+scalarSquareMatrix parseBinaryInteractionMatrix(
+    const dictionary &kDict, const std::function<bool(const word &)> &skipKey,
+    const speciesTable &spTable, bool symmetry, scalar default_value = 0);
+
 } // namespace Foam
 
 #endif // CUBICEOS_H
