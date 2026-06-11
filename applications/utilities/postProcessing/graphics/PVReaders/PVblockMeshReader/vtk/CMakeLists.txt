@@ -19,4 +19,6 @@ target_link_libraries(PVblockMeshReader_VTK PUBLIC
     ParaView::pqApplicationComponents
     Qt${PARAVIEW_QT_MAJOR_VERSION}::Core
     Qt${PARAVIEW_QT_MAJOR_VERSION}::Gui
+    LINK_PRIVATE
+    ParaView::pqApplicationComponents
 )
