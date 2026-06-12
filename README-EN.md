@@ -35,8 +35,14 @@ Mikeno is a fork of OpenFOAM, it's Frankensteined for chemical engineering usage
 ### Porous media heat transfer
 1. `porousMediaFluidSolver` supporting arbitrary number of porous phases, heat transfer between fluid-porous and porous-porous, both supporting thermal equilibrium and non-equilibrium.
 
+### Multiphase simulation
+1. New heat transfer model: `PowerLawNu`
+   - Represents the classic power-law Nusselt correlation $\text{Nu} = a \text{Re}^b \text{Pr}^c$
+2. New heat transfer model: `Gnielinski`
+   - Suitable for laminar and turbulent heat transfer in fixed beds
+
 ### More rigorous thermodynamics
-1. Equation of state: add `RedlichKwongGas`, rewrite `PengRobinsonGas`
+1. Equation of state: add `RedlichKwong`, rewrite `PengRobinson`
 2. Both real gas EOSs are tested with AspenPlusV14
 3. Van der Waals mixing rule
    - Support binary interaction coefficient `k_ij` for `PengRobinsonGas`
@@ -52,6 +58,8 @@ Mikeno is a fork of OpenFOAM, it's Frankensteined for chemical engineering usage
 7. Add `phase` keyword to `equationOfState` dictionary, allow using real fluid EOS for liquid.
 8. Equation of states implemenets `dCpdT` `dCvdT` (residual specific heat derivative to temperature) for chemical solver usage.
    - Currently only `dCvdT` is rigorous. Derivative of difference of residual specific heat is currently ignored (TOO COMPLEX for cubic EOS)
+9. Rename: remove Gas suffix from `RedlichKwongGas` and `PengRobinsonGas` (a breaking change)
+10. Three-parameter equation of state: `PatelTejaValderrama`
 
 ## Fix unexpected SIGFPE trapping (compile option in brackets)
 1. Fix `flowRateInletVelocity` trapped by SIGFPE when writing flow field. This is caused by division in `unitConversion::toUser(const T& t) const`. (`Clang DP Opt`)
@@ -64,10 +72,15 @@ Mikeno is a fork of OpenFOAM, it's Frankensteined for chemical engineering usage
    - This was caused by `3caf09d88b95092a1f4a6047cf498d47d5e86a7a` which aims to optimize performance.
    - This optimization is reverted, currently no perfect way to fix.
 
-## Pending works
-1. More equation of state: Patel-Teja, Martin-Hou
-2. Extend porous media heat transfer to multicomponent
-3. Stabilize `porousMediaFluid` for non-equilibrium heat transfer with large coefficient or specific area
+## Others
+1. Allow directly writing gzip-compressed binary fields (the foundation version disallows this due to performance concerns)
 
-## Existing Bugs(Up to 2026-04-01):
-1. `foamRun` crashes with Lagrangian fields (`test/Lagrangian/boundaries` fails)
+## Pending works
+1. More equation of state: Martin-Hou etc.
+2. Extend `PatelTejaValderrama` EOS to multicomponent (not tested)
+3. Extend porous media heat transfer to multicomponent single-phase
+4. Stabilize `porousMediaFluid` for non-equilibrium heat transfer with large coefficient or specific area
+
+## Existing Bugs (Up to 2026-06-12):
+1. Some Lagrangian field related tests fail (OpenFOAM foundation is rewriting this, normal)
+2. Some population balance model tests in `multiphaseEuler` fail (`uniformGrowth` and `expansion`), post-processing charts are empty, computed results may be wrong.
