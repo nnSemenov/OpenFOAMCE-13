@@ -51,14 +51,18 @@ water_dispersedIn_air_inThe_water
 
 solid_dispersedIn_air
 {
-    type            RanzMarshall;
+    type            Gnielinski;
     residualAlpha   1e-4;
+    sphere          yes;
 }
 
 solid_dispersedIn_water
 {
-    type            RanzMarshall;
+    type            PowerLawNu;
     residualAlpha   1e-4;
+    a               0.111;
+    b               0.8;
+    c               0.33333;
 }
 
 // ************************************************************************* //
