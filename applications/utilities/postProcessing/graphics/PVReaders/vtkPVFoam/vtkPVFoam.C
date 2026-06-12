@@ -39,6 +39,9 @@ License
 #include "OSspecific.H"
 #include "etcFiles.H"
 
+#ifdef Log
+#undef Log
+#endif
 // VTK includes
 #include "vtkDataArraySelection.h"
 #include "vtkMultiBlockDataSet.h"

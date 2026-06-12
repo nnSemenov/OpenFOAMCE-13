@@ -17,23 +17,20 @@ target_include_directories(${target_name} PUBLIC
 )
 
 target_include_directories(${target_name} PRIVATE
-    ${LIB_SRC}/physicalProperties/lnInclude
 )
+
 
 target_link_libraries(${target_name} PRIVATE
     OpenFOAM_Defines
     OpenFOAM
     OSspecific
+)
 
+target_link_libraries(${target_name} PUBLIC
     basicFluidSolver
-    fluidThermophysicalModels 
-    momentumTransportModels 
+    fluidThermophysicalModels
+    momentumTransportModels
     compressibleMomentumTransportModels
-    finiteVolume
-    meshTools 
-    sampling 
-    fvModels 
-    fvConstraints
 )
 
 target_compile_definitions(${target_name} PRIVATE

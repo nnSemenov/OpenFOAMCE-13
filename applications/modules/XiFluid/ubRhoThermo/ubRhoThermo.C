@@ -33,12 +33,14 @@ namespace Foam
 }
 
 
+const Foam::word Foam::ubRhoThermo::unburntPhaseName("u");
+const Foam::word Foam::ubRhoThermo::burntPhaseName("b");
+
+
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 Foam::ubRhoThermo::ubRhoThermo(const fvMesh& mesh)
 :
-    unburntPhaseName_("u"),
-    burntPhaseName_("b"),
     b_
     (
         IOobject
@@ -52,8 +54,8 @@ Foam::ubRhoThermo::ubRhoThermo(const fvMesh& mesh)
         mesh
     ),
     c_("c", scalar(1) - b_),
-    uThermo_(uRhoMulticomponentThermo::New(mesh, unburntPhaseName_)),
-    bThermo_(bRhoMulticomponentThermo::New(mesh, burntPhaseName_)),
+    uThermo_(uRhoMulticomponentThermo::New(mesh, unburntPhaseName)),
+    bThermo_(bRhoMulticomponentThermo::New(mesh, burntPhaseName)),
     ubMixtureMap_(ubMixtureMap::New(uThermo_, bThermo_)),
     rho_("rho", 1.0/(b_/uThermo_->rho() + c_/bThermo_->rho())),
     psi_("psi", 1.0/(b_/uThermo_->psi() + c_/bThermo_->psi())),
@@ -61,16 +63,16 @@ Foam::ubRhoThermo::ubRhoThermo(const fvMesh& mesh)
     kappa_("kappa", b_*uThermo_->kappa() + c_*bThermo_->kappa()),
     alphau_
     (
-        phasePropertyName("alpha", unburntPhaseName_), rho_*b_/uThermo_->rho()
+        phasePropertyName("alpha", unburntPhaseName), rho_*b_/uThermo_->rho()
     ),
     alphab_
     (
-        phasePropertyName("alpha", burntPhaseName_), rho_*c_/bThermo_->rho()
+        phasePropertyName("alpha", burntPhaseName), rho_*c_/bThermo_->rho()
     ),
     dhedp_T_(
         IOobject
             (
-                phasePropertyName("dhedp_T", unburntPhaseName_),
+                phasePropertyName("dhedp_T", unburntPhaseName),
                 mesh.time().name(),
                 mesh,
                 IOobject::NO_READ,
@@ -82,13 +84,13 @@ Foam::ubRhoThermo::ubRhoThermo(const fvMesh& mesh)
 {
     uThermo_->validate
     (
-        IOobject::groupName(type(), unburntPhaseName_),
+        IOobject::groupName(type(), unburntPhaseName),
         "h"
     );
 
     bThermo_->validate
     (
-        IOobject::groupName(type(), burntPhaseName_),
+        IOobject::groupName(type(), burntPhaseName),
         "h"
     );
 
@@ -292,6 +294,14 @@ Foam::tmp<Foam::scalarField> Foam::ubRhoThermo::rho(const label patchi) const
 Foam::volScalarField& Foam::ubRhoThermo::rho()
 {
     return rho_;
+}
+
+
+void Foam::ubRhoThermo::correctRho(const volScalarField& dp)
+{
+    uThermo_->correctRho(dp);
+    bThermo_->correctRho(dp);
+    rho_ = 1.0/(b_/uThermo_->rho() + c_/bThermo_->rho());
 }
 
 

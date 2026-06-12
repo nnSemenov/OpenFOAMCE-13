@@ -34,6 +34,9 @@ Description
 #include "Time.H"
 #include "IFstream.H"
 
+#ifdef Log
+#undef Log
+#endif
 // VTK includes
 #include "vtkDataArraySelection.h"
 #include "vtkDataSet.h"

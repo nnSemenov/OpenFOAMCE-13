@@ -20,13 +20,11 @@ if (NOT ${WM_PRECISION_OPTION} STREQUAL "SP")
 endif ()
 
 
-
 target_link_libraries(OpenFOAM PRIVATE
     OSspecific
+    wmakeParse::wmakeParse
     Pstream_best
     ZLIB::ZLIB
-
-    wmakeParse::wmakeParse
 )
 
 target_compile_definitions(OpenFOAM PRIVATE
@@ -34,8 +32,15 @@ target_compile_definitions(OpenFOAM PRIVATE
     WM_OPTIONS=${WM_OPTIONS}
 )
 
+if (${LINUX})
+    target_link_options(OpenFOAM PRIVATE
+        "-Wl,--no-allow-shlib-undefined"
+    )
+endif ()
+
 target_include_directories(OpenFOAM PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/lnInclude
 )
+
 
 set(FOAM_regular_libraries "${FOAM_regular_libraries};OpenFOAM" PARENT_SCOPE)

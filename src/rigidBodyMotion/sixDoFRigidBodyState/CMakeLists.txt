@@ -19,10 +19,11 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM_Defines
     OpenFOAM
     OSspecific
+)
 
-    finiteVolume 
-    motionSolvers 
-    motionSolver_fvMeshMover 
+target_link_libraries(${target_name} PUBLIC
+    finiteVolume
+    pointMeshMovers
     sixDoFRigidBodyMotion
 )
 

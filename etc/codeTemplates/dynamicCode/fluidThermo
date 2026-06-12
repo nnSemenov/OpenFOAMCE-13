@@ -73,8 +73,9 @@ equationOfState
     icoTabulated
     incompressiblePerfectGas
     linear
-    PengRobinsonGas
-    RedlichKwongGas
+    PengRobinson
+    RedlichKwong
+    PatelTejaValderrama
     perfectFluid
     perfectGas
     rhoConst

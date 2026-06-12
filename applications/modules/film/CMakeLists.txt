@@ -14,12 +14,12 @@ target_include_directories(${target_name} PUBLIC
 )
 
 target_include_directories(${target_name} PRIVATE
-    ${LIB_SRC}/physicalProperties/lnInclude
+    #    ${LIB_SRC}/physicalProperties/lnInclude
     ${LIB_SRC}/thermophysicalModels/basic/lnInclude
     ${LIB_SRC}/ThermophysicalTransportModels/thermophysicalTransportModel/lnInclude
     ${LIB_SRC}/ThermophysicalTransportModels/fluid/lnInclude
 
-    ${FOAM_MODULES}/isothermalFilm/filmCompressibleMomentumTransportModels/lnInclude
+    #    ${FOAM_MODULES}/isothermalFilm/filmCompressibleMomentumTransportModels/lnInclude
 )
 
 target_link_libraries(${target_name} PRIVATE
@@ -27,6 +27,9 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM
     OSspecific
 
+)
+
+target_link_libraries(${target_name} PUBLIC
     isothermalFilmSolver
 
     fluidThermophysicalTransportModel
@@ -35,11 +38,11 @@ target_link_libraries(${target_name} PRIVATE
     coupledThermophysicalTransportModels
     momentumTransportModels
     compressibleMomentumTransportModels
-    finiteVolume
-    meshTools
-    sampling
-    fvModels
-    fvConstraints
+    #    finiteVolume
+    #    meshTools
+    #    sampling
+    #    fvModels
+    #    fvConstraints
 )
 
 target_compile_definitions(${target_name} PRIVATE

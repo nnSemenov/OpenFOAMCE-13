@@ -17,8 +17,8 @@ target_include_directories(${target_name} PUBLIC
 )
 
 target_include_directories(${target_name} PRIVATE
-    ${FOAM_MODULES}/VoFSolver/lnInclude
-    ${FOAM_MODULES}/basicFluidSolver/lnInclude
+    #    ${FOAM_MODULES}/VoFSolver/lnInclude
+    #    ${FOAM_MODULES}/basicFluidSolver/lnInclude
 
     ${LIB_SRC}/twoPhaseModels/twoPhaseMixture/lnInclude
 )
@@ -27,24 +27,26 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM_Defines
     OpenFOAM
     OSspecific
+)
 
+target_link_libraries(${target_name} PUBLIC
     twoPhaseSolver
 
     incompressibleDriftFluxViscosityModel
     incompressibleDriftFluxRelativeVelocityModels
     incompressibleDriftFluxPackingDispersionModels
-    physicalProperties
-    interfaceCompression
+    #    physicalProperties
+    #    interfaceCompression
     incompressibleTwoPhases
     twoPhaseProperties
-    interfaceProperties
+    #    interfaceProperties
     momentumTransportModels
     compressibleMomentumTransportModels
-    finiteVolume
-    meshTools
-    fvModels
-    fvConstraints
-    sampling
+    #    finiteVolume
+    #    meshTools
+    #    fvModels
+    #    fvConstraints
+    #    sampling
 )
 
 target_compile_definitions(${target_name} PRIVATE

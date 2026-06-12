@@ -59,7 +59,7 @@ SourceFiles
 #define interpolator_fvMeshMover_H
 
 #include "fvMeshMover.H"
-#include "dynamicMeshPointInterpolator.H"
+#include "interpolator_pointMeshMover.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -78,17 +78,12 @@ class interpolator
 {
     // Private Data
 
-        dynamicMeshPointInterpolator pointInterpolator_;
+        pointMeshMovers::interpolator pointInterpolator_;
 
         const Switch displacement_;
 
         //- Starting points
         autoPtr<pointVectorField> points0_;
-
-        //- Optional list of vectorFields to update for mesh motion
-        //  For modern solvers using Uf and correctPhi to update the flux
-        //  after motion it is not necessary to specify a "velocityFields" list
-        velocityMotionCorrection velocityMotionCorrection_;
 
 
 public:

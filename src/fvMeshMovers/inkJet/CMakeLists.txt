@@ -14,8 +14,10 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM_Defines
     OpenFOAM
     OSspecific
+)
 
-    motionSolvers
+target_link_libraries(${target_name} PUBLIC
+    pointMeshMovers
     finiteVolume
     meshTools
     fvMeshStitchers

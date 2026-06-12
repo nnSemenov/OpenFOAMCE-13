@@ -16,18 +16,19 @@ FoamFile
 
 mover
 {
-    type            motionSolver;
+    type            solidBody;
 
-    libs            ("libfvMotionSolvers.so");
-
-    motionSolver    solidBody;
+    libs            ("libpointMeshMovers.so");
 
     cellZone        inletChannel;
 
-    solidBodyMotionFunction  oscillatingLinearMotion;
+    solidBodyMotionFunction
+    {
+        type            oscillatingLinearMotion;
 
-    amplitude       (0 0.5 0);
-    omega           3.14; // rad/s  (.5 rps)
+        amplitude       (0 0.5 0);
+        omega           3.14; // rad/s  (.5 rps)
+    }
 }
 
 

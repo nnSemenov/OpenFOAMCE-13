@@ -36,7 +36,6 @@ target_compile_definitions(${target_name} PRIVATE
     LIB_NAME=lib${target_name}.so
 )
 
-message(WARNING "TODO: Install vtkPVblockMesh to correct destination")
-set(FOAM_special_libraries "${FOAM_special_libraries};${target_name}" PARENT_SCOPE)
+set(FOAM_regular_libraries "${FOAM_regular_libraries};${target_name}" PARENT_SCOPE)
 
 

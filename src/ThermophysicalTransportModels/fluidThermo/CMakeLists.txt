@@ -21,14 +21,16 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM_Defines
     OpenFOAM
     OSspecific
+)
 
-    fluidThermophysicalTransportModel 
-    fluidThermophysicalModels 
-    solidThermo 
-    momentumTransportModels 
-    specie 
-    finiteVolume 
-    meshTools
+target_link_libraries(${target_name} PUBLIC
+    fluidThermophysicalTransportModel
+    fluidThermophysicalModels
+    solidThermo
+    momentumTransportModels
+#    specie
+#    finiteVolume
+#    meshTools
 )
 
 target_compile_definitions(${target_name} PRIVATE

@@ -31,6 +31,9 @@ License
 #include "faceSet.H"
 #include "pointSet.H"
 
+#ifdef Log
+#undef Log
+#endif
 // VTK includes
 #include "vtkPoints.h"
 #include "vtkPolyData.h"

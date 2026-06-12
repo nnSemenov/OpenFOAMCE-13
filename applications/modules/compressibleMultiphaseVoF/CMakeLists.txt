@@ -19,30 +19,31 @@ target_include_directories(${target_name} PUBLIC
 )
 
 target_include_directories(${target_name} PRIVATE
-    ${FOAM_MODULES}/VoFSolver/lnInclude
-    ${FOAM_MODULES}/basicFluidSolver/lnInclude
-
+    #    ${FOAM_MODULES}/VoFSolver/lnInclude
+    #    ${FOAM_MODULES}/basicFluidSolver/lnInclude
 )
 
 target_link_libraries(${target_name} PRIVATE
     OpenFOAM_Defines
     OpenFOAM
     OSspecific
+)
 
+target_link_libraries(${target_name} PUBLIC
     multiphaseVoFSolver
 
-    physicalProperties
-    multiphaseProperties
+    #    physicalProperties
+    #    multiphaseProperties
     fluidThermophysicalModels
-    interfaceCompression
-    momentumTransportModels
+    #    interfaceCompression
+    #    momentumTransportModels
     compressibleMomentumTransportModels
     phaseIncompressibleMomentumTransportModels
-    finiteVolume
-    meshTools
-    fvModels
-    fvConstraints
-    sampling
+    #    finiteVolume
+    #    meshTools
+    #    fvModels
+    #    fvConstraints
+    #    sampling
 )
 
 target_compile_definitions(${target_name} PRIVATE

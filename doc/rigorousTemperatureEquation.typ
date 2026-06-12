@@ -59,7 +59,7 @@ $
   / ( 3V^2 -2 (R T)/p V + a/(p sqrt(T)) - (b R T)/p - b^2 )
 $
 
-== PengRobinsonGas
+== PengRobinson
 Similar to Redlich-Kwong EOS, derivative can be calculated from its polynomial form
 $
   V^3 + V^2(b-(R T)/p) + V dot (a/p -2 (b R T)/p -3b^2) + b dot ((b R T)/p +b^2 -a/p) =0 \

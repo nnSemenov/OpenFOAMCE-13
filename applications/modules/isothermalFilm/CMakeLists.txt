@@ -42,7 +42,7 @@ target_include_directories(${target_name} PUBLIC
 )
 
 target_include_directories(${target_name} PRIVATE
-    ${LIB_SRC}/physicalProperties/lnInclude
+    #    ${LIB_SRC}/physicalProperties/lnInclude
     ${LIB_SRC}/thermophysicalModels/basic/lnInclude
     ${LIB_SRC}/MomentumTransportModels/momentumTransportModels/lnInclude
     # ${LIB_SRC}/MomentumTransportModels/compressible/lnInclude
@@ -54,6 +54,11 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM
     OSspecific
 
+)
+
+target_link_libraries(${target_name} PUBLIC
+
+    physicalProperties
     fluidThermophysicalModels
     momentumTransportModels
     compressibleMomentumTransportModels

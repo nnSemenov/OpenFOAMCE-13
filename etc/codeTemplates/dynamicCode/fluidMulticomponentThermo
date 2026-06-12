@@ -84,8 +84,8 @@ equationOfState
     icoTabulated
     incompressiblePerfectGas
     linear
-    PengRobinsonGas
-    RedlichKwongGas
+    PengRobinson
+    RedlichKwong
     perfectFluid
     perfectGas
     rhoConst

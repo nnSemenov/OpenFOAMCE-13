@@ -87,4 +87,4 @@ else()
     )
 endif()
 
-set(FOAM_special_libraries "${FOAM_special_libraries};libPVFoamReader_SM" PARENT_SCOPE)
+set(FOAM_regular_libraries "${FOAM_regular_libraries};${TARGET_NAME}" PARENT_SCOPE)

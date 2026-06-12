@@ -2,30 +2,10 @@ lnInclude(${CMAKE_CURRENT_SOURCE_DIR})
 
 set(target_name LagrangianThermo)
 
+wmake_parse_files(${CMAKE_CURRENT_SOURCE_DIR}/Make/files sources_from_wmake)
+
 add_library(${target_name} SHARED
-    basicLagrangianThermo/basicLagrangianThermo.C
-    basicLagrangianThermo/BasicLagrangianThermoName.C
-
-    pureLagrangianThermo/pureLagrangianThermo.C
-
-    solidLagrangianThermo/solidLagrangianThermo.C
-    solidLagrangianThermo/solidLagrangianThermos.C
-
-    fluidLagrangianThermo/fluidLagrangianThermo.C
-    fluidLagrangianThermo/fluidLagrangianThermos.C
-
-    multicomponentLagrangianThermo/multicomponentLagrangianThermo.C
-
-    fluidMulticomponentLagrangianThermo/fluidMulticomponentLagrangianThermo.C
-    fluidMulticomponentLagrangianThermo/fluidMulticomponentLagrangianThermos.C
-
-    fields/derivedLagrangianFieldSources/density/densityLagrangianScalarFieldSource.C
-    fields/derivedLagrangianFieldSources/energy/energyLagrangianScalarFieldSource.C
-    fields/derivedLagrangianFieldSources/specificHeatCapacity/specificHeatCapacityLagrangianScalarFieldSource.C
-    fields/derivedLagrangianFieldSources/thermalConductivity/thermalConductivityLagrangianScalarFieldSource.C
-    fields/derivedLagrangianFieldSources/pressure/pressureLagrangianScalarFieldSource.C
-    fields/derivedLagrangianFieldSources/dynamicViscosity/dynamicViscosityLagrangianScalarFieldSource.C
-    fields/derivedLagrangianFieldSources/compressibility/compressibilityLagrangianScalarFieldSource.C
+    ${sources_from_wmake}
 )
 
 target_include_directories(${target_name} PUBLIC
@@ -41,10 +21,14 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM
     OSspecific
 
+)
+
+target_link_libraries(${target_name} PUBLIC
     physicalProperties
     specie
     fluidThermophysicalModels
     solidThermo
+    thermophysicalProperties
     finiteVolume
     meshTools
     Lagrangian

@@ -2,25 +2,10 @@ lnInclude(${CMAKE_CURRENT_SOURCE_DIR})
 
 set(target_name utilityFunctionObjects)
 
+wmake_parse_files(${CMAKE_CURRENT_SOURCE_DIR}/Make/files sources_from_wmake)
+
 add_library(${target_name} SHARED
-    codedFunctionObject/codedFunctionObject.C
-    residuals/residuals.C
-    timeActivatedFileUpdate/timeActivatedFileUpdate.C
-    timeStep/timeStepFunctionObject.C
-    userTimeStep/userTimeStepFunctionObject.C
-    setTimeStep/setTimeStepFunctionObject.C
-    setWriteInterval/setWriteIntervalFunctionObject.C
-    systemCall/systemCall.C
-    stopAt/stopAt.C
-    stopAt/stopAtFile/stopAtFile.C
-    stopAt/stopAtClockTime/stopAtClockTime.C
-    stopAt/stopAtTimeStep/stopAtTimeStep.C
-    removeObjects/removeObjects.C
-    writeDictionary/writeDictionary.C
-    writeObjects/writeObjects.C
-    writeMesh/writeMesh.C
-    time/timeFunctionObject.C
-    checkMesh/checkMesh.C
+    ${sources_from_wmake}
 )
 
 target_include_directories(${target_name} PUBLIC
@@ -35,7 +20,9 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM_Defines
     OpenFOAM
     OSspecific
+)
 
+target_link_libraries(${target_name} PUBLIC
     finiteVolume
     meshCheck
     sampling

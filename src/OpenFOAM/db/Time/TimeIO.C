@@ -176,19 +176,20 @@ void Foam::Time::readDict()
             controlDict_.lookup("writeCompression")
         );
 
-        if
-        (
-            writeFormat_ == IOstream::BINARY
-         && writeCompression_ == IOstream::COMPRESSED
-        )
-        {
-            IOWarningInFunction(controlDict_)
-                << "Selecting compressed binary is inefficient and ineffective"
-                   ", resetting to uncompressed binary"
-                << endl;
-
-            writeCompression_ = IOstream::UNCOMPRESSED;
-        }
+        //        if
+        //        (
+        //            writeFormat_ == IOstream::BINARY
+        //         && writeCompression_ == IOstream::COMPRESSED
+        //        )
+        //        {
+        //            IOWarningInFunction(controlDict_)
+        //                << "Selecting compressed binary is inefficient and
+        //                ineffective"
+        //                   ", resetting to uncompressed binary"
+        //                << endl;
+        //
+        //            writeCompression_ = IOstream::UNCOMPRESSED;
+        //        }
     }
 
     controlDict_.readIfPresent("runTimeModifiable", runTimeModifiable_);

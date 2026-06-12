@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2021-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2021-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -76,33 +76,6 @@ public:
         );
 
 
-    //- Helper class to update the velocity boundary conditions
-    //  following mesh motion
-    class velocityMotionCorrection
-    {
-        // Private Data
-
-            const fvMesh& mesh_;
-
-            wordList velocityFields_;
-
-    public:
-
-        // Constructors
-
-            velocityMotionCorrection
-            (
-                const fvMesh& mesh,
-                const dictionary& dict
-            );
-
-
-        // Member Functions
-
-            void update() const;
-    };
-
-
     // Constructors
 
         //- Construct from fvMesh
@@ -147,8 +120,8 @@ public:
 
         //- Is the motion solid body? I.e., are the volumes and area magnitudes
         //  unchanged? Defaults to false. Set to true by fvMeshMovers::none and
-        //  delegated to the motion solver by fvMeshMovers::motionSolver.
-        virtual bool solidBody() const
+        //  delegated to the motion solver by fvMeshMovers::pointMeshMover.
+        virtual bool solidBodyMotion() const
         {
             return false;
         }

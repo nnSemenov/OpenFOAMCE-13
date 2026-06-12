@@ -20,13 +20,16 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM
     OSspecific
 
-    momentumTransportModels 
-    incompressibleMomentumTransportModels 
-    physicalProperties 
-    finiteVolume 
-    fvModels 
-    fvConstraints 
-    sampling 
+)
+
+target_link_libraries(${target_name} PUBLIC
+    momentumTransportModels
+    incompressibleMomentumTransportModels
+    physicalProperties
+    finiteVolume
+    fvModels
+    fvConstraints
+    sampling
     meshTools
 )
 

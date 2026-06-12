@@ -17,7 +17,7 @@ target_include_directories(${target_name} PUBLIC
 
 target_include_directories(${target_name} PRIVATE
 
-    ${LIB_SRC}/physicalProperties/lnInclude
+    #    ${LIB_SRC}/physicalProperties/lnInclude
     ${LIB_SRC}/thermophysicalModels/basic/lnInclude
     ${LIB_SRC}/ThermophysicalTransportModels/thermophysicalTransportModel/lnInclude
 
@@ -28,18 +28,21 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM
     OSspecific
 
+)
+
+target_link_libraries(${target_name} PUBLIC
     solidSolver
 
     solidThermo
     solidDisplacementThermo
-    solidThermophysicalTransportModels
-    coupledThermophysicalTransportModels
-    specie
-    finiteVolume
-    meshTools
-    sampling
-    fvModels
-    fvConstraints
+    #    solidThermophysicalTransportModels
+    #    coupledThermophysicalTransportModels
+    #    specie
+    #    finiteVolume
+    #    meshTools
+    #    sampling
+    #    fvModels
+    #    fvConstraints
 )
 
 target_compile_definitions(${target_name} PRIVATE

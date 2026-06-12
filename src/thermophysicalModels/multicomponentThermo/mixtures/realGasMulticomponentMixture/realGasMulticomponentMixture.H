@@ -1,16 +1,17 @@
 /*
 License
-    This file is part of Mikeno.
+    This file is part of Mikeno. Mikeno (https://github.com/nnSemenov/Mikeno) is
+    a fork of OpenFOAM (https://github.com/OpenFOAM/OpenFOAM-dev).
 
-    Mikeno is free software: you can redistribute it and/or modify it
-    under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+    Mikeno is free software: you can redistribute it and/or modify it  under the
+    terms of the GNU General Public License as published by the Free Software
+    Foundation, either version 3 of the License, or (at your option) any later
+    version.
 
-    Mikeno is distributed in the hope that it will be useful, but WITHOUT
-    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-    for more details.
+    Mikeno is distributed in the hope that it will be useful, but WITHOUT ANY
+    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+    FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+    details.
 
     You should have received a copy of the GNU General Public License
     along with Mikeno.  If not, see <http://www.gnu.org/licenses/>.
@@ -21,8 +22,8 @@ Class
 Description
     Thermophysical properties mixing class for real gas mixtures.
     Mixed equation of state are used for density, enthalpy, specific heat, etc.
-    Thermophysical properties are calculated in rigorous way considering residual properties.
-    Currently only cubic EOSs are supported.
+    Thermophysical properties are calculated in rigorous way considering
+    residual properties. Currently only cubic EOSs are supported.
 
     Mole-weighed are used for kappa and mu.
     TODO: Use better/various mixing rule for transport features.
@@ -38,18 +39,16 @@ SourceFiles
 #include "multicomponentMixture.H"
 #include "FieldListSlice.H"
 
-namespace Foam {
+namespace Foam
+{
 
 // forward declaration
 struct cubicEOSRawCoefficient;
 
-template<class ThermoType>
-class realGasMulticomponentMixture
-        :
-                public multicomponentMixture<ThermoType>
+template <class ThermoType>
+class realGasMulticomponentMixture : public multicomponentMixture<ThermoType>
 {
-public:
-
+  public:
     // Public Classes
 
     //- Mixing type for thermodynamic properties
@@ -58,7 +57,7 @@ public:
         // Private Data
 
         //- List of specie thermo
-        const PtrList<ThermoType>& specieThermos_;
+        const PtrList<ThermoType> &specieThermos_;
 
         //- List of mass fractions
         mutable List<scalar> Y_;
@@ -68,46 +67,37 @@ public:
         autoPtr<typename ThermoType::EOSMixer> mixer_;
 
         //- Calculate a mass-fraction-weighted property
-        template<class Method, class ... Args>
-        scalar massWeighted
-                (
-                        Method psiMethod,
-                        const Args& ... args
-                ) const;
+        template <class Method, class... Args>
+        scalar massWeighted(Method psiMethod, const Args &...args) const;
 
         //- Calculate a harmonic mass-fraction-weighted property
-        template<class Method, class ... Args>
-        scalar harmonicMassWeighted
-                (
-                        Method psiMethod,
-                        const Args& ... args
-                ) const;
+        template <class Method, class... Args>
+        scalar harmonicMassWeighted(Method psiMethod,
+                                    const Args &...args) const;
 
         //- Limit the given temperature
         scalar limit(const scalar T) const;
 
-    protected:
+      protected:
         // cubicEOS properties
-//        cubicEOSRawCoefficient cubicEOSCoeffOfSpecie(scalar p, scalar T, label idx)const;
-//
-//        cubicEOSRawCoefficient mixedRawCoeff(scalar p, scalar T) const;
+        //        cubicEOSRawCoefficient cubicEOSCoeffOfSpecie(scalar p, scalar
+        //        T, label idx)const;
+        //
+        //        cubicEOSRawCoefficient mixedRawCoeff(scalar p, scalar T)
+        //        const;
 
         auto mixedCore(scalar p, scalar T) const;
-    public:
-        friend class realGasMulticomponentMixture;
 
+      public:
+        friend class realGasMulticomponentMixture;
 
         // Constructors
 
         //- Construct from list of specie thermo
-        thermoMixtureType(const PtrList<ThermoType>& specieThermos)
-                :
-                specieThermos_(specieThermos),
-                Y_(specieThermos.size()),
-                X_(specieThermos.size()),
-                mixer_{nullptr}
+        thermoMixtureType(const PtrList<ThermoType> &specieThermos)
+            : specieThermos_(specieThermos), Y_(specieThermos.size()),
+              X_(specieThermos.size()), mixer_{nullptr}
         {}
-
 
         // Fundamental properties
 
@@ -119,6 +109,9 @@ public:
 
         //- Return compressibility [s^2/m^2]
         scalar psi(scalar p, scalar T) const;
+
+        //- Return volumetric coefficient of thermal expansion [1/T]
+        scalar alphav(const scalar p, const scalar T) const;
 
         // Heat capacity at constant pressure [J/kg/K]
         scalar Cp(const scalar p, const scalar T) const;
@@ -141,7 +134,6 @@ public:
         // Absolute internal energy [J/kg]
         scalar ea(const scalar p, const scalar T) const;
 
-
         // Mass specific derived properties
 
         //- Heat capacity at constant pressure/volume [J/kg/K]
@@ -153,26 +145,21 @@ public:
         //- Enthalpy/Internal energy [J/kg]
         scalar he(const scalar p, const scalar T) const;
 
-
         //- Return isothermal enthalpy-pressure derivative [m^3/kg]
         scalar dhdp_T(const scalar p, const scalar T) const;
 
         //- Return isothermal internal energy-pressure derivative [m^3/kg]
         scalar dedp_T(const scalar p, const scalar T) const;
 
-        //- Return isothermal enthalpy/internal-energy pressure derivative [m^3/kg]
+        //- Return isothermal enthalpy/internal-energy pressure derivative
+        //[m^3/kg]
         scalar dhedp_T(const scalar p, const scalar T) const;
 
         // Energy->temperature  inversion functions
 
         //- Temperature from enthalpy or internal energy
         //  given an initial temperature T0
-        scalar The
-                (
-                        const scalar he,
-                        const scalar p,
-                        const scalar T0
-                ) const;
+        scalar The(const scalar he, const scalar p, const scalar T0) const;
     };
 
     //- Mixing type for transport properties
@@ -181,34 +168,24 @@ public:
         // Private Data
 
         //- List of specie thermo
-        const PtrList<ThermoType>& specieThermos_;
+        const PtrList<ThermoType> &specieThermos_;
 
         //- List of mole fractions
         mutable List<scalar> X_;
 
         //- Calculate a mole-fraction-weighted property
-        template<class Method, class ... Args>
-        scalar moleWeighted
-                (
-                        Method psiMethod,
-                        const Args& ... args
-                ) const;
+        template <class Method, class... Args>
+        scalar moleWeighted(Method psiMethod, const Args &...args) const;
 
-
-    public:
-
+      public:
         friend class realGasMulticomponentMixture;
-
 
         // Constructors
 
         //- Construct from list of specie thermo
-        transportMixtureType(const PtrList<ThermoType>& specieThermos)
-                :
-                specieThermos_(specieThermos),
-                X_(specieThermos.size())
+        transportMixtureType(const PtrList<ThermoType> &specieThermos)
+            : specieThermos_(specieThermos), X_(specieThermos.size())
         {}
-
 
         // Transport properties
 
@@ -219,9 +196,7 @@ public:
         scalar kappa(const scalar p, const scalar T) const;
     };
 
-
-private:
-
+  private:
     // Private Data
 
     //- Mutable storage for the cell/face mixture thermo data
@@ -230,25 +205,18 @@ private:
     //- Mutable storage for the cell/face mixture transport data
     mutable transportMixtureType transportMixture_;
 
-
-public:
-
+  public:
     // Constructors
 
     //- Construct from a dictionary
-    realGasMulticomponentMixture(const dictionary&);
+    realGasMulticomponentMixture(const dictionary &);
 
     //- Disallow default bitwise copy construction
-    realGasMulticomponentMixture
-            (
-                    const realGasMulticomponentMixture<ThermoType>&
-            ) = delete;
-
+    realGasMulticomponentMixture(
+        const realGasMulticomponentMixture<ThermoType> &) = delete;
 
     //- Destructor
-    virtual ~realGasMulticomponentMixture()
-    {}
-
+    virtual ~realGasMulticomponentMixture() {}
 
     // Member Functions
 
@@ -259,25 +227,16 @@ public:
     }
 
     //- Return the mixture for thermodynamic properties
-    const thermoMixtureType& thermoMixture
-            (
-                    const scalarFieldListSlice&
-            ) const;
+    const thermoMixtureType &thermoMixture(const scalarFieldListSlice &) const;
 
     //- Return the mixture for transport properties
-    const transportMixtureType& transportMixture
-            (
-                    const scalarFieldListSlice&
-            ) const;
+    const transportMixtureType &transportMixture(
+        const scalarFieldListSlice &) const;
 
     //- Return the mixture for transport properties
-    const transportMixtureType& transportMixture
-            (
-                    const scalarFieldListSlice&,
-                    const thermoMixtureType&
-            ) const;
+    const transportMixtureType &transportMixture(
+        const scalarFieldListSlice &, const thermoMixtureType &) const;
 };
-
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -289,5 +248,4 @@ public:
 #include "realGasMulticomponentMixture.C"
 #endif
 
-
-#endif //realGasMulticomponentMixture_H
+#endif // realGasMulticomponentMixture_H

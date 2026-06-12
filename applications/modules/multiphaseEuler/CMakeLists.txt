@@ -25,9 +25,9 @@ target_include_directories(${target_name} PUBLIC
 )
 
 target_include_directories(${target_name} PRIVATE
-    ${LIB_SRC}/meshTools/lnInclude
-    ${LIB_SRC}/finiteVolume/lnInclude
-    ${LIB_SRC}/sampling/lnInclude
+    #    ${LIB_SRC}/meshTools/lnInclude
+    #    ${LIB_SRC}/finiteVolume/lnInclude
+    #    ${LIB_SRC}/sampling/lnInclude
     #${LIB_SRC}/physicalProperties/lnInclude
     #${LIB_SRC}/thermophysicalModels/basic/lnInclude
     ${LIB_SRC}/twoPhaseModels/twoPhaseMixture/lnInclude
@@ -41,19 +41,21 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM_Defines
     OpenFOAM
     OSspecific
+)
 
+target_link_libraries(${target_name} PUBLIC
     basicFluidSolver
 
     phaseSystem
     populationBalance
-    physicalProperties
+    #    physicalProperties
     fluidThermophysicalModels
     fluidThermophysicalTransportModel
     multiphaseEulerMomentumTransportModels
     multiphaseEulerThermophysicalTransportModels
     multiphaseEulerReactions
-    fvModels
-    fvConstraints
+    #    fvModels
+    #    fvConstraints
 )
 
 target_compile_definitions(${target_name} PRIVATE

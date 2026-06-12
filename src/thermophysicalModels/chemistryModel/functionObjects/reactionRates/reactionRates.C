@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2024-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2024-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,7 +24,7 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "reactionRates.H"
-#include "basicChemistryModel.H"
+#include "chemistryModel.H"
 #include "fvcVolumeIntegrate.H"
 #include "polyTopoChangeMap.H"
 #include "polyMeshMap.H"
@@ -53,13 +53,13 @@ namespace functionObjects
 
 void Foam::functionObjects::reactionRates::writeFileHeader(const label i)
 {
-    const basicChemistryModel& chemistryModel =
-        mesh().lookupObject<basicChemistryModel>
+    const chemistryModel& chemistry =
+        mesh().lookupObject<chemistryModel>
         (
             IOobject::groupName("chemistryProperties", phaseName_)
         );
 
-    const label nReaction = chemistryModel.nReaction();
+    const label nReaction = chemistry.nReaction();
 
     writeHeader(file(), "Reaction rates");
 
@@ -70,7 +70,7 @@ void Foam::functionObjects::reactionRates::writeFileHeader(const label i)
 
     for (label reactioni = 0; reactioni < nReaction; ++ reactioni)
     {
-        writeTabbed(file(), chemistryModel.reactionName(reactioni));
+        writeTabbed(file(), chemistry.reactionName(reactioni));
     }
 
     file() << endl;
@@ -124,15 +124,17 @@ bool Foam::functionObjects::reactionRates::execute()
 
 bool Foam::functionObjects::reactionRates::write()
 {
+    zone_.regenerate();
+
     logFiles::write();
 
-    const basicChemistryModel& chemistryModel =
-        mesh().lookupObject<basicChemistryModel>
+    const chemistryModel& chemistry =
+        mesh().lookupObject<chemistryModel>
         (
             IOobject::groupName("chemistryProperties", phaseName_)
         );
 
-    const label nReaction = chemistryModel.nReaction();
+    const label nReaction = chemistry.nReaction();
 
     if (Pstream::master())
     {
@@ -143,7 +145,7 @@ bool Foam::functionObjects::reactionRates::write()
     {
         const volScalarField::Internal RR
         (
-            chemistryModel.reactionRR(reactioni)
+            chemistry.reactionRR(reactioni)
         );
 
         // Compute the average rate and write it into the log file

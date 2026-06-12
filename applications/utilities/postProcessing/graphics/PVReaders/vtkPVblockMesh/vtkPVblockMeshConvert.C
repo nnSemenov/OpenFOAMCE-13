@@ -23,14 +23,6 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "vtkPVblockMesh.H"
-#include "vtkPVblockMeshReader.h"
-#include "vtkOpenFOAMPoints.H"
-
-// OpenFOAM includes
-#include "blockMesh.H"
-#include "Time.H"
-
 // VTK includes
 #include "vtkCellArray.h"
 #include "vtkDataArraySelection.h"
@@ -39,6 +31,13 @@ License
 #include "vtkPolyData.h"
 #include "vtkUnstructuredGrid.h"
 
+#include "vtkPVblockMesh.H"
+#include "vtkPVblockMeshReader.h"
+#include "vtkOpenFOAMPoints.H"
+
+// OpenFOAM includes
+#include "blockMesh.H"
+#include "Time.H"
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 void Foam::vtkPVblockMesh::convertMeshBlocks

@@ -1,10 +1,10 @@
 add_subdirectory(rigidBodyDynamics)
-add_subdirectory(rigidBodyMeshMotion)
+add_subdirectory(rigidBodyMotion_pointMeshMovers)
 add_subdirectory(rigidBodyState)
 add_subdirectory(rigidBodyForces)
 
 add_subdirectory(sixDoFRigidBodyMotion)
-add_subdirectory(sixDoFRigidBodyMeshMotion)
+add_subdirectory(sixDoFRigidBodyMotion_pointMeshMovers)
 add_subdirectory(sixDoFRigidBodyState)
 
 set(FOAM_regular_libraries ${FOAM_regular_libraries} PARENT_SCOPE)

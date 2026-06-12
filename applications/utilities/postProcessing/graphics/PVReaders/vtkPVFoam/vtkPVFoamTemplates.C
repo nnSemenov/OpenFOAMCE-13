@@ -23,6 +23,19 @@ License
 
 \*---------------------------------------------------------------------------*/
 
+#ifdef Log
+#undef Log
+#endif
+// VTK includes
+#include "vtkCellArray.h"
+#include "vtkPoints.h"
+#include "vtkPolyData.h"
+
+//- Restore Log macro
+#define Log                                                                    \
+    if (log)                                                                   \
+    Info
+
 #include "vtkPVFoam.H"
 #include "vtkOpenFOAMPoints.H"
 
@@ -30,10 +43,6 @@ License
 #include "polyPatch.H"
 #include "primitivePatch.H"
 
-// VTK includes
-#include "vtkCellArray.h"
-#include "vtkPoints.h"
-#include "vtkPolyData.h"
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 

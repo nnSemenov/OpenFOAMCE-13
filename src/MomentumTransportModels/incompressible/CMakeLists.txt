@@ -22,12 +22,15 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM_Defines
     OpenFOAM
     OSspecific
-    
-    physicalProperties 
-    momentumTransportModels 
-    finiteVolume 
-    meshTools 
-    Pstream_best
+
+)
+
+target_link_libraries(${target_name} PUBLIC
+    physicalProperties
+    momentumTransportModels
+#    finiteVolume
+#    meshTools
+#    Pstream_best
 )
 
 target_compile_definitions(${target_name} PRIVATE

@@ -31,6 +31,8 @@ add_library(fluidThermophysicalModels SHARED
     derivedFvFieldSources/energy/energyCalculatedTemperatureFvScalarFieldSource.C
     derivedFvFieldSources/uniformFixedEnergyTemperature/uniformFixedEnergyTemperatureFvScalarFieldSource.C
     derivedFvFieldSources/uniformInletOutletEnergyTemperature/uniformInletOutletEnergyTemperatureFvScalarFieldSource.C
+
+    basicThermo/fieldDelegate.h
 )
 target_include_directories(fluidThermophysicalModels PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/lnInclude"
@@ -41,6 +43,10 @@ target_link_libraries(fluidThermophysicalModels PRIVATE
     OpenFOAM
     OSspecific
 
+)
+
+
+target_link_libraries(fluidThermophysicalModels PUBLIC
     physicalProperties
     specie
     thermophysicalProperties

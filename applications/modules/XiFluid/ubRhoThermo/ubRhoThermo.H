@@ -53,9 +53,6 @@ class ubRhoThermo
 {
     // Private Data
 
-        const word unburntPhaseName_;
-        const word burntPhaseName_;
-
         volScalarField b_;
         volScalarField c_;
 
@@ -82,6 +79,9 @@ public:
 
     //- Runtime type information
     TypeName("ubRhoThermo");
+
+    static const word unburntPhaseName;
+    static const word burntPhaseName;
 
 
     // Constructors
@@ -282,6 +282,10 @@ public:
 
             //- Return non-const access to the local density field [kg/m^3]
             virtual volScalarField& rho();
+
+            //- Update the density corresponding to the given pressure change
+            //  Used to update the density field following pressure solution
+            virtual void correctRho(const volScalarField& dp);
 
             //- Enthalpy/Internal energy
             //  for given pressure and temperature [J/kg]

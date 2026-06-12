@@ -70,11 +70,11 @@ target_include_directories(${target_name} PUBLIC
 )
 
 target_include_directories(${target_name} PRIVATE
-    ${FOAM_MODULES}/basicFluidSolver/lnInclude
-    ${LIB_SRC}/meshTools/lnInclude
-    ${LIB_SRC}/finiteVolume/lnInclude
-    ${LIB_SRC}/sampling/lnInclude
-    ${LIB_SRC}/physicalProperties/lnInclude
+    #    ${FOAM_MODULES}/basicFluidSolver/lnInclude
+    #    ${LIB_SRC}/meshTools/lnInclude
+    #    ${LIB_SRC}/finiteVolume/lnInclude
+    #    ${LIB_SRC}/sampling/lnInclude
+    #    ${LIB_SRC}/physicalProperties/lnInclude
     ${LIB_SRC}/thermophysicalModels/specie/lnInclude
     ${LIB_SRC}/thermophysicalModels/basic/lnInclude
     ${LIB_SRC}/thermophysicalModels/multicomponentThermo/lnInclude
@@ -95,6 +95,9 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM
     OSspecific
 
+)
+
+target_link_libraries(${target_name} PUBLIC
     multiphaseEulerSolver
 
     fvModels

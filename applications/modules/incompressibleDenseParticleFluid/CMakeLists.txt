@@ -21,20 +21,22 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM_Defines
     OpenFOAM
     OSspecific
+)
 
+target_link_libraries(${target_name} PUBLIC
     basicFluidSolver
 
-    momentumTransportModels
+    #    momentumTransportModels
     incompressibleMomentumTransportModels
     phaseIncompressibleMomentumTransportModels
-    physicalProperties
+    #    physicalProperties
     lagrangian
     lagrangianParcel
-    finiteVolume
-    fvModels
-    fvConstraints
-    sampling
-    meshTools
+    #    finiteVolume
+    #    fvModels
+    #    fvConstraints
+    #    sampling
+    #    meshTools
 )
 
 target_compile_definitions(${target_name} PRIVATE

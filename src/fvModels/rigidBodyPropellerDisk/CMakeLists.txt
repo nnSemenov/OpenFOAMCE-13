@@ -21,11 +21,12 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM_Defines
     OpenFOAM
     OSspecific
+)
 
-    propellerDisk 
-    motionSolvers 
-    motionSolver_fvMeshMover 
-    rigidBodyDynamics 
+target_link_libraries(${target_name} PRIVATE
+    propellerDisk
+    pointMeshMovers
+    rigidBodyDynamics
     rigidBodyMeshMotion
 )
 

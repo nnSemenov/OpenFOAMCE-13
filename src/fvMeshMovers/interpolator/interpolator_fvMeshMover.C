@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2021-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2021-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,9 +24,7 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "interpolator_fvMeshMover.H"
-#include "volFields.H"
-#include "pointFields.H"
-#include "points0MotionSolver.H"
+#include "displacementPoints0.H"
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -55,10 +53,12 @@ Foam::fvMeshMovers::interpolator::interpolator
     points0_
     (
         displacement_
-      ? new pointVectorField(points0MotionSolver::readPoints0(mesh))
+      ? new pointVectorField
+        (
+            pointMeshMovers::displacementPoints0::readPoints0(mesh)
+        )
       : nullptr
-    ),
-    velocityMotionCorrection_(mesh, dict)
+    )
 {}
 
 
@@ -80,8 +80,6 @@ bool Foam::fvMeshMovers::interpolator::update()
     {
         mesh().movePoints(pointInterpolator_.curPointField());
     }
-
-    velocityMotionCorrection_.update();
 
     return true;
 }

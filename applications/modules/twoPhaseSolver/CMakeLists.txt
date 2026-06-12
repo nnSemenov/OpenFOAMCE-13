@@ -22,17 +22,20 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM
     OSspecific
 
+)
+
+target_link_libraries(${target_name} PUBLIC
     VoFSolver
 
-    physicalProperties 
-    interfaceCompression 
-    interfaceProperties 
-    twoPhaseMixture 
-    finiteVolume 
-    meshTools 
-    fvModels 
-    fvConstraints 
-    sampling
+    #    physicalProperties
+    #    interfaceCompression
+    interfaceProperties
+    twoPhaseMixture
+    #    finiteVolume
+    #    meshTools
+    #    fvModels
+    #    fvConstraints
+    #    sampling
 )
 
 target_compile_definitions(${target_name} PRIVATE

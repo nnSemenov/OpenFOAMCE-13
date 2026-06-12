@@ -12,26 +12,28 @@ target_include_directories(${target_name} PUBLIC
 )
 
 target_include_directories(${target_name} PRIVATE
-    ${FOAM_MODULES}/basicFluidSolver/lnInclude
-    ${FOAM_MODULES}/VoFSolver/lnInclude
+    #    ${FOAM_MODULES}/basicFluidSolver/lnInclude
+    #    ${FOAM_MODULES}/VoFSolver/lnInclude
 )
 
 target_link_libraries(${target_name} PRIVATE
     OpenFOAM_Defines
     OpenFOAM
     OSspecific
+)
 
+target_link_libraries(${target_name} PUBLIC
     twoPhaseSolver
 
-    physicalProperties 
-    interfaceCompression 
-    interfaceProperties 
-    twoPhaseMixture 
-    finiteVolume 
-    meshTools 
-    fvModels 
-    fvConstraints 
-    sampling
+    #    physicalProperties
+    #    interfaceCompression
+    #    interfaceProperties
+    #    twoPhaseMixture
+    #    finiteVolume
+    #    meshTools
+    #    fvModels
+    #    fvConstraints
+    #    sampling
 )
 
 target_compile_definitions(${target_name} PRIVATE

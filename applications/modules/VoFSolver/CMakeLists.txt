@@ -22,16 +22,19 @@ target_link_libraries(${target_name} PRIVATE
     OpenFOAM_Defines
     OpenFOAM
     OSspecific
+)
 
+target_link_libraries(${target_name} PUBLIC
     basicFluidSolver
 
-    physicalProperties 
-    interfaceCompression 
-    finiteVolume 
-    meshTools 
-    fvModels 
-    fvConstraints 
-    sampling
+    #    physicalProperties
+    interfaceCompression
+    #    finiteVolume
+    #    meshTools
+    #    fvModels
+    #    fvConstraints
+    #    sampling
+
 )
 
 target_compile_definitions(${target_name} PRIVATE

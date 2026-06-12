@@ -26,6 +26,7 @@ License
 #include "laminar.H"
 #include "fvmSup.H"
 #include "localEulerDdtScheme.H"
+#include "steadyStateDdtScheme.H"
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -70,7 +71,7 @@ Foam::reactionModels::laminar::laminar
         this->coeffs().lookupOrDefault("outerCorrect", false)
     ),
     timeIndex_(-1),
-    chemistryPtr_(basicChemistryModel::New(thermo))
+    chemistryPtr_(chemistryModel::New(thermo))
 {
     if (integrateReactionRate_)
     {
@@ -101,7 +102,6 @@ void Foam::reactionModels::laminar::correct()
     {
         return;
     }
-
     if (integrateReactionRate_)
     {
         if (fv::localEulerDdt::enabled(this->mesh()))
@@ -111,8 +111,16 @@ void Foam::reactionModels::laminar::correct()
 
             chemistryPtr_->solve(min(1/rDeltaT, maxIntegrationTime_)());
         }
-        else
-        {
+        else if (fv::steadyStateDdtScheme<scalar>::enabled(this->mesh())) {
+            WarningInFunction
+                << "steadyState and integrate reaction rate is not compatible. "
+                   "Will produce smooth non-physical result. For steady state, "
+                   "please set integrateReactionRate to false and lower "
+                   "relaxation factor of specie and energy equation. LTS is "
+                   "also a choice.";
+            chemistryPtr_->solve(maxIntegrationTime_);
+        }
+        else {
             const scalar deltaT = this->mesh().time().deltaTValue();
 
             chemistryPtr_->solve(min(deltaT, maxIntegrationTime_));
