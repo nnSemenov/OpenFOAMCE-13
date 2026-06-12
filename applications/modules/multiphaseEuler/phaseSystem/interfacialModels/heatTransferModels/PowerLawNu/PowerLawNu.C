@@ -37,8 +37,8 @@ Foam::heatTransferModels::PowerLawNu::PowerLawNu(
           interface.modelCast<heatTransferModel, dispersedPhaseInterface>()),
       coeff_a_{"a", dimless, dict}, coeff_b_{"b", dimless, dict},
       coeff_c_{"c", dimless, dict},
-      superficial_Re_{dict.lookupOrDefault("superficialRe", false)},
-      residual_Re_{dict.lookupOrDefault("residualRe", 1e-6)}
+      superficial_Re_{dict.lookupOrDefault<bool>("superficialRe", false)},
+      residual_Re_{dict.lookupOrDefault<scalar>("residualRe", 1e-6)}
 {
     if (coeff_a_.value() <= 0) {
         WarningInFunction << "Factor a = " << coeff_a_.value()
