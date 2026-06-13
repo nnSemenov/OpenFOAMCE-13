@@ -57,10 +57,10 @@ template <class getPhaseModelFun>
         alpha_sum += alpha_i;
         inv_diameter_sum += alpha_i / phase.d();
     }
-    inv_diameter_sum = alpha_sum / inv_diameter_sum;
+    volScalarField avg_diameter(alpha_sum / inv_diameter_sum);
     return {
         .alpha = std::move(alpha_sum),
-        .d = std::move(inv_diameter_sum),
+        .d = std::move(avg_diameter),
     };
 }
 
