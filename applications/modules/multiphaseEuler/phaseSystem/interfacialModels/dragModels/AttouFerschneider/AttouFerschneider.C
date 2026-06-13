@@ -27,7 +27,6 @@ License
 #include "phaseSystem.H"
 #include "addToRunTimeSelectionTable.H"
 
-#include <cassert>
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
@@ -64,28 +63,15 @@ Foam::dragModels::AttouFerschneider::solidPhases(const phaseSystem&ps) const {
     return ret;
 }
 
-
-Foam::dragModels::AttouFerschneider::effective_alpha_d
-Foam::dragModels::AttouFerschneider::effective_solid_info(const List<const phaseModel*>&solids) {
-    assert(solids.size()>0);
-    tmp<volScalarField> alphaSum=max(static_cast<const volScalarField &>(*solids[0]), solids[0]->residualAlpha());
-    tmp<volScalarField> inv_diameter_sum=alphaSum.ref()/solids[0]->d();
-    for(label i=1;i<solids.size();i++) {
-        tmp<volScalarField> alpha_i=max(static_cast<const volScalarField &>(*solids[i]), solids[i]->residualAlpha());
-        alphaSum.ref()+=alpha_i.ref();
-        inv_diameter_sum.ref()+= alpha_i/solids[i]->d();
-    }
-    inv_diameter_sum=alphaSum.ref()/inv_diameter_sum;
-    return effective_alpha_d{
-        .alpha=alphaSum,
-        .d=inv_diameter_sum,
-    };
-}
-
-Foam::dragModels::AttouFerschneider::effective_alpha_d
-Foam::dragModels::AttouFerschneider::get_solid_phase_info(const Foam::phaseSystem &ps) const {
+Foam::averageDiameter::sauterAverage Foam::dragModels::AttouFerschneider::
+    get_solid_phase_info(const Foam::phaseSystem &ps) const
+{
     List<const phaseModel*> solids= solidPhases(ps);
-    return effective_solid_info({solids.begin(),solids.end()});
+    auto get_phase_fun = [&](label i) -> const phaseModel & {
+        return *solids[i];
+    };
+
+    return averageDiameter::sauter(solids.size(), get_phase_fun);
 }
 
 Foam::tmp<Foam::volScalarField>
@@ -95,8 +81,8 @@ Foam::dragModels::AttouFerschneider::KGasLiquid
     const phaseModel& liquid
 ) const
 {
-    effective_alpha_d solid_info= get_solid_phase_info(gas.fluid());
-//    const phaseModel& solid = gas.fluid().phases()[solidName_];
+    averageDiameter::sauterAverage solid_info =
+        get_solid_phase_info(gas.fluid());
 
     const volScalarField oneMinusGas(max(1 - gas, liquid.residualAlpha()));
     const volScalarField cbrtR
@@ -105,10 +91,9 @@ Foam::dragModels::AttouFerschneider::KGasLiquid
     );
     const volScalarField magURel(mag(gas.U() - liquid.U()));
 
-    return
-        E1_*gas.fluidThermo().mu()*sqr(oneMinusGas/solid_info.d.ref())*sqr(cbrtR)
-       /max(gas, gas.residualAlpha())
-      + E2_*gas.rho()*magURel*(1 - gas)/solid_info.d*cbrtR;
+    return E1_ * gas.fluidThermo().mu() * sqr(oneMinusGas / solid_info.d) *
+        sqr(cbrtR) / max(gas, gas.residualAlpha()) +
+        E2_ * gas.rho() * magURel * (1 - gas) / solid_info.d * cbrtR;
 }
 
 
