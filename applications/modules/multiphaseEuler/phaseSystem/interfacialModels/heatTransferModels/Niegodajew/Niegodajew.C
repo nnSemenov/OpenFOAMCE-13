@@ -136,8 +136,14 @@ Foam::tmp<Foam::volScalarField> Foam::heatTransferModels::Niegodajew::K(
                             sqr(de * porosity / alpha_solid) / sigma_);
     assert(Eo.dimensions() == dimless);
     // Note: this Nu is different from traditional OpenFOAM convention
-    const volScalarField Nu(pow(Re_G, 1.169) * pow(Ga_G, -0.8399) *
-                            pow(Eo, 0.7176));
+    const volScalarField Nu(
+        IOobject("Nu_" + interface_.name(), interface_.mesh(),
+                 IOobject::NO_READ, IOobject::AUTO_WRITE, true),
+        pow(Re_G, 1.169) * pow(Ga_G, -0.8399) * pow(Eo, 0.7176));
+
+    if (interface_.mesh().time().writeTime()) {
+        Nu.write();
+    }
 
     // Definition of Nu differs from traditional correlations. Usually gas is
     // continuous phase, but here use liquid kappa and particle diameter. In

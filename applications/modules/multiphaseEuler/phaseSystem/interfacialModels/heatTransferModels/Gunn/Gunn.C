@@ -75,11 +75,17 @@ Foam::heatTransferModels::Gunn::K(const scalar residualAlpha) const
 
     const volScalarField Nu
     (
+        IOobject("Nu_" + interface_.name(), interface_.mesh(),
+                 IOobject::NO_READ, IOobject::AUTO_WRITE, true),
         (7 - 10*alpha2 + 5*sqrAlpha2)
        *(1 + 0.7*pow(interface_.Re(), 0.2)*cbrt(interface_.Pr()))
       + (1.33 - 2.4*alpha2 + 1.2*sqrAlpha2)
        *pow(interface_.Re(), 0.7)*cbrt(interface_.Pr())
     );
+
+    if (interface_.mesh().time().writeTime()) {
+        Nu.write();
+    }
 
     return
         6*max(interface_.dispersed(), residualAlpha)

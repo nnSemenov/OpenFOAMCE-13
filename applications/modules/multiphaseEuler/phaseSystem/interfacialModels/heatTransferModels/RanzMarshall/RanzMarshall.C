@@ -66,8 +66,14 @@ Foam::heatTransferModels::RanzMarshall::~RanzMarshall()
 Foam::tmp<Foam::volScalarField>
 Foam::heatTransferModels::RanzMarshall::K(const scalar residualAlpha) const
 {
-    volScalarField Nu(2 + 0.6*sqrt(interface_.Re())*cbrt(interface_.Pr()));
+    volScalarField Nu(IOobject("Nu_" + interface_.name(), interface_.mesh(),
+                               IOobject::NO_READ, IOobject::AUTO_WRITE, true),
+                      2 + 0.6 * sqrt(interface_.Re()) * cbrt(interface_.Pr()));
 
+    if (interface_.mesh().time().writeTime()) {
+        Nu.write();
+    }
+    
     return
         6
        *max(interface_.dispersed(), residualAlpha)

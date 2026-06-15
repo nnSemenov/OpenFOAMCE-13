@@ -74,7 +74,8 @@ Foam::heatTransferModel::heatTransferModel
                *interface.phase2().residualAlpha().value()
             )
         )
-    )
+    ),
+    writeNu_(dict.lookupOrDefault<bool>("writeNu", false))
 {}
 
 

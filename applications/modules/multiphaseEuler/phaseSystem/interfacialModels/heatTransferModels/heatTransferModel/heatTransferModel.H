@@ -60,7 +60,8 @@ protected:
 
         //- Residual phase fraction
         const dimensionedScalar residualAlpha_;
-
+        //- Write Nusselt's number
+        bool writeNu_;
 
 public:
 

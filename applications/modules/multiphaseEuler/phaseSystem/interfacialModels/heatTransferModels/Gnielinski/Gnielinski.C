@@ -57,14 +57,20 @@ Foam::tmp<Foam::volScalarField> Foam::heatTransferModels::Gnielinski::K(
     auto Nu_turbulence = 0.037 * pow(Re, 0.8) * Pr /
         (1 + 2.443 * pow(Re, -0.1) * (pow(Pr, 2. / 3.) - 1));
 
-    auto Nu = 2 + sqrt(sqr(Nu_laminar) + sqr(Nu_turbulence));
+    volScalarField Nu(IOobject("Nu_" + interface_.name(), interface_.mesh(),
+                               IOobject::NO_READ, IOobject::AUTO_WRITE, true),
+                      2 + sqrt(sqr(Nu_laminar) + sqr(Nu_turbulence)));
 
+    if (interface_.mesh().time().writeTime()) {
+        Nu.write();
+    }
+    
     if (sphere_) {
         const volScalarField &void_fraction = interface_.continuous();
-        Nu.ref() *= (1 + 1.5 * (1 - void_fraction));
+        Nu *= (1 + 1.5 * (1 - void_fraction));
     }
     else {
-        Nu.ref() *= shapeFactor_;
+        Nu *= shapeFactor_;
     }
 
     return 6 * max(interface_.dispersed(), residualAlpha) *
