@@ -225,6 +225,18 @@ namespace Foam
         surfaceArrheniusReactionRate,
         ThermoPhysics
     );
+    makeGeneralReaction
+    (
+        ReversibleReaction,
+        surfaceArrheniusReactionRate,
+        ThermoPhysics
+    );
+    makeGeneralReaction
+    (
+        NonEquilibriumReversibleReaction,
+        surfaceArrheniusReactionRate,
+        ThermoPhysics
+    );
 }
 
 #endif
