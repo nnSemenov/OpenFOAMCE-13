@@ -46,6 +46,7 @@ SourceFiles
 #define AttouFerschneider_H
 
 #include "dragModel.H"
+#include "averageDiameter.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -110,16 +111,12 @@ public:
 
         List<const phaseModel*> solidPhases(const phaseSystem&) const;
 
-        struct effective_alpha_d {
-          tmp<volScalarField> alpha;
-          tmp<volScalarField> d;
-        };
 private:
-        static effective_alpha_d effective_solid_info(const List<const phaseModel*>&);
+        Foam::averageDiameter::sauterAverage get_solid_phase_info(
+            const phaseSystem &) const;
 
-        effective_alpha_d get_solid_phase_info(const phaseSystem&) const;
 public:
-    //- Runtime type information
+  //- Runtime type information
     TypeName("AttouFerschneider");
 
 

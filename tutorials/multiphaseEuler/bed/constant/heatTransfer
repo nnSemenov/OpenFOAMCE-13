@@ -25,7 +25,7 @@ blending
     minPartlyContinuousAlpha.solid none;
 }
 
-air_dispersedIn_water_inThe_air
+/*air_dispersedIn_water_inThe_air
 {
     type            spherical;
     residualAlpha   1e-4;
@@ -47,6 +47,16 @@ water_dispersedIn_air_inThe_water
 {
     type            spherical;
     residualAlpha   1e-4;
+}*/
+
+
+water_dispersedIn_air {
+    type Niegodajew;
+    liquid water;
+    gas    air;
+    solids (solid);
+    sigma 0.07;
+    writeNu yes;
 }
 
 solid_dispersedIn_air
@@ -54,6 +64,7 @@ solid_dispersedIn_air
     type            Gnielinski;
     residualAlpha   1e-4;
     sphere          yes;
+    writeNu yes;
 }
 
 solid_dispersedIn_water
@@ -63,6 +74,7 @@ solid_dispersedIn_water
     a               0.111;
     b               0.8;
     c               0.33333;
+    writeNu yes;
 }
 
 // ************************************************************************* //

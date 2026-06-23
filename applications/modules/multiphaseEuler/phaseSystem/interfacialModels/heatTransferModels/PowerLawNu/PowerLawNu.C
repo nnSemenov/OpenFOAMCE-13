@@ -68,8 +68,13 @@ Foam::tmp<Foam::volScalarField> Foam::heatTransferModels::PowerLawNu::K(
         Re.ref() *= alpha_bounded;
     }
 
-    volScalarField Nu(coeff_a_ * pow(Re, coeff_b_) *
-                      pow(interface_.Pr(), coeff_c_));
+    volScalarField Nu(IOobject("Nu_" + interface_.name(), interface_.mesh(),
+                               IOobject::NO_READ, IOobject::AUTO_WRITE, true),
+                      coeff_a_ * pow(Re, coeff_b_) *
+                          pow(interface_.Pr(), coeff_c_));
+    if (interface_.mesh().time().writeTime()) {
+        Nu.write();
+    }
     assert(min(Nu).value() > 0);
 
     return 6 * alpha_bounded * interface_.continuous().thermo().kappa() * Nu /

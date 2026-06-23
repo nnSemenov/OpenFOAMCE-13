@@ -183,7 +183,20 @@ namespace Foam
         IrreversibleReaction,
         surfaceArrheniusReactionRate
     );
-}
 
+    // Surface-Arrhenius Reversible Reactions
+    forCoeffGases(makeGeneralReaction, ReversibleReaction,
+                  surfaceArrheniusReactionRate);
+    forCoeffLiquids(makeGeneralReaction, ReversibleReaction,
+                    surfaceArrheniusReactionRate);
 
-// ************************************************************************* //
+    // Surface-Arrhenius Non-Equilibrium Reversible Reactions
+    forCoeffGases(makeGeneralReaction, NonEquilibriumReversibleReaction,
+                  surfaceArrheniusReactionRate);
+    forCoeffLiquids(makeGeneralReaction, NonEquilibriumReversibleReaction,
+                    surfaceArrheniusReactionRate);
+
+    } // namespace Foam
+
+    // *************************************************************************
+    // //
