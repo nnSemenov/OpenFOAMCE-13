@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2013-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2013-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -49,10 +49,14 @@ namespace laminarModels
                            Class Stokes Declaration
 \*---------------------------------------------------------------------------*/
 
-template<class BasicMomentumTransportModel>
+template
+<
+    class BasicMomentumTransportModel,
+    template<class> class ViscousStress = linearViscousStress
+>
 class Stokes
 :
-    public linearViscousStress<laminarModel<BasicMomentumTransportModel>>
+    public ViscousStress<laminarModel<BasicMomentumTransportModel>>
 {
 
 public:
@@ -81,7 +85,7 @@ public:
 
     // Selectors
 
-        //- Return a reference to the selected turbulence model
+        //- Return a reference to the selected momentum transport model
         static autoPtr<Stokes> New
         (
             const alphaField& alpha,

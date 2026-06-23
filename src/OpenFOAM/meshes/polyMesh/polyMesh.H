@@ -266,8 +266,10 @@ public:
 
     // Constructors
 
-        //- Return whether the given IOobject relates to a mesh on disk
-        static bool found(const IOobject& io);
+        //- Return the instance of the polyMesh directory. Returns
+        //  fileName::null if the directory does not exist, and can therefore
+        //  be used to check whether the mesh directory exists.
+        static fileName meshDirInstance(const IOobject& io);
 
         //- Construct from IOobject.
         explicit polyMesh(const IOobject& io);
@@ -457,20 +459,19 @@ public:
 
         // Mesh motion
 
-            //- Is mesh moving
+            //- Is the mesh moving?
             bool moving() const
             {
                 return moving_;
             }
 
-            //- Has the mesh topology changed this time-step
+            //- Has the mesh topology changed this time-step?
             bool topoChanged() const
             {
                 return topoChanged_;
             }
 
-            //- Is mesh changing
-            //  Moving or mesh topology changed this time-step)
+            //- Is the mesh changing? I.e., is it moving or topo-changing?
             bool changing() const
             {
                 return moving() || topoChanged();
