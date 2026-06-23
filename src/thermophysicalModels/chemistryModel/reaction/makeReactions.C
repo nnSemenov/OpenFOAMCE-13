@@ -185,18 +185,30 @@ namespace Foam
     );
 
     // Surface-Arrhenius Reversible Reactions
-    forCoeffGases(makeGeneralReaction, ReversibleReaction,
-                  surfaceArrheniusReactionRate);
-    forCoeffLiquids(makeGeneralReaction, ReversibleReaction,
-                    surfaceArrheniusReactionRate);
+    forCoeffGases(
+        makeGeneralReaction,
+        ReversibleReaction,
+        surfaceArrheniusReactionRate
+    );
+    forCoeffLiquids(
+        makeGeneralReaction,
+        ReversibleReaction,
+        surfaceArrheniusReactionRate
+    );
 
     // Surface-Arrhenius Non-Equilibrium Reversible Reactions
-    forCoeffGases(makeGeneralReaction, NonEquilibriumReversibleReaction,
-                  surfaceArrheniusReactionRate);
-    forCoeffLiquids(makeGeneralReaction, NonEquilibriumReversibleReaction,
-                    surfaceArrheniusReactionRate);
+    forCoeffGases(
+        makeGeneralReaction,
+        NonEquilibriumReversibleReaction,
+        surfaceArrheniusReactionRate
+    );
+    forCoeffLiquids(
+        makeGeneralReaction,
+        NonEquilibriumReversibleReaction,
+        surfaceArrheniusReactionRate
+    );
 
-    } // namespace Foam
+} // namespace Foam
 
-    // *************************************************************************
-    // //
+// *************************************************************************
+// //
