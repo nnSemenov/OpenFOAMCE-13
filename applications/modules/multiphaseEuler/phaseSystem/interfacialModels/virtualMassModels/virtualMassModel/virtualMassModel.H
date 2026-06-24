@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2014-2026 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2014-2025 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -101,15 +101,10 @@ public:
 
         static autoPtr<virtualMassModel> New
         (
-            const dictionary& subDicts,
+            const dictionary& dict,
             const phaseInterface& interface,
-            const bool registerObject = false
-        );
-
-        static autoPtr<virtualMassModel> New
-        (
-            const UPtrList<const dictionary>& subDicts,
-            const phaseInterface& interface
+            const bool outer=true,
+            const bool registerObject=true
         );
 
 
@@ -148,7 +143,7 @@ public:
 
         inline static autoPtr<blendedVirtualMassModel> New
         (
-            const UPtrList<const dictionary>& subDicts,
+            const dictionary& dict,
             const phaseInterface& interface,
             const dictionary& blendingDict
         )
@@ -156,12 +151,7 @@ public:
             return
                 autoPtr<blendedVirtualMassModel>
                 (
-                    new blendedVirtualMassModel
-                    (
-                        subDicts,
-                        interface,
-                        blendingDict
-                    )
+                    new blendedVirtualMassModel(dict, interface, blendingDict)
                 );
         }
 

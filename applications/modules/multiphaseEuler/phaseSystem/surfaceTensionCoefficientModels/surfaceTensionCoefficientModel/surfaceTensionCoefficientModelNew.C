@@ -28,20 +28,22 @@ License
 
 // * * * * * * * * * * * * * * * * Selector  * * * * * * * * * * * * * * * * //
 
-Foam::autoPtr<Foam::surfaceTensionCoefficientModel>
+Foam::autoPtr<Foam::surfaceTensionCoefficientModel >
 Foam::surfaceTensionCoefficientModel::New
 (
-    const dictionary& modelDict,
+    const dictionary& dict,
     const phaseInterface& interface,
     const bool outer
 )
 {
+    const dictionary& modelDict =
+        outer ? modelSubDict<surfaceTensionCoefficientModel>(dict) : dict;
+
     const word surfaceTensionCoefficientModelType(modelDict.lookup("type"));
 
-    Info<< indentOrNl << "Selecting " << typeName << ' '
-        << surfaceTensionCoefficientModelType;
-    if (outer) Info<< " for " << interface.name();
-    Info<< endl;
+    Info<< indentOrNl
+        << "Selecting surfaceTensionCoefficientModel for " << interface.name()
+        << ": " << surfaceTensionCoefficientModelType << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find
@@ -59,26 +61,7 @@ Foam::surfaceTensionCoefficientModel::New
             << exit(FatalIOError);
     }
 
-    printDictionary print(modelDict);
-
     return cstrIter()(modelDict, interface);
-}
-
-
-Foam::autoPtr<Foam::surfaceTensionCoefficientModel>
-Foam::surfaceTensionCoefficientModel::New
-(
-    const UPtrList<const dictionary>& subDicts,
-    const phaseInterface& interface
-)
-{
-    return
-        New
-        (
-            modelSubDict<surfaceTensionCoefficientModel>(subDicts),
-            interface,
-            true
-        );
 }
 
 

@@ -24,23 +24,25 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "turbulentDispersionModel.H"
+#include "generateInterfacialModels.H"
 
 // * * * * * * * * * * * * * * * * Selector  * * * * * * * * * * * * * * * * //
 
 Foam::autoPtr<Foam::turbulentDispersionModel>
 Foam::turbulentDispersionModel::New
 (
-    const dictionary& modelDict,
+    const dictionary& dict,
     const phaseInterface& interface,
     const bool outer
 )
 {
+    const dictionary& modelDict =
+        outer ? modelSubDict<turbulentDispersionModel>(dict) : dict;
+
     const word turbulentDispersionModelType(modelDict.lookup("type"));
 
-    Info<< indentOrNl << "Selecting " << typeName << ' '
-        << turbulentDispersionModelType;
-    if (outer) Info<< " for " << interface.name();
-    Info<< endl;
+    Info<< indentOrNl << "Selecting turbulentDispersionModel for "
+        << interface.name() << ": " << turbulentDispersionModelType << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find(turbulentDispersionModelType);
@@ -55,26 +57,7 @@ Foam::turbulentDispersionModel::New
             << exit(FatalIOError);
     }
 
-    printDictionary print(modelDict);
-
     return cstrIter()(modelDict, interface);
-}
-
-
-Foam::autoPtr<Foam::turbulentDispersionModel>
-Foam::turbulentDispersionModel::New
-(
-    const UPtrList<const dictionary>& subDicts,
-    const phaseInterface& interface
-)
-{
-    return
-        New
-        (
-            modelSubDict<turbulentDispersionModel>(subDicts),
-            interface,
-            true
-        );
 }
 
 

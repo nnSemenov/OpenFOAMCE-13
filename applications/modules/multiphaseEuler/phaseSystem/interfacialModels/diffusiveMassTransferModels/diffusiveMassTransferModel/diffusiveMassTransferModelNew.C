@@ -24,24 +24,24 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "diffusiveMassTransferModel.H"
+#include "generateInterfacialModels.H"
 
 // * * * * * * * * * * * * * * * * Selector  * * * * * * * * * * * * * * * * //
 
 Foam::autoPtr<Foam::diffusiveMassTransferModel>
 Foam::diffusiveMassTransferModel::New
 (
-    const UPtrList<const dictionary>& subDicts,
+    const dictionary& dict,
     const phaseInterface& interface
 )
 {
     const dictionary& modelDict =
-        modelSubDict<diffusiveMassTransferModel>(subDicts);
+        modelSubDict<diffusiveMassTransferModel>(dict);
 
     const word diffusiveMassTransferModelType(modelDict.lookup("type"));
 
-    Info<< indentOrNl << "Selecting " << typeName << ' '
-        << diffusiveMassTransferModelType << " for " << interface.name()
-        << endl;
+    Info<< indentOrNl << "Selecting diffusiveMassTransferModel for "
+        << interface.name() << ": " << diffusiveMassTransferModelType << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find(diffusiveMassTransferModelType);
@@ -55,8 +55,6 @@ Foam::diffusiveMassTransferModel::New
             << dictionaryConstructorTablePtr_->sortedToc()
             << exit(FatalIOError);
     }
-
-    printDictionary print(modelDict);
 
     return cstrIter()(modelDict, interface);
 }

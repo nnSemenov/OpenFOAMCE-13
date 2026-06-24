@@ -37,8 +37,8 @@ Foam::swarmCorrection::New
 {
     const word swarmCorrectionType(dict.lookup("type"));
 
-    Info<< indentOrNl << "Selecting " << typeName << ' '
-        << swarmCorrectionType << endl;
+    Info<< indentOrNl << "Selecting swarmCorrection for "
+        << interface.name() << ": " << swarmCorrectionType << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find(swarmCorrectionType);
@@ -52,8 +52,6 @@ Foam::swarmCorrection::New
             << dictionaryConstructorTablePtr_->sortedToc()
             << exit(FatalIOError);
     }
-
-    printDictionary print(dict);
 
     return cstrIter()(dict, interface);
 }

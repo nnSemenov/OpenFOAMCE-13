@@ -35,7 +35,7 @@ Foam::kineticTheoryModels::frictionalStressModel::New
 {
     const word frictionalStressModelType(dict.lookup("frictionalStressModel"));
 
-    Info<< indentOrNl << "Selecting " << typeName << ' '
+    Info<< indentOrNl << "Selecting frictionalStressModel "
         << frictionalStressModelType << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
@@ -53,8 +53,6 @@ Foam::kineticTheoryModels::frictionalStressModel::New
 
     const dictionary& coeffDict =
         dict.optionalTypeDict(frictionalStressModelType);
-
-    printDictionary print(coeffDict);
 
     return autoPtr<frictionalStressModel>(cstrIter()(coeffDict));
 }

@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2015-2026 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2015-2025 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -105,15 +105,9 @@ public:
 
         static autoPtr<surfaceTensionCoefficientModel> New
         (
-            const dictionary& subDicts,
+            const dictionary& dict,
             const phaseInterface& interface,
-            const bool outer = false
-        );
-
-        static autoPtr<surfaceTensionCoefficientModel> New
-        (
-            const UPtrList<const dictionary>& subDicts,
-            const phaseInterface& interface
+            const bool outer=true
         );
 
 

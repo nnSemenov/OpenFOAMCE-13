@@ -24,21 +24,25 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "dragModel.H"
+#include "generateInterfacialModels.H"
 
 // * * * * * * * * * * * * * * * * Selector  * * * * * * * * * * * * * * * * //
 
 Foam::autoPtr<Foam::dragModel> Foam::dragModel::New
 (
-    const dictionary& modelDict,
+    const dictionary& dict,
     const phaseInterface& interface,
+    const bool outer,
     const bool registerObject
 )
 {
+    const dictionary& modelDict =
+        outer ? modelSubDict<dragModel>(dict) : dict;
+
     const word dragModelType(modelDict.lookup("type"));
 
-    Info<< indentOrNl << "Selecting " << typeName << ' ' << dragModelType;
-    if (registerObject) Info << " for " << interface.name();
-    Info<< endl;
+    Info<< indentOrNl << "Selecting dragModel for "
+        << interface.name() << ": " << dragModelType << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find(dragModelType);
@@ -53,19 +57,7 @@ Foam::autoPtr<Foam::dragModel> Foam::dragModel::New
             << exit(FatalIOError);
     }
 
-    printDictionary print(modelDict);
-
     return cstrIter()(modelDict, interface, registerObject);
-}
-
-
-Foam::autoPtr<Foam::dragModel> Foam::dragModel::New
-(
-    const UPtrList<const dictionary>& subDicts,
-    const phaseInterface& interface
-)
-{
-    return New(modelSubDict<dragModel>(subDicts), interface, true);
 }
 
 

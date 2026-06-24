@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -112,13 +112,8 @@ public:
         (
             const dictionary& dict,
             const phaseInterface& interface,
-            const bool registerObject = false
-        );
-
-        static autoPtr<heatTransferModel> New
-        (
-            const UPtrList<const dictionary>& subDicts,
-            const phaseInterface& interface
+            const bool outer=true,
+            const bool registerObject=true
         );
 
 
@@ -162,14 +157,14 @@ public:
 
         inline static autoPtr<blendedHeatTransferModel> New
         (
-            const UPtrList<const dictionary>& subDicts,
+            const dictionary& dict,
             const phaseInterface& interface,
             const dictionary& blendingDict
         )
         {
             return autoPtr<blendedHeatTransferModel>
             (
-                new blendedHeatTransferModel(subDicts, interface, blendingDict)
+                new blendedHeatTransferModel(dict, interface, blendingDict)
             );
         }
 
@@ -206,19 +201,14 @@ public:
 
         inline static autoPtr<sidedBlendedHeatTransferModel> New
         (
-            const UPtrList<const dictionary>& subDicts,
+            const dictionary& dict,
             const phaseInterface& interface,
             const dictionary& blendingDict
         )
         {
             return autoPtr<sidedBlendedHeatTransferModel>
             (
-                new sidedBlendedHeatTransferModel
-                (
-                    subDicts,
-                    interface,
-                    blendingDict
-                )
+                new sidedBlendedHeatTransferModel(dict, interface, blendingDict)
             );
         }
 };
@@ -246,13 +236,13 @@ public:
 
         inline static autoPtr<sidedHeatTransferModel> New
         (
-            const UPtrList<const dictionary>& subDicts,
+            const dictionary& dict,
             const phaseInterface& interface
         )
         {
             return autoPtr<sidedHeatTransferModel>
             (
-                new sidedHeatTransferModel(subDicts, interface)
+                new sidedHeatTransferModel(dict, interface)
             );
         }
 
@@ -293,19 +283,14 @@ public:
 
         inline static autoPtr<blendedSidedHeatTransferModel> New
         (
-            const UPtrList<const dictionary>& subDicts,
+            const dictionary& dict,
             const phaseInterface& interface,
             const dictionary& blendingDict
         )
         {
             return autoPtr<blendedSidedHeatTransferModel>
             (
-                new blendedSidedHeatTransferModel
-                (
-                    subDicts,
-                    interface,
-                    blendingDict
-                )
+                new blendedSidedHeatTransferModel(dict, interface, blendingDict)
             );
         }
 

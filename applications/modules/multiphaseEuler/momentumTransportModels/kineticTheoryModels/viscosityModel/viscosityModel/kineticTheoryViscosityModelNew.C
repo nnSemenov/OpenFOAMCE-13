@@ -35,7 +35,7 @@ Foam::kineticTheoryModels::viscosityModel::New
 {
     const word viscosityModelType(dict.lookup("granularViscosityModel"));
 
-    Info<< indentOrNl << "Selecting " << typeName << ' '
+    Info<< indentOrNl << "Selecting granularViscosityModel "
         << viscosityModelType << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
@@ -53,8 +53,6 @@ Foam::kineticTheoryModels::viscosityModel::New
 
     const dictionary& coeffDict =
         dict.optionalTypeDict(viscosityModelType);
-
-    printDictionary print(coeffDict);
 
     return autoPtr<viscosityModel>(cstrIter()(coeffDict));
 }

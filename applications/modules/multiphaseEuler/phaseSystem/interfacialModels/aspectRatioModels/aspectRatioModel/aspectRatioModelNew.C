@@ -37,8 +37,8 @@ Foam::aspectRatioModel::New
 {
     const word aspectRatioModelType(dict.lookup("type"));
 
-    Info<< indentOrNl << "Selecting " << typeName << ' '
-        << aspectRatioModelType << endl;
+    Info<< indentOrNl << "Selecting aspectRatioModel for "
+        << interface.name() << ": " << aspectRatioModelType << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find(aspectRatioModelType);
@@ -52,8 +52,6 @@ Foam::aspectRatioModel::New
             << dictionaryConstructorTablePtr_->sortedToc()
             << exit(FatalIOError);
     }
-
-    printDictionary print(dict);
 
     return cstrIter()(dict, interface);
 }

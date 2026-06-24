@@ -24,22 +24,25 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "virtualMassModel.H"
+#include "generateInterfacialModels.H"
 
 // * * * * * * * * * * * * * * * * Selector  * * * * * * * * * * * * * * * * //
 
 Foam::autoPtr<Foam::virtualMassModel> Foam::virtualMassModel::New
 (
-    const dictionary& modelDict,
+    const dictionary& dict,
     const phaseInterface& interface,
+    const bool outer,
     const bool registerObject
 )
 {
+    const dictionary& modelDict =
+        outer ? modelSubDict<virtualMassModel>(dict) : dict;
+
     const word virtualMassModelType(modelDict.lookup("type"));
 
-    Info<< indentOrNl << "Selecting " << typeName << ' '
-        << virtualMassModelType;
-    if (registerObject) Info<< " for " << interface.name();
-    Info<< endl;
+    Info<< indentOrNl << "Selecting virtualMassModel for "
+        << interface.name() << ": " << virtualMassModelType << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find(virtualMassModelType);
@@ -54,19 +57,7 @@ Foam::autoPtr<Foam::virtualMassModel> Foam::virtualMassModel::New
             << exit(FatalIOError);
     }
 
-    printDictionary print(modelDict);
-
     return cstrIter()(modelDict, interface, registerObject);
-}
-
-
-Foam::autoPtr<Foam::virtualMassModel> Foam::virtualMassModel::New
-(
-    const UPtrList<const dictionary>& subDicts,
-    const phaseInterface& interface
-)
-{
-    return New(modelSubDict<virtualMassModel>(subDicts), interface, true);
 }
 
 

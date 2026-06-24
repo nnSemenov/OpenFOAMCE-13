@@ -24,21 +24,24 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "liftModel.H"
+#include "generateInterfacialModels.H"
 
 // * * * * * * * * * * * * * * * * Selector  * * * * * * * * * * * * * * * * //
 
 Foam::autoPtr<Foam::liftModel> Foam::liftModel::New
 (
-    const dictionary& modelDict,
+    const dictionary& dict,
     const phaseInterface& interface,
     const bool outer
 )
 {
+    const dictionary& modelDict =
+        outer ? modelSubDict<liftModel>(dict) : dict;
+
     const word liftModelType(modelDict.lookup("type"));
 
-    Info<< indentOrNl << "Selecting " << typeName << ' ' << liftModelType;
-    if (outer) Info<< " for " << interface.name();
-    Info<< endl;
+    Info<< indentOrNl << "Selecting liftModel for "
+        << interface.name() << ": " << liftModelType << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find(liftModelType);
@@ -53,19 +56,7 @@ Foam::autoPtr<Foam::liftModel> Foam::liftModel::New
             << exit(FatalIOError);
     }
 
-    printDictionary print(modelDict);
-
     return cstrIter()(modelDict, interface);
-}
-
-
-Foam::autoPtr<Foam::liftModel> Foam::liftModel::New
-(
-    const UPtrList<const dictionary>& subDicts,
-    const phaseInterface& interface
-)
-{
-    return New(modelSubDict<liftModel>(subDicts), interface, true);
 }
 
 

@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2015-2026 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2015-2025 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -115,13 +115,7 @@ public:
         (
             const dictionary& dict,
             const phaseInterface& interface,
-            const bool outer = false
-        );
-
-        static autoPtr<interfaceCompositionModel> New
-        (
-            const UPtrList<const dictionary>& subDicts,
-            const phaseInterface& interface
+            const bool outer=true
         );
 
 
@@ -211,13 +205,13 @@ public:
 
         inline static autoPtr<sidedInterfaceCompositionModel> New
         (
-            const UPtrList<const dictionary>& subDicts,
+            const dictionary& dict,
             const phaseInterface& interface
         )
         {
             return autoPtr<sidedInterfaceCompositionModel>
             (
-                new sidedInterfaceCompositionModel(subDicts, interface)
+                new sidedInterfaceCompositionModel(dict, interface)
             );
         }
 };

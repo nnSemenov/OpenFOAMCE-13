@@ -24,23 +24,25 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "interfaceCompositionModel.H"
+#include "generateInterfacialModels.H"
 
 // * * * * * * * * * * * * * * * * Selector  * * * * * * * * * * * * * * * * //
 
 Foam::autoPtr<Foam::interfaceCompositionModel>
 Foam::interfaceCompositionModel::New
 (
-    const dictionary& modelDict,
+    const dictionary& dict,
     const phaseInterface& interface,
     const bool outer
 )
 {
+    const dictionary& modelDict =
+        outer ? modelSubDict<interfaceCompositionModel>(dict) : dict;
+
     const word interfaceCompositionModelType(modelDict.lookup("type"));
 
-    Info<< indentOrNl << "Selecting " << typeName << ' '
-        << interfaceCompositionModelType;
-    if (outer) Info<< " for " << interface.name();
-    Info<< endl;
+    Info<< indentOrNl << "Selecting interfaceCompositionModel for "
+        << interface.name() << ": " << interfaceCompositionModelType << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find(interfaceCompositionModelType);
@@ -55,26 +57,7 @@ Foam::interfaceCompositionModel::New
             << exit(FatalIOError);
     }
 
-    printDictionary print(modelDict);
-
     return cstrIter()(modelDict, interface);
-}
-
-
-Foam::autoPtr<Foam::interfaceCompositionModel>
-Foam::interfaceCompositionModel::New
-(
-    const UPtrList<const dictionary>& subDicts,
-    const phaseInterface& interface
-)
-{
-    return
-        New
-        (
-            modelSubDict<interfaceCompositionModel>(subDicts),
-            interface,
-            true
-        );
 }
 
 

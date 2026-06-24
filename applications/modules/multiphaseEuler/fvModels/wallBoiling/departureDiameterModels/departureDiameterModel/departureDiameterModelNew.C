@@ -35,7 +35,7 @@ Foam::wallBoilingModels::departureDiameterModel::New
 {
     word departureDiameterModelType(dict.lookup("type"));
 
-    Info<< indentOrNl << "Selecting " << typeName << ' '
+    Info<< indentOrNl << "Selecting departureDiameterModel "
         << departureDiameterModelType << endl;
 
     dictionaryConstructorTable::iterator cstrIter =

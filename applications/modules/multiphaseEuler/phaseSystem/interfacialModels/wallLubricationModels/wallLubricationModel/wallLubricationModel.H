@@ -110,13 +110,7 @@ public:
         (
             const dictionary& dict,
             const phaseInterface& interface,
-            const bool outer = false
-        );
-
-        static autoPtr<wallLubricationModel> New
-        (
-            const UPtrList<const dictionary>& subDicts,
-            const phaseInterface& interface
+            const bool outer=true
         );
 
 
@@ -152,7 +146,7 @@ public:
 
         inline static autoPtr<blendedWallLubricationModel> New
         (
-            const UPtrList<const dictionary>& subDicts,
+            const dictionary& dict,
             const phaseInterface& interface,
             const dictionary& blendingDict
         )
@@ -162,7 +156,7 @@ public:
                 (
                     new blendedWallLubricationModel
                     (
-                        subDicts,
+                        dict,
                         interface,
                         blendingDict
                     )

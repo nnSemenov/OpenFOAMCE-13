@@ -49,7 +49,8 @@ Foam::autoPtr<Foam::diameterModel> Foam::diameterModel::New
     }
     const dictionary& modelDict = *modelDictPtr;
 
-    Info<< indentOrNl << "Selecting " << typeName << ' ' << modelType << endl;
+    Info<< indentOrNl << "Selecting " << typeName << " for phase "
+        << phase.name() << ": " << modelType << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find(modelType);
@@ -63,8 +64,6 @@ Foam::autoPtr<Foam::diameterModel> Foam::diameterModel::New
            << dictionaryConstructorTablePtr_->sortedToc()
            << exit(FatalIOError);
     }
-
-    printDictionary print(modelDict);
 
     return cstrIter()(modelDict, phase);
 }

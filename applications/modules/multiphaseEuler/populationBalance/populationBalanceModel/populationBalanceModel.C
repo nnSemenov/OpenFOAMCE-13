@@ -745,9 +745,7 @@ Foam::populationBalanceModel::populationBalanceModel
     U_(),
     sourceUpdateCounter_(0)
 {
-    Info<< indentOrNl << "Constructing " << typeName << ' ' << name << endl;
-
-    printDictionary print(typeDict());
+    Info<< "Population balance model: " << name << incrIndent << endl;
 
     // Build the phase-reference lists
     for
@@ -1068,6 +1066,8 @@ Foam::populationBalanceModel::populationBalanceModel
     }
 
     correct();
+
+    Info<< decrIndent;
 }
 
 
