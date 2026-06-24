@@ -1,10 +1,9 @@
 lnInclude(${CMAKE_CURRENT_SOURCE_DIR})
 
+wmake_parse_files(${CMAKE_CURRENT_SOURCE_DIR}/Make/files sources_from_wmake)
+
 add_library(solidThermo SHARED
-    solidThermo/solidThermo.C
-    solidThermo/solidThermos.C
-    constSolidThermo/constSolidThermo.C
-    constAnisoSolidThermo/constAnisoSolidThermo.C
+    ${sources_from_wmake}
 )
 target_include_directories(solidThermo PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/lnInclude"
