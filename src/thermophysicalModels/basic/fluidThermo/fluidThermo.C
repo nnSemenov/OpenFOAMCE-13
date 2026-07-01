@@ -84,7 +84,7 @@ Foam::fluidThermo::implementation::implementation
             IOobject::NO_WRITE
         ),
         mesh,
-        dimensionSet(-1, 3, 0, 0, 0)
+        dimensionSet(-1, 3, 0, 0, 0),
         fvPatchField<scalar>::calculatedType()
     )
 {}
