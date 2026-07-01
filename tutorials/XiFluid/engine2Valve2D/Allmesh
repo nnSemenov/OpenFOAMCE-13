@@ -77,7 +77,7 @@ valveOffset()
     esac
 }
 
-# Create valve mesh at relevent x location, and correct patch names
+# Create valve mesh at relevant x location, and correct patch names
 createValveMesh()
 {
     __mesh="$1"
