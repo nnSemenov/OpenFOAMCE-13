@@ -125,16 +125,12 @@ FOAM_unit_test(SOURCES fileName/Test-fileName.C)
 
 FOAM_unit_test(SOURCES fileNameClean/Test-fileNameClean.C)
 
-
-
-
-
-
-
-
-
-
-
+FOAM_unit_test(SOURCES Hashing/Test-Hashing.C)
+FOAM_unit_test(SOURCES HashPtrTable/Test-hashPtrTable.C)
+FOAM_unit_test(SOURCES HashSet/Test-hashSet.C)
+FOAM_unit_test(SOURCES HashTable/Test-hashTable.C)
+FOAM_unit_test(SOURCES HashTable2/Test-HashTable2.C)
+FOAM_unit_test(SOURCES HashTable3/Test-HashTable3.C)
 
 
 FOAM_unit_test(SOURCES realFluidEOS/Test-realFluidEOS.cpp
