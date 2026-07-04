@@ -36,4 +36,24 @@ massSource
     }
 }
 
+capillaryForce {
+    type capillaryForce;
+    libs ("libmultiphaseEulerFvModels.so");
+
+    referencePhase air;
+    capillaryPressure {
+        air_to_water {
+            type LeverettJ;
+
+            // theta ...
+            solids (solid);
+            liquid water;
+
+            J0 0.48;
+            beta 0.036;
+
+            E1 180;
+        }
+    }
+}
 // ************************************************************************* //

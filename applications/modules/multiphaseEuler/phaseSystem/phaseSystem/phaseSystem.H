@@ -334,8 +334,16 @@ public:
             //- Access the fvConstraints
             inline const Foam::fvConstraints& fvConstraints() const;
 
-
-        // Sub-model lookup
+            inline auto &surfaceTensionCoefficientModels()
+            {
+                return surfaceTensionCoefficientModels_;
+            }
+            
+            inline auto &surfaceTensionCoefficientModels() const
+            {
+                return surfaceTensionCoefficientModels_;
+            }
+            // Sub-model lookup
 
             //- Check availability of a sub model for a given interface
             template<class ModelType>
