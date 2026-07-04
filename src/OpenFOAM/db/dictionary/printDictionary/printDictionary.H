@@ -87,21 +87,14 @@ private:
         //- Table from the names of dictionaries to be printed to pointers
         //  to those dictionaries and the number of times they are currently
         //  marked to be printed
-        static HashTable
-        <
-            Tuple2<const dictionary*, label>,
-            fileName,
-            Hash<fileName>
-        > dictNameToDictPtrAndCount_;
+        //        static HashTable<Tuple2<const dictionary *, label>, fileName,
+        //                         Hash<fileName>>
+        //            dictNameToDictPtrAndCount_;
 
         //- Table from pointers to the dictionaries to be printed to
         //  dictionaries containing all entries including defaults
-        static HashTable
-        <
-            tmpNrc<dictionary>,
-            const dictionary*,
-            Hash<void*>
-        > dictPtrToDefaults_;
+        static HashTable<tmpNrc<dictionary>, const dictionary *, Hash<void *>>
+            dictPtrToDefaults_;
 
         //- The dictionaries to be printed
         UPtrList<const dictionary> dicts_;
@@ -160,25 +153,29 @@ public:
         //- Return if a dictionary is marked to be printed
         static bool prints(const dictionary& dict)
         {
-            return dictNameToDictPtrAndCount_.found(dict.name());
+            return false;
+            //            return dictNameToDictPtrAndCount_.found(dict.name());
         }
 
         //- Return if a dictionary is marked to be printed
         static bool prints(const fileName& dictName)
         {
-            return dictNameToDictPtrAndCount_.found(dictName);
+            return false;
+            //            return dictNameToDictPtrAndCount_.found(dictName);
         }
 
         //- Return if a dictionary exists to add defaults to for a given
         //  dictionary
         static bool haveDefaults(const dictionary& dict)
         {
-            return dictPtrToDefaults_.found(&dict);
+            return false;
+            //            return dictPtrToDefaults_.found(&dict);
         }
 
         //- Return the dictionary to add defaults to for a given dictionary
         static dictionary& defaults(const dictionary& dict)
         {
+
             return const_cast<dictionary&>(dictPtrToDefaults_[&dict]());
         }
 };
