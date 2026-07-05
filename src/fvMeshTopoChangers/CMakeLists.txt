@@ -1,4 +1,8 @@
-lnInclude(${CMAKE_CURRENT_SOURCE_DIR})
+lnInclude(${CMAKE_CURRENT_SOURCE_DIR}
+    EXCLUDE_DIRS
+    fvMeshTopoChangers
+    meshToMes
+)
 
 set(target_name fvMeshTopoChangers)
 

@@ -1,5 +1,5 @@
 function(lnInclude dir)
-    cmake_parse_arguments(arg "" "RESULT_DIR;HEADER_LIST;SOURCE_LIST" "" ${ARGN})
+    cmake_parse_arguments(arg "" "RESULT_DIR;HEADER_LIST;SOURCE_LIST" "EXCLUDE_DIRS" ${ARGN})
 
     cmake_path(ABSOLUTE_PATH dir)
 
@@ -32,8 +32,28 @@ function(lnInclude dir)
 
     file(MAKE_DIRECTORY ${lnInclude_dir})
 
+    # Some projects have sub projects. Don't lnInclude files from subprojects
+    set(exclude_dir_list)
+    foreach (exclude_dir ${arg_EXCLUDE_DIRS})
+        cmake_path(ABSOLUTE_PATH exclude_dir)
+        list(APPEND exclude_dir_list ${exclude_dir})
+    endforeach ()
+    #    message("Absolute exclude dir: ${exclude_dir_list}")
+
     foreach (file ${full_sources})
         if(${file} MATCHES "lnInclude")
+            continue()
+        endif ()
+
+        set(skip_this_file OFF)
+        foreach (exclude_dir ${exclude_dir_list})
+            cmake_path(IS_PREFIX exclude_dir ${file} is_prefix_result)
+            if (${is_prefix_result})
+                set(skip_this_file ON)
+                break()
+            endif ()
+        endforeach ()
+        if (${skip_this_file})
             continue()
         endif ()
 

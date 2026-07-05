@@ -1,4 +1,9 @@
-lnInclude(${CMAKE_CURRENT_SOURCE_DIR})
+lnInclude(${CMAKE_CURRENT_SOURCE_DIR}
+    EXCLUDE_DIRS
+    mixtureViscosityModels
+    relativeVelocityModels
+    packingDispersionModels
+)
 
 add_subdirectory(mixtureViscosityModels)
 add_subdirectory(relativeVelocityModels)
