@@ -38,6 +38,9 @@ Mikeno 是 OpenFOAM 的魔改版（分支），面向化工应用。
    - 代表经典的幂律型努塞尔数关联式 $\text{Nu} = a \text{Re}^b \text{Pr}^c$
 2. 新传热模型：Gnielinski
    - 适用于固定床的层流和湍流换热
+3. 毛细作用模块：Leverett J模型
+   - 引入毛细作用模块，支持任意多流体相的毛细力
+   - 适用于堆积床，未来可拓展至岩石孔隙
 
 ### 更严格的热力学
 1. 状态方程：增加 `RedlichKwong`，重写 `PengRobinson`
@@ -76,8 +79,8 @@ Mikeno 是 OpenFOAM 的魔改版（分支），面向化工应用。
 ## 计划添加的
 1. 更多状态方程：Martin-Hou等
 2. 把PatelTejaValderrama状态方程扩展到多组分（未测试）
-2. 把多孔介质传热模块拓展到单相多组分
-3. 改进`porousMediaFluidSolver`的热非平衡模型，使它在大比表面积、高传热系数时更加稳定
+3. 把多孔介质传热模块拓展到单相多组分
+4. 改进`porousMediaFluidSolver`的热非平衡模型，使它在大比表面积、高传热系数时更加稳定
 
 ## 现存bug(截至2026-06-12):
 1. 一些拉格朗日场相关的测试不通过（基金会正在重写，正常）

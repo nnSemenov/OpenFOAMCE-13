@@ -40,6 +40,9 @@ Mikeno is a fork of OpenFOAM, it's Frankensteined for chemical engineering usage
    - Represents the classic power-law Nusselt correlation $\text{Nu} = a \text{Re}^b \text{Pr}^c$
 2. New heat transfer model: `Gnielinski`
    - Suitable for laminar and turbulent heat transfer in fixed beds
+3. Capillary force: Leverett J model
+   - New capillary system module supporting arbitrary fluid phases
+   - Suitable for packed bed. Could be extended to rock pores later.
 
 ### More rigorous thermodynamics
 1. Equation of state: add `RedlichKwong`, rewrite `PengRobinson`
