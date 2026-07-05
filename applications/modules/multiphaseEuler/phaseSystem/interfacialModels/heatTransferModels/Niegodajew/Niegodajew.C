@@ -141,7 +141,7 @@ Foam::tmp<Foam::volScalarField> Foam::heatTransferModels::Niegodajew::K(
                  IOobject::NO_READ, IOobject::AUTO_WRITE, true),
         pow(Re_G, 1.169) * pow(Ga_G, -0.8399) * pow(Eo, 0.7176));
 
-    if (interface_.mesh().time().writeTime()) {
+    if (this->writeNu_ and interface_.mesh().time().writeTime()) {
         Nu.write();
     }
 

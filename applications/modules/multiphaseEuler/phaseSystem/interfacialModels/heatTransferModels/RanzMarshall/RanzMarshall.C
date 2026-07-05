@@ -70,7 +70,7 @@ Foam::heatTransferModels::RanzMarshall::K(const scalar residualAlpha) const
                                IOobject::NO_READ, IOobject::AUTO_WRITE, true),
                       2 + 0.6 * sqrt(interface_.Re()) * cbrt(interface_.Pr()));
 
-    if (interface_.mesh().time().writeTime()) {
+    if (this->writeNu_ and interface_.mesh().time().writeTime()) {
         Nu.write();
     }
     
