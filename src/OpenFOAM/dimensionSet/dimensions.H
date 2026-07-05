@@ -79,8 +79,10 @@ extern const dimensionSet pressure;
 extern const dimensionSet kinematicPressure;
 extern const dimensionSet compressibility;
 
-extern const dimensionSet gasConstant;
+extern const dimensionSet energyDensity;
+extern const dimensionSet specificEnergy;
 extern const dimensionSet specificHeatCapacity;
+extern const dimensionSet gasConstant;
 
 extern const dimensionSet kinematicViscosity;
 extern const dimensionSet dynamicViscosity;
@@ -98,13 +100,17 @@ extern const dimensionSet volumetricFlux;
 extern const dimensionSet massFlux;
 extern const dimensionSet heatFlux;
 
+extern const dimensionSet charge;
+extern const dimensionSet chargeDensity;
+extern const dimensionSet electricPotential;
+
 extern const dimensionSet magneticFluxDensity;
 extern const dimensionSet magneticFluxPressure;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 //- Table of dimensions
-extern const HashTable<dimensionSet> table;
+extern HashTable<dimensionSet> table;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -114,13 +120,14 @@ extern const HashTable<dimensionSet> table;
 
 using dimensions::dimless;
 
+// Deprecated dim-prefixed named dimensionSets
+// provided for backward compatibility
+
 extern const dimensionSet& dimMass;
 extern const dimensionSet& dimLength;
 extern const dimensionSet& dimTime;
 extern const dimensionSet& dimTemperature;
 extern const dimensionSet& dimMoles;
-extern const dimensionSet& dimCurrent;
-extern const dimensionSet& dimLuminousIntensity;
 
 extern const dimensionSet& dimArea;
 extern const dimensionSet& dimVolume;
@@ -128,7 +135,6 @@ extern const dimensionSet& dimVolume;
 extern const dimensionSet& dimRate;
 
 extern const dimensionSet& dimVelocity;
-extern const dimensionSet& dimMomentum;
 extern const dimensionSet& dimAcceleration;
 
 extern const dimensionSet& dimDensity;
@@ -137,9 +143,6 @@ extern const dimensionSet& dimEnergy;
 extern const dimensionSet& dimPower;
 
 extern const dimensionSet& dimPressure;
-extern const dimensionSet& dimKinematicPressure;
-extern const dimensionSet& dimCompressibility;
-extern const dimensionSet& dimGasConstant;
 extern const dimensionSet& dimSpecificHeatCapacity;
 extern const dimensionSet& dimKinematicViscosity;
 extern const dimensionSet& dimDynamicViscosity;

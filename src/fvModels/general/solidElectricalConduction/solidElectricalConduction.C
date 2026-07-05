@@ -77,7 +77,7 @@ void Foam::fv::solidElectricalConduction::readCoeffs(const dictionary& dict)
                 sigmaKey,
                 haveSigma ? sigmaKey : sigmaScalarKey,
                 mesh(),
-                sqr(dimCurrent)/dimLength/dimPower,
+                sqr(dimensions::current)/dimensions::length/dimensions::power,
                 dict
             )
         );
@@ -91,7 +91,7 @@ void Foam::fv::solidElectricalConduction::readCoeffs(const dictionary& dict)
                 sigmaKey,
                 sigmaTensorKey,
                 mesh(),
-                sqr(dimCurrent)/dimLength/dimPower,
+                sqr(dimensions::current)/dimensions::length/dimensions::power,
                 dict
             )
         );
@@ -122,7 +122,8 @@ Foam::fv::solidElectricalConduction::solidElectricalConduction
             IOobject::MUST_READ,
             IOobject::AUTO_WRITE
         ),
-        mesh()
+        mesh(),
+        dimensions::electricPotential
     ),
     I_
     (
@@ -135,7 +136,7 @@ Foam::fv::solidElectricalConduction::solidElectricalConduction
             IOobject::AUTO_WRITE
         ),
         mesh(),
-        dimensionedScalar(dimCurrent, scalar(0))
+        dimensionedScalar(dimensions::current, scalar(0))
     ),
     sigmaScalarPtr_(),
     sigmaTensorPtr_(),
