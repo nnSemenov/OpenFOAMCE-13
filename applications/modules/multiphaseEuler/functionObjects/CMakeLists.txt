@@ -13,6 +13,8 @@ add_library(${target_name} SHARED
     wallBoilingProperty/wallBoilingProperty.C
 
     adjustTimeStepToNucleation/adjustTimeStepToNucleation.C
+
+    capillary/capillary.C
 )
 
 target_include_directories(${target_name} PUBLIC

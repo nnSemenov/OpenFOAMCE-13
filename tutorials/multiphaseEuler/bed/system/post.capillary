@@ -1,0 +1,14 @@
+FoamFile {
+    class dictionary;
+    format ascii;
+    object functions;
+}
+
+capillary {
+    type capillary;
+    libs ("libmultiphaseEulerFunctionObjects.so");
+
+    writeCapillaryPressure yes;
+    writePhasePressure yes;
+    writeCapillaryForce yes;
+}

@@ -1,0 +1,5 @@
+type                    capillary;
+libs                    ("libmultiphaseEulerFunctionObjects.so");
+writeCapillaryPressure  false;
+writePhasePressure      false;
+writeCapillaryForce     false;
