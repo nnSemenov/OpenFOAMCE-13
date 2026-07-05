@@ -66,10 +66,6 @@ add_library(${target_name} SHARED
 
     # Capillary models
     capillary/capillaryForce.C
-    capillary/capillarySystem.C
-    capillary/capillaryPressureModels/capillaryPressureModel.C
-    capillary/capillaryPressureModels/LeverettJ.C
-    capillary/capillaryPressureModels/noneCapillaryPressureModel.C
 )
 
 target_include_directories(${target_name} PUBLIC

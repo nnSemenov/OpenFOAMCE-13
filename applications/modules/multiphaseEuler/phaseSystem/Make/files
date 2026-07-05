@@ -155,4 +155,10 @@ heatTransferSystem/heatTransferSystem.C
 oneResistanceHeatTransfer/oneResistanceHeatTransfer.C
 twoResistanceHeatTransfer/twoResistanceHeatTransfer.C
 
+
+capillaryModels/capillarySystem.C
+capillaryModels/capillaryPressureModels/capillaryPressureModel.C
+capillaryModels/capillaryPressureModels/LeverettJ.C
+capillaryModels/capillaryPressureModels/noneCapillaryPressureModel.C
+
 LIB = $(FOAM_LIBBIN)/libphaseSystem

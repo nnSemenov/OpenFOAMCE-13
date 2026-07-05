@@ -32,31 +32,24 @@ using namespace Foam;
 
 fv::capillaryForce::capillaryForce(const word &name, const word &modelType,
                                    const fvMesh &mesh, const dictionary &dict)
-    : fvSource{name, modelType, mesh, dict}, capillarySystem_{nullptr}
+    : fvSource{name, modelType, mesh, dict}
 {
-    this->read_capillary_model(dict);
 }
 
-void fv::capillaryForce::read_capillary_model(const dictionary &dict) &
-{
-    this->capillarySystem_ = new capillarySystem{
-        this->mesh().lookupObject<phaseSystem>(phaseSystem::propertiesName),
-        dict};
-}
 
 bool fv::capillaryForce::read(const dictionary &dict)
 {
     if (fvSource::read(dict)) {
-        read_capillary_model(dict);
         return true;
     }
     return false;
 }
 
-word fv::capillaryForce::match_phase_from_field(const word &fieldName) const
+word fv::capillaryForce::match_phase_from_field(const capillarySystem &cs,
+                                                const word &fieldName) const
 {
 
-    auto phase_names = this->capillarySystem_->fluid_phase_names();
+    auto phase_names = cs.fluid_phase_names();
     for (auto &name : phase_names) {
         if (fieldName == IOobject::groupName("U", name)) {
             return name;
@@ -65,9 +58,15 @@ word fv::capillaryForce::match_phase_from_field(const word &fieldName) const
     return word::null;
 }
 
+const capillarySystem &fv::capillaryForce::get_capillary_system() const
+{
+    return mesh().lookupObject<capillarySystem>(capillarySystem::dictName);
+}
+
 bool fv::capillaryForce::addsSupToField(const word &fieldName) const
 {
-    const auto matched_phase = match_phase_from_field(fieldName);
+    auto &cs = get_capillary_system();
+    const auto matched_phase = match_phase_from_field(cs, fieldName);
     return not matched_phase.empty();
 }
 
@@ -76,7 +75,8 @@ void fv::capillaryForce::addSup(const volScalarField &alphai,
                                 const volVectorField &Ui,
                                 fvVectorMatrix &UiEqn) const
 {
-    const word phase_name = match_phase_from_field(Ui.name());
+    auto &cs = get_capillary_system();
+    const word phase_name = match_phase_from_field(cs, Ui.name());
 
     if (phase_name.empty()) {
         FatalErrorInFunction
@@ -97,9 +97,10 @@ void fv::capillaryForce::addSup(const volScalarField &alphai,
         return;
     }
 
-    auto deltaP =
-        capillarySystem_->pressure_difference_from_common_p(phase_name);
+    auto deltaP = cs.pressure_difference_from_common_p(phase_name);
 
-    auto force = alphai * fvc::grad(deltaP, "grad(Pc)");
+    auto force = cs.capillary_force(phase_name, alphai, deltaP);
+
+    // alphai * fvc::grad(deltaP, "grad(Pc)");
     UiEqn += force;
 }

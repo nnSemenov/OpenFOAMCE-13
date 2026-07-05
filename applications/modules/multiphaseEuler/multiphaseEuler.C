@@ -158,6 +158,8 @@ Foam::solvers::multiphaseEuler::multiphaseEuler(fvMesh& mesh)
 
     populationBalanceSystem_(fluid_),
 
+    capillarySystem_{capillarySystem::try_read(fluid_, mesh)},
+
     p_(movingPhases_[0].fluidThermo().p()),
 
     p_rgh_(buoyancy.p_rgh),

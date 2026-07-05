@@ -28,8 +28,7 @@ Description
     Like most Euler-Euler multiphase solvers, `multiphaseEuler` assumes all
     phases share common pressure $p$. This is not breakable otherwise we rebuild
     everything. Here we use a convention to link common pressure with each
-    fluid phase's own pressure. Common pressure is the arithmetic average of all
-    phase pressures.
+    fluid phase's own pressure: p = pressure of reference phase.
 
 SourceFiles
     capillarySystem.C
@@ -47,7 +46,7 @@ SourceFiles
 #include <map>
 #include <vector>
 
-#include "capillaryPressureModels/capillaryPressureModel.H"
+#include "capillaryPressureModel.H"
 
 namespace Foam
 {
@@ -65,12 +64,19 @@ class capillarySystem : public IOdictionary
     void read_capillary_models(const dictionary &dict) &;
 
   public:
-    capillarySystem(const phaseSystem &phases, const dictionary &dict);
+    capillarySystem(const phaseSystem &phases);
     ~capillarySystem() = default;
 
     TypeName("capillarySystem");
 
-    [[nodiscard]] inline auto &capillaryPressureModels() const & noexcept
+    inline const static word dictName{"capillaryProperties"};
+
+    [[nodiscard]] inline auto &reference_phase() const &
+    {
+        return reference_phase_;
+    }
+
+    [[nodiscard]] inline auto &capillary_pressure_models() const & noexcept
     {
         return capillaryPressureModels_;
     }
@@ -91,6 +97,13 @@ class capillarySystem : public IOdictionary
 
     [[nodiscard]] volScalarField pressure_difference_between_phases(
         const word &phase1, const word &phase2) const;
+    
+    [[nodiscard]] virtual volVectorField capillary_force(
+        const word &name, const volScalarField &alpha,
+        const volScalarField &pressure_diff_from_p) const;
+
+    [[nodiscard]] static autoPtr<capillarySystem> try_read(
+        const phaseSystem &phaseSystem, const fvMesh &mesh);
 };
 
 
