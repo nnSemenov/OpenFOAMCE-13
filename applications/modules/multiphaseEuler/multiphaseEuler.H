@@ -232,7 +232,7 @@ public:
         //- Reference to the mass-flux field
         const surfaceScalarField& phi;
 
-        inline auto &capillarySystem() const & { return capillarySystem_(); }
+        inline auto &capillary() const & { return capillarySystem_(); }
 
         //- Runtime type information
         TypeName("multiphaseEuler");

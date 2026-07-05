@@ -54,13 +54,13 @@ Foam::solvers::XiFluid::XiFluid(fvMesh& mesh)
     alphaPhiu_
     (
         IOobject::groupName("alphaPhi", thermo_.unburntPhaseName),
-        phi
+        phi()
     ),
 
     alphaPhib_
     (
         IOobject::groupName("alphaPhi", thermo_.burntPhaseName),
-        phi
+        phi()
     ),
 
     uMomentumTransport_
