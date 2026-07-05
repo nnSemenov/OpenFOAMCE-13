@@ -83,7 +83,7 @@ Foam::heatTransferModels::Gunn::K(const scalar residualAlpha) const
        *pow(interface_.Re(), 0.7)*cbrt(interface_.Pr())
     );
 
-    if (interface_.mesh().time().writeTime()) {
+    if (this->writeNu_ and interface_.mesh().time().writeTime()) {
         Nu.write();
     }
 
