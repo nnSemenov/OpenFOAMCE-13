@@ -1,4 +1,13 @@
-lnInclude(${CMAKE_CURRENT_SOURCE_DIR})
+lnInclude(${CMAKE_CURRENT_SOURCE_DIR}
+    EXCLUDE_DIRS
+    fvModels
+    functionObjects
+    phaseSystem
+    momentumTransportModels
+    populationBalance
+    reactions
+    thermophysicalTransportModels
+)
 
 add_subdirectory(phaseSystem)
 add_subdirectory(populationBalance)

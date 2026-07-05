@@ -1,4 +1,6 @@
-lnInclude(${CMAKE_CURRENT_SOURCE_DIR})
+lnInclude(${CMAKE_CURRENT_SOURCE_DIR}
+    EXCLUDE_DIRS filmCompressibleMomentumTransportModels
+)
 
 add_subdirectory(filmCompressibleMomentumTransportModels)
 
