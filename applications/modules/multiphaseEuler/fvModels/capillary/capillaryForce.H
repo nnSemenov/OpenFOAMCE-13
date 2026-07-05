@@ -63,8 +63,6 @@ namespace Foam::fv
 class capillaryForce : public fvSource
 {
   protected:
-    autoPtr<capillarySystem> capillarySystem_;
-
     void read_capillary_model(const dictionary &dict) &;
 
   public:
@@ -73,7 +71,10 @@ class capillaryForce : public fvSource
     ~capillaryForce() override = default;
     TypeName("capillaryForce");
 
-    [[nodiscard]] word match_phase_from_field(const word &fieldName) const;
+    [[nodiscard]] const capillarySystem &get_capillary_system() const;
+
+    [[nodiscard]] word match_phase_from_field(const capillarySystem &,
+                                              const word &fieldName) const;
 
     bool addsSupToField(const word &fieldName) const override;
 

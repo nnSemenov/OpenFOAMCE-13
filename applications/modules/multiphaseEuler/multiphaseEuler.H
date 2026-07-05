@@ -58,6 +58,7 @@ See also
 #include "phaseCompressibleMomentumTransportModel.H"
 #include "buoyancy.H"
 #include "pressureReference.H"
+#include "capillarySystem.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -125,8 +126,9 @@ protected:
 
         populationBalanceSystem populationBalanceSystem_;
 
+        autoPtr<capillarySystem> capillarySystem_;
 
-    // Thermophysical properties
+        // Thermophysical properties
 
         volScalarField& p_;
 
@@ -230,12 +232,12 @@ public:
         //- Reference to the mass-flux field
         const surfaceScalarField& phi;
 
+        inline auto &capillarySystem() const & { return capillarySystem_(); }
 
-    //- Runtime type information
-    TypeName("multiphaseEuler");
+        //- Runtime type information
+        TypeName("multiphaseEuler");
 
-
-    // Constructors
+        // Constructors
 
         //- Construct from region mesh
         multiphaseEuler(fvMesh& mesh);
