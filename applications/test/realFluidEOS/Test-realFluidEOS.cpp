@@ -4,7 +4,9 @@
 #include "specie.H"
 #include "PengRobinson.H"
 #include "RedlichKwong.H"
+#include "PatelTejaValderrama.H"
 
+#include <type_traits>
 #include <cstdlib>
 #include <vector>
 
@@ -16,7 +18,7 @@ void test_EOS(const word& EOS, const specie& sp, const realFluidProperty&prop) {
   const std::vector<scalar> T_range{73.15,493.15,913.15,1333.15,1753.15,2173.15,2593.15,3013.15,3433.15,3853.15,4273.15};
   const std::vector<scalar> p_range{1e3,1e4,1e5,1e6,1e7,1e8,1e9};
 
-  const scalar small = 1e-10;
+  constexpr scalar small_val = std::numeric_limits<scalar>::epsilon() * 1e2;
 
   const EOS_t eos{sp, prop};
 
@@ -24,8 +26,9 @@ void test_EOS(const word& EOS, const specie& sp, const realFluidProperty&prop) {
     for (scalar p: p_range) {
       const scalar rho = eos.rho(p, T);
       if (rho<=0) {
-        Warning<<EOS<<" predicted non-physical density at p = "<<p<<"[Pa], T = "<<T<<"[K]"<<endl;
-        exit(1);
+          FatalError << EOS << " predicted non-physical density at p = " << p
+                     << "[Pa], T = " << T << "[K]" << exit(FatalError);
+          return;
       }
       {
         const auto core =  eos.core(p, T);
@@ -38,14 +41,18 @@ void test_EOS(const word& EOS, const specie& sp, const realFluidProperty&prop) {
 
         scalar error=0;
         error=dpdV_T*dVdp_T - scalar(1);
-        if (std::abs(error)>small) {
-          Warning<<EOS<<" violates swapping rule: dpdV_T = "<<dpdV_T<<", dVdp_T = "<<dVdp_T<<", error = "<<error<<endl;
-          exit(1);
+        if (std::abs(error) > small_val) {
+            FatalError << EOS << " violates swapping rule: dpdV_T = " << dpdV_T
+                       << ", dVdp_T = " << dVdp_T << ", error = " << error
+                       << exit(FatalError);
+            return;
         }
         error = dpdV_T * dVdT_p * dTdp_V + 1;
-        if (std::abs(error)>small) {
-          Warning<<EOS<<" violates cyclic rule: dpdV_T = "<<dpdV_T<<", dVdT_p = "<<dVdT_p<<", dTdp_V = "<<dTdp_V<<", error = "<<error<<endl;
-          exit(1);
+        if (std::abs(error) > small_val) {
+            FatalError << EOS << " violates cyclic rule: dpdV_T = " << dpdV_T
+                       << ", dVdT_p = " << dVdT_p << ", dTdp_V = " << dTdp_V
+                       << ", error = " << error << exit(FatalError);
+            return;
         }
       }
     }
@@ -67,6 +74,8 @@ int main(int argc, char** argv) {
 
   test_EOS<RedlichKwong<specie>>("RedlichKwong", sp, real_fluid_prop);
   test_EOS<PengRobinson<specie>>("PengRobinson", sp, real_fluid_prop);
+  test_EOS<PatelTejaValderrama<specie>>("PatelTejaValderrama", sp,
+                                        real_fluid_prop);
 
   Info<<"All test passed."<<endl;
   return 0;
