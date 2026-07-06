@@ -2,7 +2,7 @@ name: Build on Ubuntu
 
 on:
   push:
-    branches: [ "feature/*","dev" ]
+    branches: [ "feature/*","dev","4NapH" ]
   pull_request:
     branches: [ "master" ]
 
@@ -20,6 +20,7 @@ jobs:
     strategy:
       matrix:
         compiler: [Gcc, Clang]
+        precision: [DP,SP]
 
     steps:
     - uses: actions/checkout@v4
@@ -27,7 +28,7 @@ jobs:
     - name: Set compiler
       shell: bash
       run: |
-        echo "foam_platform=linux64${{ matrix.compiler }}DPInt32Opt" >> $GITHUB_ENV
+        echo "foam_platform=linux64${{ matrix.compiler }}${{ matrix.precision }}Int32Opt" >> $GITHUB_ENV
         if [ "${{ matrix.compiler }}" == "Gcc" ]; then
           echo "c_compiler=gcc-14" >> $GITHUB_ENV
           echo "cxx_compiler=g++-14" >> $GITHUB_ENV
@@ -62,7 +63,7 @@ jobs:
         sudo cmake --install build
 
     - name: Configure CMake
-      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -G Ninja -DParaView_TYPE=none -DCMAKE_C_COMPILER=$c_compiler -DCMAKE_CXX_COMPILER=$cxx_compiler
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -G Ninja -DParaView_TYPE=none -DCMAKE_C_COMPILER=$c_compiler -DCMAKE_CXX_COMPILER=$cxx_compiler -DWM_PRECISION_OPTION=${{ matrix.precision }}
 
     - name: Build
       # Build your program with the given configuration
