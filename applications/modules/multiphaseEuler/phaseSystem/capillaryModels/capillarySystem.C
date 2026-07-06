@@ -27,13 +27,13 @@ License
 
 namespace Foam
 {
-defineTypeNameAndDebug(capillarySystem, 0);
+defineTypeNameAndDebug(capillarySystem, 0)
 } // namespace Foam
 
 using namespace Foam;
 
 capillarySystem::capillarySystem(const phaseSystem &phases)
-    : IOdictionary(IOobject{dictName, phases.mesh().time().constant(),
+    : IOdictionary(IOobject{dictName, Foam::Time::constant(), phases.local(),
                             phases.mesh(), IOobject::MUST_READ,
                             IOobject::NO_WRITE, true}),
       phase_system_{phases},
@@ -53,18 +53,17 @@ std::vector<const phaseModel *> capillarySystem::fluid_phases() const
     auto &phases = phase_system_.phases();
     std::vector<const phaseModel *> ret;
     ret.reserve(phases.size());
-    forAll(phases, idx)
-    {
-        if (phases[idx].stationary()) {
+    for (auto &phase : phases) {
+        if (phase.stationary()) {
             continue;
         }
 
-        auto &thermo = phases[idx].thermo();
+        auto &thermo = phase.thermo();
         if (dynamic_cast<const fluidThermo *>(&thermo) == nullptr) {
             // Thermo is not fluid thermo, considered to be fluid
             continue;
         }
-        ret.emplace_back(&phases[idx]);
+        ret.emplace_back(&phase);
     }
     return ret;
 }
@@ -108,7 +107,6 @@ volScalarField capillarySystem::pressure_difference_from_common_p(
     const word &phase_i) const
 {
     auto phases_todo = fluid_phase_names();
-    const auto Nf = static_cast<scalar>(phases_todo.size());
 
     auto &mesh = phase_system_.mesh();
     volScalarField diff_p(IOobject("p-p_" + phase_i, mesh, IOobject::NO_READ,
@@ -120,23 +118,6 @@ volScalarField capillarySystem::pressure_difference_from_common_p(
     }
     diff_p = this->capillaryPressureModels_.at(phase_i)->capillary_pressure();
     return diff_p;
-    //    if (phase_i not_eq reference_phase_) {
-    //
-    //        diff_p += (Nf - 1) / Nf *
-    //            this->capillaryPressureModels_.at(phase_i)->capillary_pressure();
-    //    }
-    //    for (auto &name_j : phases_todo) {
-    //        if (name_j == phase_i) {
-    //            continue;
-    //        }
-    //        if (name_j == reference_phase_) {
-    //            continue;
-    //        }
-    //        diff_p -=
-    //            this->capillaryPressureModels_.at(name_j)->capillary_pressure()
-    //            / Nf;
-    //    }
-    //    return diff_p;
 }
 
 volScalarField capillarySystem::pressure_difference_between_phases(
@@ -184,15 +165,21 @@ autoPtr<capillarySystem> capillarySystem::try_read(
     const phaseSystem &phaseSystem, const fvMesh &mesh)
 {
     auto &runTime = mesh.time();
+    const bool exist = [&]() {
+        IOobject obj(dictName, runTime.caseConstant(), mesh,
+                     IOobject::READ_IF_PRESENT, IOobject::NO_WRITE, false);
 
-    const fileName capillaryDict = runTime.caseConstant() / dictName;
-    if (std::filesystem::is_regular_file(capillaryDict.c_str())) {
+        return obj.headerOk();
+    }();
 
+    if (exist) {
         auto ret = autoPtr<capillarySystem>{new capillarySystem{phaseSystem}};
         assert(mesh.foundObject<capillarySystem>(dictName));
 
         return ret;
     }
 
+    Info << "Skip capillary system because " << dictName << " doesn't exist.";
+    //         << endl;
     return autoPtr<capillarySystem>{nullptr};
 }

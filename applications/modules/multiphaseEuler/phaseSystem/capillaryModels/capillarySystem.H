@@ -64,8 +64,8 @@ class capillarySystem : public IOdictionary
     void read_capillary_models(const dictionary &dict) &;
 
   public:
-    capillarySystem(const phaseSystem &phases);
-    ~capillarySystem() = default;
+    explicit capillarySystem(const phaseSystem &phases);
+    ~capillarySystem() override = default;
 
     TypeName("capillarySystem");
 
