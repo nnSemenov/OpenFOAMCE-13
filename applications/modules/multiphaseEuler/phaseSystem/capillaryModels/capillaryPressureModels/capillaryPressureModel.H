@@ -58,6 +58,8 @@ class capillaryPressureModel
     static const surfaceTensionCoefficientModel &sigmaModel(
         const dictionary &dict, const phaseInterface &interface);
 
+    [[nodiscard]] inline auto &interface() const & { return interface_; }
+
     [[nodiscard]] inline auto sigma() const { return sigma_model_.sigma(); }
 
     [[nodiscard]] virtual tmp<volScalarField> capillary_pressure() const = 0;

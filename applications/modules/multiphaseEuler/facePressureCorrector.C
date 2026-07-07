@@ -119,6 +119,9 @@ void Foam::solvers::multiphaseEuler::facePressureCorrector()
     {
         // Explicit force fluxes
         PtrList<surfaceScalarField> Ffs(momentumTransferSystem_.Ffs());
+        if (capillarySystem_.valid()) {
+            capillarySystem_->add_to_Ffs(Ffs);
+        }
 
         const surfaceScalarField ghSnGradRho
         (

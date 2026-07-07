@@ -36,9 +36,4 @@ massSource
     }
 }
 
-capillaryForce {
-    type capillaryForce;
-    libs ("libmultiphaseEulerFvModels.so");
-
-}
 // ************************************************************************* //
