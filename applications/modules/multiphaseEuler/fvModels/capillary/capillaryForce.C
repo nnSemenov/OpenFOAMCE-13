@@ -97,9 +97,7 @@ void fv::capillaryForce::addSup(const volScalarField &alphai,
         return;
     }
 
-    auto deltaP = cs.pressure_difference_from_common_p(phase_name);
-
-    auto force = cs.capillary_force(phase_name, alphai, deltaP);
+    auto force = cs.capillary_force(phase_name);
 
     // alphai * fvc::grad(deltaP, "grad(Pc)");
     UiEqn += force;

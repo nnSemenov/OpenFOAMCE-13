@@ -72,7 +72,8 @@ LeverettJ::LeverettJ(const dictionary &dict, const phaseInterface &interface)
     }
 }
 
-tmp<volScalarField> LeverettJ::capillary_pressure() const
+std::pair<tmp<volScalarField>, tmp<volScalarField>> LeverettJ::
+    capillary_pressure_with_derivative() const
 {
     assert(interface_.fluid().phases().found(liquidName_));
     const auto &liq = interface_.fluid().phases()[liquidName_];
@@ -91,12 +92,19 @@ tmp<volScalarField> LeverettJ::capillary_pressure() const
             liq.residualAlpha()));
 
     auto J = J0_ + beta_ * log((1 - sat) / sat);
+    auto dJ_d_ln_alphaL = beta_ / (1 - sat);
 
     auto sqrt_porosity_over_K =
         solid_avg.alpha / (porosity * solid_avg.d) * sqrt(E1_);
 
-    tmp<volScalarField> Pc =
-        sigma() * sqrt_porosity_over_K * J * cos(contactAngle_.value_or(0));
-    Pc->rename("Pc_" + interface_.name());
-    return Pc;
+    const volScalarField Pc_prefix(sigma() * cos(contactAngle_.value_or(0)) *
+                                   sqrt_porosity_over_K);
+
+    tmp<volScalarField> Pc = Pc_prefix * J;
+    Pc.ref().rename("Pc_" + interface_.name());
+
+    tmp<volScalarField> dPc_d_ln_alphaL = Pc_prefix * dJ_d_ln_alphaL;
+    dPc_d_ln_alphaL.ref().rename(Pc_derivative_name + interface_.name());
+
+    return std::make_pair(Pc, dPc_d_ln_alphaL);
 }

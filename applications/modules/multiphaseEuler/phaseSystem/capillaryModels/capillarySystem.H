@@ -99,8 +99,7 @@ class capillarySystem : public IOdictionary
         const word &phase1, const word &phase2) const;
     
     [[nodiscard]] virtual volVectorField capillary_force(
-        const word &name, const volScalarField &alpha,
-        const volScalarField &pressure_diff_from_p) const;
+        const word &name) const;
 
     [[nodiscard]] static autoPtr<capillarySystem> try_read(
         const phaseSystem &phaseSystem, const fvMesh &mesh);

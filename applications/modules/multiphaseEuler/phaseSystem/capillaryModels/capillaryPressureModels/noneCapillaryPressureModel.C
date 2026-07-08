@@ -35,11 +35,14 @@ none::none(const dictionary &dict, const phaseInterface &interface)
     : capillaryPressureModel{dict, interface}
 {}
 
-tmp<volScalarField> none::capillary_pressure() const
+std::pair<tmp<volScalarField>, tmp<volScalarField>> none::
+    capillary_pressure_with_derivative() const
 {
     auto &mesh = interface_.fluid().mesh();
-    return volScalarField(
-        IOobject("Pc" + interface_.name(), mesh.time().timePath(), mesh,
-                 IOobject::NO_READ, IOobject::NO_WRITE, false),
-        mesh, dimensionedScalar{dimPressure, scalar{0}});
+
+    return std::make_pair(
+        volScalarField::New("Pc" + interface_.name(), mesh,
+                            dimensionedScalar{dimPressure, Zero}),
+        volScalarField ::New(Pc_derivative_name + interface_.name(), mesh,
+                             dimensionedScalar{dimPressure, Zero}));
 }

@@ -98,7 +98,8 @@ class LeverettJ : public capillaryPressureModel
 
     TypeName("LeverettJ");
 
-    [[nodiscard]] tmp<volScalarField> capillary_pressure() const override;
+    [[nodiscard]] std::pair<tmp<volScalarField>, tmp<volScalarField>>
+    capillary_pressure_with_derivative() const override;
 };
 
 } // namespace Foam::capillaryPressureModels

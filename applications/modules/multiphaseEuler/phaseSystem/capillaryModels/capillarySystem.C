@@ -21,6 +21,7 @@ License
 #include <Time.H>
 #include <fluidThermo.H>
 #include <fvc.H>
+#include <zeroGradientFvPatchFields.H>
 
 #include <cassert>
 #include <filesystem>
@@ -148,17 +149,38 @@ volScalarField capillarySystem::pressure_difference_between_phases(
     return diff_p;
 }
 
-volVectorField capillarySystem::capillary_force(
-    const word &name, const volScalarField &alpha,
-    const volScalarField &p_sub_pi) const
+volVectorField capillarySystem::capillary_force(const word &name) const
 {
+    auto &alphaL = phase_system_.phases()[name];
 
     auto &mesh = phase_system_.mesh();
     const word force_name = "F_cap_" + name;
 
-    auto F_flux =
-        fvc::interpolate(alpha) * fvc::snGrad(p_sub_pi) * mesh.magSf();
-    volVectorField force_i(force_name, fvc::reconstruct(F_flux));
+    auto it = capillaryPressureModels_.find(name);
+    if (it == capillaryPressureModels_.end()) {
+        return volVectorField{IOobject{force_name, mesh, IOobject::NO_READ,
+                                       IOobject::NO_WRITE, false},
+                              mesh,
+                              dimensionedVector{dimForce / dimVolume, Zero}};
+    }
+
+    auto [Pc, dPc_d_ln_alphaL [[maybe_unused]]] =
+        it->second->capillary_pressure_with_derivative();
+
+    //    volScalarField Pc{
+    //        IOobject{"Pc", mesh, IOobject::NO_READ, IOobject::NO_WRITE,
+    //        false}, mesh, dimensionedScalar{dimPressure, Zero},
+    //        zeroGradientFvPatchScalarField::typeName};
+    //    Pc.internalFieldRef() = Pc_internal->internalField();
+
+    volVectorField force_i(
+        force_name,
+        //
+        //                           alphaL * fvc::grad(Pc, "grad(Pc)")
+        fvc::reconstruct(fvc::interpolate(alphaL) *
+                         fvc::snGrad(Pc, "snGrad(Pc)") * mesh.magSf())
+        //
+    );
 
     return force_i;
 }

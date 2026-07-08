@@ -35,6 +35,8 @@ SourceFiles
 #include <surfaceTensionCoefficientModel.H>
 #include <runTimeSelectionTables.H>
 
+#include <utility>
+
 namespace Foam::capillaryPressureModels
 {
 
@@ -60,7 +62,15 @@ class capillaryPressureModel
 
     [[nodiscard]] inline auto sigma() const { return sigma_model_.sigma(); }
 
-    [[nodiscard]] virtual tmp<volScalarField> capillary_pressure() const = 0;
+    [[nodiscard]] inline tmp<volScalarField> capillary_pressure() const
+    {
+        return capillary_pressure_with_derivative().first;
+    }
+    // returns Pc and dPc/dln alpha_L
+    [[nodiscard]] virtual std::pair<tmp<volScalarField>, tmp<volScalarField>>
+    capillary_pressure_with_derivative() const = 0;
+
+    inline static const word Pc_derivative_name = "dPc|dln(alpha_L)";
 
     // Declare runtime construction
     declareRunTimeSelectionTable(autoPtr, capillaryPressureModel, dictionary,

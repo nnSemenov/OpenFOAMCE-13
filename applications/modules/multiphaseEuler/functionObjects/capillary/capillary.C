@@ -70,18 +70,16 @@ bool capillary::write()
     }
 
     for (const auto &phase_name : cs.fluid_phase_names()) {
-        const volScalarField p_sub_pi =
-            cs.pressure_difference_from_common_p(phase_name);
-        const volScalarField pi("p_" + phase_name, p - p_sub_pi);
 
         if (write_phase_pressure_) {
+            const volScalarField p_sub_pi =
+                cs.pressure_difference_from_common_p(phase_name);
+            const volScalarField pi("p_" + phase_name, p - p_sub_pi);
             pi.write();
         }
 
         if (write_capillary_force_) {
-            const volScalarField &alpha_i = ps.phases()[phase_name];
-            const volVectorField force_i =
-                cs.capillary_force(phase_name, alpha_i, p_sub_pi);
+            const volVectorField force_i = cs.capillary_force(phase_name);
             force_i.write();
         }
     }
