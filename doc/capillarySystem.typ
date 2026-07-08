@@ -50,17 +50,3 @@ There may be some details around $(bold(g) dot bold(h))nabla rho$ but that's not
 $
     F_"cap" = alpha_i nabla(p-p_i)
 $
-
-== Discretization
-1. Very hard to be implicit
-Although $F_"cap"$ is in propotional with $nabla alpha_L$, it's not very easy to process like turbulence dispersion force. Capillary has no relation with Reynolds' average so there shouldn't be a diffusion term in alpha. This can be done by replacing $U_"dispered"$ with $U_"continuous"$, but too specilizated for 3-phase system and extremely conflicts `multiphaseEuler`. Capillary force is finally discretized explicitly.
-
-2. Explicit on surface
-In `multiphaseEuler`, lift, phase pressure (solid's fake pressure) and turbulent dispersion force is added explicitly to momentum equation. But not as a `volVectorField`, but `surfaceScalarField` for stabilization. Pure cell-center often lead to chess-plate ocsillation.
-$
-F_f = arrow(F) dot arrow(S)_f  \
-$
-Although `multiphaseEuler` have both cell and face based pressure corrector, forces are all turned into fluxes on surface(`fvc::flux(F)`), just minor difference in order of interpolation and flux. For capillary force, both cell and face are equal:
-$
-F_f = alpha_i underbrace(nabla (p-p_i) dot arrow(S)_f,"snGrad" dot "magSf")
-$

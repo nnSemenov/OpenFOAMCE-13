@@ -17,14 +17,10 @@ License
     along with Mikeno.  If not, see <http://www.gnu.org/licenses/>.
 \*---------------------------------------------------------------------------*/
 
+#include "capillarySystem.H"
 #include <Time.H>
 #include <fluidThermo.H>
-// #include <fvcGrad.H>
-// #include <fvcSnGrad.H>
 #include <fvc.H>
-
-#include "capillarySystem.H"
-#include "correctFixedFluxBCs.H"
 
 #include <cassert>
 #include <filesystem>
@@ -64,7 +60,7 @@ std::vector<const phaseModel *> capillarySystem::fluid_phases() const
 
         auto &thermo = phase.thermo();
         if (dynamic_cast<const fluidThermo *>(&thermo) == nullptr) {
-            // Thermo is not fluid thermo, considered to be solid
+            // Thermo is not fluid thermo, considered to be fluid
             continue;
         }
         ret.emplace_back(&phase);
@@ -110,6 +106,7 @@ void capillarySystem::read_capillary_models(const dictionary &dict) &
 volScalarField capillarySystem::pressure_difference_from_common_p(
     const word &phase_i) const
 {
+    auto phases_todo = fluid_phase_names();
 
     auto &mesh = phase_system_.mesh();
     volScalarField diff_p(IOobject("p-p_" + phase_i, mesh, IOobject::NO_READ,
@@ -121,90 +118,6 @@ volScalarField capillarySystem::pressure_difference_from_common_p(
     }
     diff_p = this->capillaryPressureModels_.at(phase_i)->capillary_pressure();
     return diff_p;
-}
-
-void capillarySystem::warn_if_movable_solids(const word &phase) const
-{
-    auto &pm = phase_system_.phases()[phase];
-
-    if (phase == reference_phase_) {
-        return;
-    }
-
-    if (capillaryPressureModels_.find(phase) !=
-        capillaryPressureModels_.end()) {
-        // considered to be fluid
-        return;
-    }
-
-    if (pm.stationary()) {
-        return;
-    }
-
-    WarningInFunction << "Capillary system found movable solid phase " << phase
-                      << ", currently not able to process capillary force on "
-                         "movable solids correctly."
-                      << endl;
-}
-
-tmp<volVectorField> capillarySystem::F(const word &phase) const
-{
-    const word name = "F_cap_" + phase;
-    auto ret = fvc::reconstruct(Ff(phase));
-    ret.ref().rename(name);
-    return ret;
-}
-
-tmp<surfaceScalarField> capillarySystem::Ff(const word &phase) const
-{
-
-    const volScalarField &alpha = phase_system_.phases()[phase];
-    const word name = "Ff_cap_" + phase;
-    auto &mesh = phase_system_.mesh();
-
-    warn_if_movable_solids(phase);
-    if (phase == reference_phase_) {
-        return surfaceScalarField ::New(
-            name, mesh,
-            dimensionedScalar{dimForce / dimVolume * dimArea, Foam::Zero});
-    }
-
-    auto it = capillaryPressureModels_.find(phase);
-    if (it == capillaryPressureModels_.end()) {
-        // Solid phase. Currently only supports stationary solids
-        return surfaceScalarField ::New(
-            name, mesh,
-            dimensionedScalar{dimForce / dimVolume * dimArea, Foam::Zero});
-    }
-
-    auto &cap_model = it->second;
-    auto p_sub_pi = cap_model->capillary_pressure();
-    auto force = fvc::interpolate(alpha) * fvc::snGrad(p_sub_pi, "snGrad(Pc)") *
-        mesh.magSf();
-
-    auto ret = correctFixedFluxBCs(cap_model->interface(), force);
-    ret.ref().rename(name);
-
-    return ret;
-}
-
-void capillarySystem::add_to_Fs(PtrList<surfaceScalarField> &Fs) const
-{
-    add_to_Ffs(Fs);
-}
-
-void capillarySystem::add_to_Ffs(PtrList<surfaceScalarField> &Ffs) const
-{
-
-    assert(Ffs.size() == phase_system_.phases().size());
-    //    PtrList<surfaceScalarField> ret{phase_system_.size()};
-
-    for (auto &fluid : fluid_phases()) {
-        const word &name = fluid->name();
-        auto force = Ff(name);
-
-        addField(*fluid, "Ff", force, Ffs);
-    }
 }
 
 volScalarField capillarySystem::pressure_difference_between_phases(
@@ -235,6 +148,20 @@ volScalarField capillarySystem::pressure_difference_between_phases(
     return diff_p;
 }
 
+volVectorField capillarySystem::capillary_force(
+    const word &name, const volScalarField &alpha,
+    const volScalarField &p_sub_pi) const
+{
+
+    auto &mesh = phase_system_.mesh();
+    const word force_name = "F_cap_" + name;
+
+    auto F_flux =
+        fvc::interpolate(alpha) * fvc::snGrad(p_sub_pi) * mesh.magSf();
+    volVectorField force_i(force_name, fvc::reconstruct(F_flux));
+
+    return force_i;
+}
 
 autoPtr<capillarySystem> capillarySystem::try_read(
     const phaseSystem &phaseSystem, const fvMesh &mesh)
@@ -254,7 +181,7 @@ autoPtr<capillarySystem> capillarySystem::try_read(
         return ret;
     }
 
-    Info << "Skip capillary system because " << dictName << " doesn't exist."
-         << endl;
+    Info << "Skip capillary system because " << dictName << " doesn't exist.";
+    //         << endl;
     return autoPtr<capillarySystem>{nullptr};
 }

@@ -112,9 +112,6 @@ void Foam::solvers::multiphaseEuler::cellPressureCorrector()
     PtrList<surfaceScalarField> FgByADfs;
     {
         PtrList<surfaceScalarField> Ffs(momentumTransferSystem_.Fs());
-        if (capillarySystem_.valid()) {
-            capillarySystem_->add_to_Ffs(Ffs);
-        }
 
         const surfaceScalarField ghSnGradRho
         (

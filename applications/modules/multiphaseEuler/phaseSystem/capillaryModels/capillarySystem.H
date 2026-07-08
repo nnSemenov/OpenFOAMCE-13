@@ -63,8 +63,6 @@ class capillarySystem : public IOdictionary
 
     void read_capillary_models(const dictionary &dict) &;
 
-    void warn_if_movable_solids(const word &phase) const;
-
   public:
     explicit capillarySystem(const phaseSystem &phases);
     ~capillarySystem() override = default;
@@ -99,14 +97,10 @@ class capillarySystem : public IOdictionary
 
     [[nodiscard]] volScalarField pressure_difference_between_phases(
         const word &phase1, const word &phase2) const;
-
-    [[nodiscard]] tmp<surfaceScalarField> Ff(const word &phase) const;
-
-    [[nodiscard]] tmp<volVectorField> F(const word &phase) const;
-
-    void add_to_Fs(PtrList<surfaceScalarField> &Fs) const;
-    //- As Fs, but for the face-based algorithm
-    void add_to_Ffs(PtrList<surfaceScalarField> &Ffs) const;
+    
+    [[nodiscard]] virtual volVectorField capillary_force(
+        const word &name, const volScalarField &alpha,
+        const volScalarField &pressure_diff_from_p) const;
 
     [[nodiscard]] static autoPtr<capillarySystem> try_read(
         const phaseSystem &phaseSystem, const fvMesh &mesh);

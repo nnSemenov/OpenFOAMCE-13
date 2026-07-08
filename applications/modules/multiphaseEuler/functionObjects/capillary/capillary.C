@@ -79,7 +79,9 @@ bool capillary::write()
         }
 
         if (write_capillary_force_) {
-            const volVectorField force_i{cs.F(phase_name)};
+            const volScalarField &alpha_i = ps.phases()[phase_name];
+            const volVectorField force_i =
+                cs.capillary_force(phase_name, alpha_i, p_sub_pi);
             force_i.write();
         }
     }

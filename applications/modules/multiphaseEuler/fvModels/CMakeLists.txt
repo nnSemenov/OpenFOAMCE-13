@@ -63,6 +63,9 @@ add_library(${target_name} SHARED
 
     # Sintering models
     KochFriedlanderSintering/KochFriedlanderSintering.C
+
+    # Capillary models
+    capillary/capillaryForce.C
 )
 
 target_include_directories(${target_name} PUBLIC
