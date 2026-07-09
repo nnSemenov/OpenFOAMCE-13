@@ -40,5 +40,8 @@ capillaryForce {
     type capillaryForce;
     libs ("libmultiphaseEulerFvModels.so");
 
+
+    adjustTimeStep yes;
+    maxFo 1;
 }
 // ************************************************************************* //

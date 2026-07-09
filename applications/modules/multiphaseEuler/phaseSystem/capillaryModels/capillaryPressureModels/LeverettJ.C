@@ -92,7 +92,8 @@ std::pair<tmp<volScalarField>, tmp<volScalarField>> LeverettJ::
             liq.residualAlpha()));
 
     auto J = J0_ + beta_ * log((1 - sat) / sat);
-    auto dJ_d_ln_alphaL = beta_ / (1 - sat);
+    auto dJ_d_ln_alphaL = beta_ / (sat - 1);
+    assert(max(dJ_d_ln_alphaL.ref()).value() <= 0);
 
     auto sqrt_porosity_over_K =
         solid_avg.alpha / (porosity * solid_avg.d) * sqrt(E1_);
@@ -105,6 +106,8 @@ std::pair<tmp<volScalarField>, tmp<volScalarField>> LeverettJ::
 
     tmp<volScalarField> dPc_d_ln_alphaL = Pc_prefix * dJ_d_ln_alphaL;
     dPc_d_ln_alphaL.ref().rename(Pc_derivative_name + interface_.name());
+
+    assert(max(dPc_d_ln_alphaL.ref()).value() <= 0);
 
     return std::make_pair(Pc, dPc_d_ln_alphaL);
 }

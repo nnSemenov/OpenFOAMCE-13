@@ -22,6 +22,7 @@ License
 #include <fluidThermo.H>
 #include <fvc.H>
 #include <zeroGradientFvPatchFields.H>
+#include <dragModel.H>
 
 #include <cassert>
 #include <filesystem>
@@ -164,7 +165,7 @@ volVectorField capillarySystem::capillary_force(const word &name) const
                               dimensionedVector{dimForce / dimVolume, Zero}};
     }
 
-    auto [Pc, dPc_d_ln_alphaL [[maybe_unused]]] =
+    [[maybe_unused]] auto [Pc, dPc_d_ln_alphaL] =
         it->second->capillary_pressure_with_derivative();
 
     //    volScalarField Pc{
@@ -175,14 +176,68 @@ volVectorField capillarySystem::capillary_force(const word &name) const
 
     volVectorField force_i(
         force_name,
-        //
-        //                           alphaL * fvc::grad(Pc, "grad(Pc)")
         fvc::reconstruct(fvc::interpolate(alphaL) *
                          fvc::snGrad(Pc, "snGrad(Pc)") * mesh.magSf())
-        //
     );
 
     return force_i;
+}
+
+volScalarField capillarySystem::alpha_diffusivity(const word &name) const
+{
+    auto &alpha_ref = phase_system_.phases()[reference_phase_];
+    auto &alphaL = phase_system_.phases()[name];
+    auto &mesh = phase_system_.mesh();
+
+    volScalarField D_eff{IOobject{"D_eff_" + alphaL.name(), mesh,
+                                  IOobject::NO_READ, IOobject::NO_WRITE, false},
+                         mesh, dimensionedScalar{dimKinematicViscosity, -small},
+                         zeroGradientFvPatchScalarField::typeName};
+
+    auto it = capillaryPressureModels_.find(name);
+    if (it == capillaryPressureModels_.end()) {
+        return D_eff;
+    }
+
+    auto [_, dPc_d_ln_alphaL] =
+        it->second->capillary_pressure_with_derivative();
+    assert(max(dPc_d_ln_alphaL.ref()).value() <= 0);
+
+    auto &K_model = [&]() -> const blendedDragModel & {
+        auto &interface = it->second->interface();
+        if (phase_system_.foundInterfacialModel<blendedDragModel>(interface)) {
+            return phase_system_.lookupInterfacialModel<blendedDragModel>(
+                interface);
+        }
+        phaseInterface interface_inv{interface.phase2(), interface.phase1()};
+        return phase_system_.lookupInterfacialModel<blendedDragModel>(
+            interface_inv);
+    }();
+#warning "TODO: Add K_SL"
+
+    auto K_sum =
+        (1 + alphaL / max(alpha_ref, alpha_ref.residualAlpha())) * K_model.K();
+    assert(min(K_sum.ref()).value() > 0);
+
+    auto add = sqr(alphaL) * dPc_d_ln_alphaL / K_sum;
+    D_eff.internalFieldRef() = add->internalField();
+
+    // This diffusivity should be negative, because capillary force is inverse
+    // direction than grad(alpha).
+    assert(max(D_eff).value() <= 0);
+    return D_eff;
+}
+volScalarField capillarySystem::most_alpha_diffusivity() const
+{
+    volScalarField ret = alpha_diffusivity(reference_phase_);
+    for (auto &[phase, _] : capillaryPressureModels_) {
+        auto D_eff = alpha_diffusivity(phase);
+        // Take minimum value because diffusivity should be non-positive
+        ret.internalFieldRef() =
+            min(ret.internalField(), D_eff.internalField());
+        assert(max(ret).value() <= 0);
+    }
+    return ret;
 }
 
 autoPtr<capillarySystem> capillarySystem::try_read(

@@ -29,21 +29,8 @@ Example
         type capillaryForce;
         libs ("libmultiphaseEulerFvModels.so");
 
-        referencePhase air;
-        capillaryPressure {
-            air_to_water {
-                type LeverettJ;
-
-                // theta ...
-                solids (solid);
-                liquid water;
-
-                J0 0.48;
-                beta 0.036;
-
-                E1 180;
-            }
-        }
+        adjustTimeStep yes;
+        maxFo 1;
     }
 
 SourceFiles
@@ -55,6 +42,7 @@ SourceFiles
 #define MIKENO_multiphaseEuler_capillaryForce_H
 
 #include <fvModel.H>
+#include <optional>
 
 #include "capillarySystem.H"
 
@@ -63,7 +51,9 @@ namespace Foam::fv
 class capillaryForce : public fvSource
 {
   protected:
-    void read_capillary_model(const dictionary &dict) &;
+    std::optional<scalar> maxFo_;
+
+    void read_coeffs(const dictionary &dict) &;
 
   public:
     capillaryForce(const word &name, const word &modelType, const fvMesh &mesh,
@@ -76,7 +66,7 @@ class capillaryForce : public fvSource
     [[nodiscard]] word match_phase_from_field(const capillarySystem &,
                                               const word &fieldName) const;
 
-    bool addsSupToField(const word &fieldName) const override;
+    [[nodiscard]] bool addsSupToField(const word &fieldName) const override;
 
     void addSup(const volScalarField &alphai, const volScalarField &rhoi,
                 const volVectorField &Ui, fvVectorMatrix &UiEqn) const override;
@@ -87,6 +77,8 @@ class capillaryForce : public fvSource
     inline void distribute(const polyDistributionMap &) override {};
 
     bool read(const dictionary &dict) override;
+
+    [[nodiscard]] scalar maxDeltaT() const override;
 };
 } // namespace Foam::fv
 

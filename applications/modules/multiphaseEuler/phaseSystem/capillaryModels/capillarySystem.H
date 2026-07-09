@@ -97,9 +97,15 @@ class capillarySystem : public IOdictionary
 
     [[nodiscard]] volScalarField pressure_difference_between_phases(
         const word &phase1, const word &phase2) const;
-    
+
     [[nodiscard]] virtual volVectorField capillary_force(
         const word &name) const;
+
+    [[nodiscard]] volScalarField alpha_diffusivity(const word &name) const;
+
+    // Note that diffusivity is negative, most means that with largest
+    // magnitude. Large magnitude means non-stable
+    [[nodiscard]] volScalarField most_alpha_diffusivity() const;
 
     [[nodiscard]] static autoPtr<capillarySystem> try_read(
         const phaseSystem &phaseSystem, const fvMesh &mesh);

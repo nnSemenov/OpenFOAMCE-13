@@ -57,6 +57,8 @@ class capillaryPressureModel
 
     virtual ~capillaryPressureModel() = default;
 
+    [[nodiscard]] inline auto &interface() const & { return interface_; }
+
     static const surfaceTensionCoefficientModel &sigmaModel(
         const dictionary &dict, const phaseInterface &interface);
 

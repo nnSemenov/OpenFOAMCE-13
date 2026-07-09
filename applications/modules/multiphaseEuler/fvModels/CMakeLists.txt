@@ -116,6 +116,9 @@ target_compile_definitions(${target_name} PRIVATE
     LIB_NAME=lib${target_name}.so
 )
 
+target_compile_features(${target_name} PRIVATE
+    cxx_std_23
+)
 
 set(FOAM_regular_libraries "${FOAM_regular_libraries};${target_name}" PARENT_SCOPE)
 

@@ -21,6 +21,9 @@ License
 #include "capillaryForce.H"
 #include <addToRunTimeSelectionTable.H>
 #include <fvcGrad.H>
+#include <volFields.H>
+
+#include <cassert>
 
 namespace Foam::fv
 {
@@ -34,12 +37,30 @@ fv::capillaryForce::capillaryForce(const word &name, const word &modelType,
                                    const fvMesh &mesh, const dictionary &dict)
     : fvSource{name, modelType, mesh, dict}
 {
+    read_coeffs(dict);
 }
 
+void fv::capillaryForce::read_coeffs(const dictionary &dict) &
+{
+    const bool control_time_step = dict.lookup("adjustTimeStep");
+    if (not control_time_step) {
+        maxFo_ = std::nullopt;
+    }
+    else {
+        const auto val = dict.lookup<scalar>("maxFo");
+        if ((not std::isfinite(val)) or val <= 0) {
+            FatalErrorInFunction << "Invalid maxFo for capillary model " << val
+                                 << exit(FatalIOError);
+        }
+        maxFo_ = val;
+    }
+}
 
 bool fv::capillaryForce::read(const dictionary &dict)
 {
     if (fvSource::read(dict)) {
+        read_coeffs(dict);
+
         return true;
     }
     return false;
@@ -101,4 +122,26 @@ void fv::capillaryForce::addSup(const volScalarField &alphai,
 
     // alphai * fvc::grad(deltaP, "grad(Pc)");
     UiEqn += force;
+}
+
+scalar fv::capillaryForce::maxDeltaT() const
+{
+    if (not maxFo_) {
+        return vGreat;
+    }
+
+    const scalar maxFo = maxFo_.value();
+    auto &cs = get_capillary_system();
+    auto most_diffusivity = cs.most_alpha_diffusivity();
+
+    volScalarField D_eff(Foam::mag(most_diffusivity));
+    assert(min(D_eff).value() > 0);
+
+    const label N_dims = mesh().nGeometricD();
+
+    auto deltaT = maxFo * sqr(cbrt(mesh().V())) / (2 * N_dims * D_eff);
+
+    const scalar deltaT_min = min(deltaT);
+    assert(deltaT_min > 0);
+    return deltaT_min;
 }
