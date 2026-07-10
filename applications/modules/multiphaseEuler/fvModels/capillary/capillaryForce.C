@@ -35,14 +35,14 @@ using namespace Foam;
 
 fv::capillaryForce::capillaryForce(const word &name, const word &modelType,
                                    const fvMesh &mesh, const dictionary &dict)
-    : fvSource{name, modelType, mesh, dict}
+    : fvSource{name, modelType, mesh, dict}, maxFo_{std::nullopt}
 {
     read_coeffs(dict);
 }
 
 void fv::capillaryForce::read_coeffs(const dictionary &dict) &
 {
-    const bool control_time_step = dict.lookup("adjustTimeStep");
+    const bool control_time_step = dict.lookup<bool>("adjustTimeStep");
     if (not control_time_step) {
         maxFo_ = std::nullopt;
     }
@@ -120,14 +120,13 @@ void fv::capillaryForce::addSup(const volScalarField &alphai,
 
     auto force = cs.capillary_force(phase_name);
 
-    // alphai * fvc::grad(deltaP, "grad(Pc)");
     UiEqn += force;
 }
 
 scalar fv::capillaryForce::maxDeltaT() const
 {
-    if (not maxFo_) {
-        return vGreat;
+    if (not maxFo_.has_value()) {
+        return fvSource::maxDeltaT();
     }
 
     const scalar maxFo = maxFo_.value();
@@ -139,9 +138,10 @@ scalar fv::capillaryForce::maxDeltaT() const
 
     const label N_dims = mesh().nGeometricD();
 
+#warning "TODO: use deltaX on direction of grad(alpha.liquid)"
     auto deltaT = maxFo * sqr(cbrt(mesh().V())) / (2 * N_dims * D_eff);
 
-    const scalar deltaT_min = min(deltaT);
+    const scalar deltaT_min = gMin(deltaT);
     assert(deltaT_min > 0);
     return deltaT_min;
 }

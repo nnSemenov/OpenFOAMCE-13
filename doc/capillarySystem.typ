@@ -50,3 +50,47 @@ There may be some details around $(bold(g) dot bold(h))nabla rho$ but that's not
 $
     F_"cap" = alpha_i nabla(p-p_i)
 $
+/*
+== Semi-implicit discretization
+For any moving fluid phase $i$ (not reference phase), momentum balance is approximatly good:
+$
+(D)/(D t)(alpha_i rho_i U_i)=0 \
+$
+$
+0 &= -alpha_i nabla p + alpha_i rho_i g + K_("ref",i)(U_"ref"-U_i)+ sum_(j!=i\ j!="ref")K_(i j)(U_j-U_i) + (dif P_(c,i))/(dif alpha_i) nabla alpha_i \
+0 &= -alpha_"ref" nabla p + alpha_"ref" rho_"ref" g + K_("ref",i)(U_i - U_"ref") + sum_(j!=i\ j!="ref")K_(i j)(U_j-U_"ref")
+$
+
+Where $j$ refers to all phases including stationary solid. For stationary phases, $U_j=0$. If without drag force, $K_(i j)=0$.
+
+By elimiating pressure gradient:
+$
+U_i [K_("ref",i)(alpha_i+alpha_"ref")/(alpha_i alpha_"ref")+sum_(j!=i\ j!="ref")K_(i j)/alpha_i] =
+    & U_"ref" [(alpha_i+alpha_"ref")/(alpha_i alpha_"ref")K_("ref",i) + sum_(j!=i\ j!="ref")K_("ref",j)/alpha_"ref"] + sum_(j!=i\ j!="ref") + (rho_i - rho_"ref")g + (dif P_(c,i))/(dif alpha_i) nabla alpha_i \
+    & + sum_(j!=i\ j!="ref")(K_(i j)/alpha_i + K_("ref",j)/alpha_"ref") U_j
+$
+Multiplying with $alpha_i$ on both sides:
+$
+U_i underbrace([K_("ref",i)(1+alpha_i/alpha_"ref") + sum_(j!=i\ j!="ref") K_(i j)],"Deno") =
+    & U_"ref" [(1+alpha_i/alpha_"ref")K_("ref",i) + sum_(j!=i\ j!="ref")alpha_i/alpha_"ref"K_("ref",j)] + alpha_i (rho_i-rho_"ref")g \
+    & + (dif P_(c,i))/(dif ln alpha_i) nabla alpha_i +  sum_(j!=i\ j!="ref")(K_(i j) + alpha_i/alpha_"ref" K_("ref",j) ) U_j
+$
+
+Then, discrete phase flux is expressed as other velocities:
+$
+alpha_i U_i & = alpha_i ((1+alpha_i/alpha_"ref")K_("ref",i) + sum_(j!=i\ j!="ref")alpha_i/alpha_"ref"K_("ref",j))/("Deno") U_"ref" + (alpha_i^2(rho_i-rho_"ref"))/"Deno" g + (alpha_i)/"Deno" (dif P_(c,i))/(dif ln alpha_i) nabla alpha_i \
+            & + alpha_i (sum_(j!=i\ j!="ref")(K_(i j) + alpha_i/alpha_"ref" K_("ref",j))U_j)/"Deno"
+$
+
+Taking divergence of each terms:
+1. Terms with vectors can be made into flux(`fvc::flux`) and implicitly discretized (`fvm::div`).
+2. Gravity term can be discretized with `fvm::SuSp`:
+$
+nabla dot ((alpha_i^2 (rho_i - rho_"ref"))/"Deno" g) = alpha_i [nabla dot ((alpha_i (rho_i - rho_"ref"))/"Deno" g) + (nabla alpha_i) dot ((rho_i-rho_"ref")/"Deno" g)]
+$
+3. Capillary term is discretized with `fvm::laplacian`:
+$
+nabla dot (alpha_i/"Deno" (dif P_(c,i))/(dif ln alpha_i) nabla alpha_i)
+$
+
+*/

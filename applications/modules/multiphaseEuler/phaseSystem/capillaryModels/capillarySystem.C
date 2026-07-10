@@ -168,17 +168,12 @@ volVectorField capillarySystem::capillary_force(const word &name) const
     [[maybe_unused]] auto [Pc, dPc_d_ln_alphaL] =
         it->second->capillary_pressure_with_derivative();
 
-    //    volScalarField Pc{
-    //        IOobject{"Pc", mesh, IOobject::NO_READ, IOobject::NO_WRITE,
-    //        false}, mesh, dimensionedScalar{dimPressure, Zero},
-    //        zeroGradientFvPatchScalarField::typeName};
-    //    Pc.internalFieldRef() = Pc_internal->internalField();
+    surfaceScalarField force_f(
+        fvc::interpolate(dPc_d_ln_alphaL) * fvc::snGrad(alphaL) * mesh.magSf()
 
-    volVectorField force_i(
-        force_name,
-        fvc::reconstruct(fvc::interpolate(alphaL) *
-                         fvc::snGrad(Pc, "snGrad(Pc)") * mesh.magSf())
     );
+
+    volVectorField force_i(force_name, fvc::reconstruct(force_f));
 
     return force_i;
 }
