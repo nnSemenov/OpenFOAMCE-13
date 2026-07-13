@@ -4,17 +4,26 @@
    \\    /   O peration     | Website:  https://openfoam.org
     \\  /    A nd           | Version:  dev
      \\/     M anipulation  |
--------------------------------------------------------------------------------
-Description
-    Calculate the total energy-flux (i.e., advective plus diffusive) and write
-    it as a surfaceScalarField 'energyFlux'.
-
 \*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      codeBlockOptions;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-type            energyFlux;
-libs            ("libfieldFunctionObjects.so");
+codeOptions
+#{
+EXE_INC = -g \
+    -fno-show-column -fno-diagnostics-show-caret \
+#};
 
-executeControl  writeTime;
-writeControl    writeTime;
+codeLibs
+#{
+LIB_LIBS = \
+    -lOpenFOAM \
+#};
+
 
 // ************************************************************************* //
