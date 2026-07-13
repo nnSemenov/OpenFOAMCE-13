@@ -56,6 +56,8 @@ class capillarySystem : public IOdictionary
   protected:
     const phaseSystem &phase_system_;
 
+    bool use_snGrad_{false};
+
     // Reference phase for capillary.
     const word reference_phase_;
     std::map<word, autoPtr<capillaryPressureModels::capillaryPressureModel>>

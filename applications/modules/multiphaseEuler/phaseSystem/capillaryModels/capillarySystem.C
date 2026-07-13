@@ -83,6 +83,9 @@ std::vector<word> capillarySystem::fluid_phase_names() const
 
 void capillarySystem::read_capillary_models(const dictionary &dict) &
 {
+    this->capillaryPressureModels_.clear();
+    this->use_snGrad_ = dict.lookup<bool>("useSnGrad");
+
     auto phases_todo = fluid_phases();
 
     const phaseModel &reference = phase_system_.phases()[reference_phase_];
@@ -157,23 +160,27 @@ volVectorField capillarySystem::capillary_force(const word &name) const
     auto &mesh = phase_system_.mesh();
     const word force_name = "F_cap_" + name;
 
+    volVectorField force_i{IOobject{force_name, mesh, IOobject::NO_READ,
+                                    IOobject::NO_WRITE, false},
+                           mesh, dimensionedVector{dimForce / dimVolume, Zero}};
+
     auto it = capillaryPressureModels_.find(name);
     if (it == capillaryPressureModels_.end()) {
-        return volVectorField{IOobject{force_name, mesh, IOobject::NO_READ,
-                                       IOobject::NO_WRITE, false},
-                              mesh,
-                              dimensionedVector{dimForce / dimVolume, Zero}};
+        return force_i;
     }
 
     [[maybe_unused]] auto [Pc, dPc_d_ln_alphaL] =
         it->second->capillary_pressure_with_derivative();
 
-    surfaceScalarField force_f(
-        fvc::interpolate(dPc_d_ln_alphaL) * fvc::snGrad(alphaL) * mesh.magSf()
-
-    );
-
-    volVectorField force_i(force_name, fvc::reconstruct(force_f));
+    if (use_snGrad_) {
+        surfaceScalarField force_f(fvc::interpolate(dPc_d_ln_alphaL) *
+                                   fvc::snGrad(alphaL, "snGrad(alpha)") *
+                                   mesh.magSf());
+        force_i = fvc::reconstruct(force_f);
+    }
+    else {
+        force_i = dPc_d_ln_alphaL * fvc::grad(alphaL, "grad(alpha)");
+    }
 
     return force_i;
 }

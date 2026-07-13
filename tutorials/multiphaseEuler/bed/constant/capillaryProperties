@@ -5,6 +5,8 @@ FoamFile {
     object      capillaryProperties;
 }
 
+useSnGrad yes;
+
 referencePhase air;
 capillaryPressure {
     air_to_water {
