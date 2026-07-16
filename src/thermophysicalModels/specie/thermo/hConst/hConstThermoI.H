@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2023 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,6 +22,9 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 \*---------------------------------------------------------------------------*/
+
+#include "hConstThermo.H"
+#include "thermodynamicConstants.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -83,7 +86,7 @@ inline Foam::scalar Foam::hConstThermo<EquationOfState>::limit
 
 template<class EquationOfState>
 inline Foam::scalar Foam::hConstThermo<EquationOfState>::ideal_Cp(
-    const scalar p, 
+    const scalar p,
     const scalar T
 ) const {
     return Cp_;
@@ -101,7 +104,7 @@ inline Foam::scalar Foam::hConstThermo<EquationOfState>::Cp
 
 template<class EquationOfState>
 inline Foam::scalar Foam::hConstThermo<EquationOfState>::ideal_hs(
-    const scalar p, 
+    const scalar p,
     const scalar T
 ) const {
     return Cp_*(T - Tref_) + hsRef_;
@@ -119,7 +122,7 @@ inline Foam::scalar Foam::hConstThermo<EquationOfState>::hs
 
 template<class EquationOfState>
 inline Foam::scalar Foam::hConstThermo<EquationOfState>::ideal_ha(
-    const scalar p, 
+    const scalar p,
     const scalar T
 ) const {
     return ideal_hs(p, T) + hf();
@@ -144,9 +147,10 @@ inline Foam::scalar Foam::hConstThermo<EquationOfState>::hf() const
 
 template<class EquationOfState>
 inline Foam::scalar Foam::hConstThermo<EquationOfState>::ideal_s(
-    const scalar p, 
+    const scalar p,
     const scalar T
 ) const {
+    using namespace constant::thermodynamic;
     return Cp_*log(T/Tstd);
 }
 
@@ -167,6 +171,8 @@ inline Foam::scalar Foam::hConstThermo<EquationOfState>::gStd
     const scalar T
 ) const
 {
+    using namespace constant::thermodynamic;
+
     return Cp_*(T - Tref_) + hsRef_ + hf() - Cp_*T*log(T/Tstd);
 }
 

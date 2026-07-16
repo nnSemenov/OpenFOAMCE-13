@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2013-2023 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2013-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -105,7 +105,9 @@ inline Foam::scalar Foam::linear<Specie>::Cv(scalar p, scalar T) const
 template<class Specie>
 inline Foam::scalar Foam::linear<Specie>::sp(scalar p, scalar T) const
 {
-    return -log((rho0_ + psi_*p)/(rho0_ + psi_*constant::thermodynamic::pStd))/(T*psi_);
+    using namespace constant::thermodynamic;
+
+    return -log((rho0_ + psi_*p)/(rho0_ + psi_*pStd))/(T*psi_);
 }
 
 

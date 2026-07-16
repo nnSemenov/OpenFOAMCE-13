@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Version:  13
+    \\  /    A nd           | Version:  dev
      \\/     M anipulation  |
 \*---------------------------------------------------------------------------*/
 FoamFile
@@ -48,6 +48,7 @@ transport
     tabulated
     WLF
     Andrade
+    NSRDS
 );
 
 thermo
@@ -63,6 +64,8 @@ thermo
     hPower
     hTabulated
     janaf
+    NSRDS
+    NSRDS14
 );
 
 equationOfState
@@ -76,6 +79,7 @@ equationOfState
     PengRobinson
     RedlichKwong
     PatelTejaValderrama
+    NSRDS
     perfectFluid
     perfectGas
     rhoConst
@@ -93,7 +97,6 @@ codeOptions
 EXE_INC = \
     -I$(LIB_SRC)/physicalProperties/lnInclude \
     -I$(LIB_SRC)/thermophysicalModels/specie/lnInclude \
-    -I$(LIB_SRC)/thermophysicalModels/thermophysicalProperties/lnInclude \
     -I$(LIB_SRC)/thermophysicalModels/basic/lnInclude \
     -I$(LIB_SRC)/finiteVolume/lnInclude
 #};

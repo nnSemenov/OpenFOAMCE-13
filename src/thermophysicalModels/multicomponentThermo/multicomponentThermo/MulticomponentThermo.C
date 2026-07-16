@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -185,7 +185,7 @@ Foam::dimensionedScalar Foam::MulticomponentThermo<BaseThermo>::Wi
         dimensionedScalar
         (
             "W",
-            dimMass/dimMoles,
+            dimensions::mass/dimensions::moles,
             this->specieThermo(speciei).W()
         );
 }
@@ -215,7 +215,7 @@ Foam::MulticomponentThermo<BaseThermo>::rhoi
     return volScalarFieldPropertyi
     (
         "rho",
-        dimDensity,
+        dimensions::density,
         &BaseThermo::mixtureType::thermoType::rho,
         speciei,
         absolutePressureVol(p, BaseThermo::pOffset()),
@@ -248,7 +248,7 @@ Foam::MulticomponentThermo<BaseThermo>::Cpi
     return volScalarFieldPropertyi
     (
         "Cp",
-        dimEnergy/dimMass/dimTemperature,
+        dimensions::specificHeatCapacity,
         &BaseThermo::mixtureType::thermoType::Cp,
         speciei,
         absolutePressureVol(p, BaseThermo::pOffset()),
@@ -299,7 +299,7 @@ Foam::MulticomponentThermo<BaseThermo>::hei
     return volInternalScalarFieldPropertyi
     (
         "he",
-        dimEnergy/dimMass,
+        dimensions::specificEnergy,
         &BaseThermo::mixtureType::thermoType::he,
         speciei,
         absolutePressurePatch(p, BaseThermo::pOffset()),
@@ -320,7 +320,7 @@ Foam::MulticomponentThermo<BaseThermo>::hei
     return volScalarFieldPropertyi
     (
         "he",
-        dimEnergy/dimMass,
+        dimensions::specificEnergy,
         &BaseThermo::mixtureType::thermoType::he,
         speciei,
         absolutePressureVol(p, BaseThermo::pOffset()),
@@ -371,7 +371,7 @@ Foam::MulticomponentThermo<BaseThermo>::hsi
     return volInternalScalarFieldPropertyi
     (
         "hs",
-        dimEnergy/dimMass,
+        dimensions::specificEnergy,
         &BaseThermo::mixtureType::thermoType::hs,
         speciei,
         absolutePressurePatch(p, BaseThermo::pOffset()),
@@ -392,7 +392,7 @@ Foam::MulticomponentThermo<BaseThermo>::hsi
     return volScalarFieldPropertyi
     (
         "hs",
-        dimEnergy/dimMass,
+        dimensions::specificEnergy,
         &BaseThermo::mixtureType::thermoType::hs,
         speciei,
         absolutePressureVol(p, BaseThermo::pOffset()),
@@ -443,7 +443,7 @@ Foam::MulticomponentThermo<BaseThermo>::hai
     return volInternalScalarFieldPropertyi
     (
         "ha",
-        dimEnergy/dimMass,
+        dimensions::specificEnergy,
         &BaseThermo::mixtureType::thermoType::ha,
         speciei,
         absolutePressurePatch(p, BaseThermo::pOffset()),
@@ -464,7 +464,7 @@ Foam::MulticomponentThermo<BaseThermo>::hai
     return volScalarFieldPropertyi
     (
         "ha",
-        dimEnergy/dimMass,
+        dimensions::specificEnergy,
         &BaseThermo::mixtureType::thermoType::ha,
         speciei,
         absolutePressureVol(p, BaseThermo::pOffset()),
@@ -483,7 +483,7 @@ Foam::dimensionedScalar Foam::MulticomponentThermo<BaseThermo>::hfi
         dimensionedScalar
         (
             "hf",
-            dimEnergy/dimMass,
+            dimensions::specificEnergy,
             this->specieThermo(speciei).hf()
         );
 }
@@ -523,7 +523,7 @@ Foam::MulticomponentThermo<BaseThermo>::kappai
     return volScalarFieldPropertyi
     (
         "kappa",
-        dimThermalConductivity,
+        dimensions::thermalConductivity,
         &BaseThermo::mixtureType::thermoType::kappa,
         speciei,
         absolutePressureVol(p, BaseThermo::pOffset()),

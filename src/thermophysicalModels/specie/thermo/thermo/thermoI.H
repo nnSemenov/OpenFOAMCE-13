@@ -24,8 +24,8 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "thermo.H"
+#include "thermodynamicConstants.H"
 #include "IOmanip.H"
-#include "IOstreams.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -119,6 +119,8 @@ template<class Thermo, template<class> class Type>
 inline Foam::scalar
 Foam::species::thermo<Thermo, Type>::K(const scalar p, const scalar T) const
 {
+    using namespace constant::thermodynamic;
+
     scalar arg = -this->Y()*this->gStd(T)/(RR*T);
 
     if (arg < 600)
@@ -144,6 +146,8 @@ template<class Thermo, template<class> class Type>
 inline Foam::scalar
 Foam::species::thermo<Thermo, Type>::Kc(const scalar p, const scalar T) const
 {
+    using namespace constant::thermodynamic;
+
     const scalar nm = this->Y()/this->W();
 
     if (equal(nm, small))
@@ -164,6 +168,8 @@ inline Foam::scalar Foam::species::thermo<Thermo, Type>::Kx
     const scalar T
 ) const
 {
+    using namespace constant::thermodynamic;
+
     const scalar nm = this->Y()/this->W();
 
     if (equal(nm, small))
@@ -185,6 +191,8 @@ inline Foam::scalar Foam::species::thermo<Thermo, Type>::Kn
     const scalar n
 ) const
 {
+    using namespace constant::thermodynamic;
+
     const scalar nm = this->Y()/this->W();
 
     if (equal(nm, small))
@@ -379,6 +387,8 @@ Foam::species::thermo<Thermo, Type>::dKcdTbyKc
     const scalar T
 ) const
 {
+    using namespace constant::thermodynamic;
+
     const scalar dKcdTbyKc =
         (this->s(pStd, T) + this->gStd(T)/T)*this->Y()/(RR*T);
 

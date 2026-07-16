@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -392,7 +392,7 @@ Foam::BasicThermo<MixtureType, BasicThermoType>::BasicThermo
         volScalarFieldProperty
         (
             "he",
-            dimEnergy/dimMass,
+            dimensions::specificEnergy,
             &MixtureType::thermoMixture,
             &MixtureType::thermoMixtureType::he,
             absolutePressureVol(this->p_, this->pOffset(), mesh),
@@ -413,7 +413,7 @@ Foam::BasicThermo<MixtureType, BasicThermoType>::BasicThermo
             mesh
         ),
         mesh,
-        dimensionedScalar(dimEnergy/dimMass/dimTemperature, Zero)
+        dimensionedScalar(dimensions::specificHeatCapacity, Zero)
     ),
 
     Cv_
@@ -425,7 +425,7 @@ Foam::BasicThermo<MixtureType, BasicThermoType>::BasicThermo
             mesh
         ),
         mesh,
-        dimensionedScalar(dimEnergy/dimMass/dimTemperature, Zero)
+        dimensionedScalar(dimensions::specificHeatCapacity, Zero)
     )
 {
     heBoundaryCorrection(he_);
@@ -448,7 +448,7 @@ Foam::BasicThermo<MixtureType, BasicThermoType>::W() const
     return volScalarFieldProperty
     (
         "W",
-        dimMass/dimMoles,
+        dimensions::mass/dimensions::moles,
         &MixtureType::thermoMixture,
         &MixtureType::thermoMixtureType::W
     );
@@ -497,7 +497,7 @@ Foam::BasicThermo<MixtureType, BasicThermoType>::he
     return volScalarFieldProperty
     (
         "he",
-        dimEnergy / dimMass,
+        dimensions::specificEnergy,
         &MixtureType::thermoMixture,
         &MixtureType::thermoMixtureType::he,
         absolutePressureVol(p, this->pOffset()),
@@ -517,7 +517,7 @@ Foam::BasicThermo<MixtureType, BasicThermoType>::he
     return volInternalScalarFieldProperty
     (
         "he",
-        dimEnergy / dimMass,
+        dimensions::specificEnergy,
         &MixtureType::thermoMixture,
         &MixtureType::thermoMixtureType::he,
         absolutePressurePatch(p,this->pOffset()),
@@ -576,7 +576,7 @@ Foam::BasicThermo<MixtureType, BasicThermoType>::he
     return fieldSourceProperty
     (
         "he",
-        dimEnergy/dimMass,
+        dimensions::specificEnergy,
         &MixtureType::thermoMixture,
         &MixtureType::thermoMixtureType::he,
         model,
@@ -617,7 +617,7 @@ Foam::BasicThermo<MixtureType, BasicThermoType>::hs() const
     return volScalarFieldProperty
     (
         "hs",
-        dimEnergy / dimMass,
+        dimensions::specificEnergy,
         &MixtureType::thermoMixture,
         &MixtureType::thermoMixtureType::hs,
         absolutePressureVol(this->p_, this->pOffset(), this->mesh()),
@@ -637,7 +637,7 @@ Foam::BasicThermo<MixtureType, BasicThermoType>::hs
     return volScalarFieldProperty
     (
         "hs",
-        dimEnergy/dimMass,
+        dimensions::specificEnergy,
         &MixtureType::thermoMixture,
         &MixtureType::thermoMixtureType::hs,
         absolutePressureVol(p, this->pOffset(), this->mesh()),
@@ -657,7 +657,7 @@ Foam::BasicThermo<MixtureType, BasicThermoType>::hs
     return volInternalScalarFieldProperty
     (
         "hs",
-        dimEnergy/dimMass,
+        dimensions::specificEnergy,
         &MixtureType::thermoMixture,
         &MixtureType::thermoMixtureType::hs,
         absolutePressurePatch(p, this->pOffset(), this->mesh()),
@@ -711,7 +711,7 @@ Foam::BasicThermo<MixtureType, BasicThermoType>::ha() const
     return volScalarFieldProperty
     (
         "ha",
-        dimEnergy / dimMass,
+        dimensions::specificEnergy,
         &MixtureType::thermoMixture,
         &MixtureType::thermoMixtureType::ha,
         absolutePressureVol(this->p_, this->pOffset(), this->mesh()),
@@ -731,7 +731,7 @@ Foam::BasicThermo<MixtureType, BasicThermoType>::ha
     return volScalarFieldProperty
     (
         "ha",
-        dimEnergy / dimMass,
+        dimensions::specificEnergy,
         &MixtureType::thermoMixture,
         &MixtureType::thermoMixtureType::ha,
         absolutePressureVol(p, this->pOffset(), this->mesh()),
@@ -751,7 +751,7 @@ Foam::BasicThermo<MixtureType, BasicThermoType>::ha
     return volInternalScalarFieldProperty
     (
         "ha",
-        dimEnergy / dimMass,
+        dimensions::specificEnergy,
         &MixtureType::thermoMixture,
         &MixtureType::thermoMixtureType::ha,
         absolutePressurePatch(p, this->pOffset(), this->mesh()),
@@ -867,7 +867,7 @@ Foam::BasicThermo<MixtureType, BasicThermoType>::The
     return volScalarFieldProperty
     (
         "T",
-        dimTemperature,
+        dimensions::temperature,
         &MixtureType::thermoMixture,
         &MixtureType::thermoMixtureType::The,
         h,
