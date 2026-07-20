@@ -22,8 +22,7 @@ target_link_libraries(${target_name} PRIVATE
 
     compressibleTwoPhases 
     physicalProperties 
-    fluidThermophysicalModels 
-    saturationModels 
+    fluidThermophysicalModels
     finiteVolume 
     meshTools
 )

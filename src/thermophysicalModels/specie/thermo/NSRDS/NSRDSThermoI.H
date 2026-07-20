@@ -74,6 +74,12 @@ inline Foam::scalar Foam::NSRDSThermo<EquationOfState>::limit
     return T;
 }
 
+template <class EquationOfState>
+inline Foam::scalar Foam::NSRDSThermo<EquationOfState>::ideal_Cp(
+    const scalar p, const scalar T) const
+{
+    return CpCoeffs_.value(T);
+}
 
 template<class EquationOfState>
 inline Foam::scalar Foam::NSRDSThermo<EquationOfState>::Cp
@@ -82,9 +88,22 @@ inline Foam::scalar Foam::NSRDSThermo<EquationOfState>::Cp
     const scalar T
 ) const
 {
-    return CpCoeffs_.value(T) + EquationOfState::Cp(p, T);
+    return ideal_Cp(p, T) + EquationOfState::Cp(p, T);
 }
 
+template <class EquationOfState>
+inline Foam::scalar Foam::NSRDSThermo<EquationOfState>::ideal_hs(
+    const scalar p, const scalar T) const
+{
+    return CpCoeffs_.integral(T) - hsRef_;
+}
+
+template <class EquationOfState>
+inline Foam::scalar Foam::NSRDSThermo<EquationOfState>::ideal_ha(
+    const scalar p, const scalar T) const
+{
+    return ideal_hs(p, T) + hf();
+}
 
 template<class EquationOfState>
 inline Foam::scalar Foam::NSRDSThermo<EquationOfState>::hs
@@ -93,7 +112,7 @@ inline Foam::scalar Foam::NSRDSThermo<EquationOfState>::hs
     const scalar T
 ) const
 {
-    return CpCoeffs_.integral(T) - hsRef_ + EquationOfState::h(p, T);
+    return ideal_hs(p, T) + EquationOfState::h(p, T);
 }
 
 

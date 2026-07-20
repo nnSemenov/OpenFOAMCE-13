@@ -186,8 +186,19 @@ public:
             //- Return volumetric coefficient of thermal expansion [1/T]
             inline scalar alphav(const scalar p, const scalar T) const;
 
+            //- Return isothermal enthalpy-pressure derivative [m^3/kg]
+            inline scalar dhdp_T(const scalar p, const scalar T) const;
 
-        // IO
+            //- Return isothermal internal energy-pressure derivative [m^3/kg]
+            inline scalar dedp_T(const scalar p, const scalar T) const;
+
+            //- Return dCp/dT_p contribution [J/(kg K^2)]
+            inline scalar dCpdT(const scalar p, const scalar T) const;
+
+            //- Return dCv/dT_p contribution [J/(kg K^2)]
+            inline scalar dCvdT(const scalar p, const scalar T) const;
+
+            // IO
 
             //- Write to Ostream
             void write(Ostream& os) const;

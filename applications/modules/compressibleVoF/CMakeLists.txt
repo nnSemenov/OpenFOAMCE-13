@@ -47,7 +47,6 @@ target_link_libraries(${target_name} PUBLIC
     #    physicalProperties
     fluidThermophysicalModels
     #    interfaceCompression
-    compressibleInterfaceProperties
     compressibleTwoPhases
     momentumTransportModels
     compressibleMomentumTransportModels

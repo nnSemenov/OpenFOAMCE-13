@@ -41,6 +41,9 @@ SourceFiles
 #include "dictionary.H"
 
 #include "thermodynamicConstants.H"
+
+#include <type_traits>
+
 using namespace Foam::constant::thermodynamic;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

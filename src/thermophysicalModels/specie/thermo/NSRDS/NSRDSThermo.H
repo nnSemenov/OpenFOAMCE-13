@@ -186,14 +186,19 @@ public:
 
         // Fundamental properties
 
-            //- Heat capacity at constant pressure [J/kg/K]
-            inline scalar Cp(const scalar p, const scalar T) const;
+        inline scalar ideal_Cp(const scalar p, const scalar T) const;
 
-            //- Absolute enthalpy [J/kg]
-            inline scalar ha(const scalar p, const scalar T) const;
+        inline scalar ideal_hs(const scalar p, const scalar T) const;
+        inline scalar ideal_ha(const scalar p, const scalar T) const;
 
-            //- Sensible enthalpy [J/kg]
-            inline scalar hs(const scalar p, const scalar T) const;
+        //- Heat capacity at constant pressure [J/kg/K]
+        inline scalar Cp(const scalar p, const scalar T) const;
+
+        //- Absolute enthalpy [J/kg]
+        inline scalar ha(const scalar p, const scalar T) const;
+
+        //- Sensible enthalpy [J/kg]
+        inline scalar hs(const scalar p, const scalar T) const;
 
             //- Enthalpy of formation [J/kg]
             inline scalar hf() const;

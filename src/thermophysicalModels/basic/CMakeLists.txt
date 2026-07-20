@@ -1,37 +1,8 @@
 lnInclude(${CMAKE_CURRENT_SOURCE_DIR})
 
+wmake_parse_files(${CMAKE_CURRENT_SOURCE_DIR}/Make/files sources_from_wmake)
 add_library(fluidThermophysicalModels SHARED
-    basicThermo/basicThermo.C
-    basicThermo/BasicThermoName.C
-
-    pureThermo/pureThermo.C
-
-    rhoThermo/rhoThermo.C
-
-    fluidThermo/fluidThermo.C
-    fluidThermo/hydrostaticInitialisation.C
-
-    psiThermo/psiThermo.C
-    psiThermo/psiThermos.C
-
-    rhoFluidThermo/rhoFluidThermo.C
-    rhoFluidThermo/rhoFluidThermos.C
-
-    liquidThermo/liquidThermo.C
-    liquidThermo/liquidThermos.C
-
-    derivedFvPatchFields/energyJump/energyJumpFvPatchScalarField.C
-    derivedFvPatchFields/fixedEnergy/fixedEnergyFvPatchScalarField.C
-    derivedFvPatchFields/gradientEnergy/gradientEnergyFvPatchScalarField.C
-    derivedFvPatchFields/gradientEnergy/gradientEnergyCalculatedTemperatureFvPatchScalarField.C
-    derivedFvPatchFields/mixedEnergy/mixedEnergyFvPatchScalarField.C
-    derivedFvPatchFields/mixedEnergy/mixedEnergyCalculatedTemperatureFvPatchScalarField.C
-
-    derivedFvFieldSources/energy/energyFvScalarFieldSource.C
-    derivedFvFieldSources/energy/energyCalculatedTemperatureFvScalarFieldSource.C
-    derivedFvFieldSources/uniformFixedEnergyTemperature/uniformFixedEnergyTemperatureFvScalarFieldSource.C
-    derivedFvFieldSources/uniformInletOutletEnergyTemperature/uniformInletOutletEnergyTemperatureFvScalarFieldSource.C
-
+    ${sources_from_wmake}
     basicThermo/fieldDelegate.h
 )
 target_include_directories(fluidThermophysicalModels PUBLIC

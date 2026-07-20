@@ -60,3 +60,7 @@ inline scalar dhdp_T
 ) const {
     return EquationOfState::dhdp_T(p, T);
 }
+
+static_assert(not std::is_same_v<EquationOfState, Foam::specie>,
+              "thermo class shouldn't inherit directly from Foam::specie, "
+              "don't skip EOS.");

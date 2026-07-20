@@ -149,8 +149,12 @@ public:
 
 
         // Fundamental properties
+        inline scalar ideal_Cp(const scalar p, const scalar T) const;
 
-            //- Heat capacity at constant pressure [J/kg/K]
+        inline scalar ideal_hs(const scalar p, const scalar T) const;
+        inline scalar ideal_ha(const scalar p, const scalar T) const;
+
+        //- Heat capacity at constant pressure [J/kg/K]
             inline scalar Cp(const scalar p, const scalar T) const;
 
             //- Absolute enthalpy [J/kg]

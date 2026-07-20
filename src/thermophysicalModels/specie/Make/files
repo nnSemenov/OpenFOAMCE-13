@@ -23,4 +23,6 @@ thermophysicalFunctions/Antoine/Antoine.C
 thermophysicalFunctions/AntoineExtended/AntoineExtended.C
 thermophysicalFunctions/ArdenBuck/ArdenBuck.C
 
+equationOfState/cubicEOS.C
+
 LIB = $(FOAM_LIBBIN)/libspecie

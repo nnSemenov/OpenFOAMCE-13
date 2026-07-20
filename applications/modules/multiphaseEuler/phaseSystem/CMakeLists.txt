@@ -46,7 +46,6 @@ target_link_libraries(${target_name} PUBLIC
     sampling
     physicalProperties
     multicomponentThermophysicalModels
-    saturationModels
     compressibleTwoPhases
     multiphaseProperties
     phaseCompressibleMomentumTransportModels

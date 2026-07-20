@@ -171,7 +171,33 @@ inline Foam::scalar Foam::NSRDS<Specie>::alphav
     return - log(b_)/c_*d_*pow(1 - T/c_, d_ - 1);
 }
 
+template <class Specie>
+inline Foam::scalar Foam::NSRDS<Specie>::dhdp_T(const scalar p,
+                                                const scalar T) const
+{
+    return 0;
+}
 
+template <class Specie>
+inline Foam::scalar Foam::NSRDS<Specie>::dedp_T(const scalar p,
+                                                const scalar T) const
+{
+    return 0;
+}
+
+template <class Specie>
+inline Foam::scalar Foam::NSRDS<Specie>::dCpdT(const scalar p,
+                                               const scalar T) const
+{
+    return 0;
+}
+
+template <class Specie>
+inline Foam::scalar Foam::NSRDS<Specie>::dCvdT(const scalar p,
+                                               const scalar T) const
+{
+    return 0;
+}
 // * * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * //
 
 template<class Specie>
