@@ -84,7 +84,7 @@ inline Foam::scalar Foam::eConstThermo<EquationOfState>::limit
 }
 
 template<class EquationOfState>
-inline Foam::scalar Foam::eConstThermo<EquationOfState>::eConstThermo::ideal_Cv(
+inline Foam::scalar Foam::eConstThermo<EquationOfState>::ideal_Cv(
     const scalar p,
     const scalar T
 ) const {
@@ -103,7 +103,7 @@ inline Foam::scalar Foam::eConstThermo<EquationOfState>::Cv
 }
 
 template<class EquationOfState>
-inline Foam::scalar Foam::eConstThermo<EquationOfState>::eConstThermo::ideal_es(
+inline Foam::scalar Foam::eConstThermo<EquationOfState>::ideal_es(
     const scalar p,
     const scalar T
 ) const {
@@ -122,7 +122,7 @@ inline Foam::scalar Foam::eConstThermo<EquationOfState>::es
 
 
 template<class EquationOfState>
-inline Foam::scalar Foam::eConstThermo<EquationOfState>::eConstThermo::ideal_ea(
+inline Foam::scalar Foam::eConstThermo<EquationOfState>::ideal_ea(
     const scalar p,
     const scalar T
 ) const {
@@ -147,12 +147,12 @@ inline Foam::scalar Foam::eConstThermo<EquationOfState>::hf() const
 }
 
 template<class EquationOfState>
-inline Foam::scalar Foam::eConstThermo<EquationOfState>::eConstThermo::ideal_s(
+inline Foam::scalar Foam::eConstThermo<EquationOfState>::ideal_s(
     const scalar p,
     const scalar T
 ) const {
     using namespace constant::thermodynamic;
-    return Cp(p, T)*log(T/Tstd);
+    return ideal_Cp(p, T) * log(T / Tstd);
 }
 
 template<class EquationOfState>
@@ -174,10 +174,7 @@ inline Foam::scalar Foam::eConstThermo<EquationOfState>::gStd
 {
     using namespace constant::thermodynamic;
 
-    return
-        Cv_*(T - Tref_) + esRef_ + hf()
-      + pStd/EquationOfState::rho(pStd, T)
-      - s(pStd, T)*T;
+    return ea(pStd, T) - s(pStd, T) * T;
 }
 
 

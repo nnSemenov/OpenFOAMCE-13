@@ -190,10 +190,12 @@ inline Foam::scalar Foam::hPowerThermo<EquationOfState>::gStd
     const scalar T
 ) const
 {
-    return
-        c0_*(pow(T, n0_ + 1) - pow(Tstd, n0_ + 1))/(pow(Tref_, n0_)*(n0_ + 1))
-      + hf()
-      - c0_*(pow(T, n0_) - pow(Tstd, n0_))*T/(pow(Tref_, n0_)*n0_);
+    return ha(pStd, T) - T * s(pStd, T);
+    //    return
+    //        c0_*(pow(T, n0_ + 1) - pow(Tstd, n0_ + 1))/(pow(Tref_, n0_)*(n0_ +
+    //        1))
+    //      + hf()
+    //      - c0_*(pow(T, n0_) - pow(Tstd, n0_))*T/(pow(Tref_, n0_)*n0_);
 }
 
 

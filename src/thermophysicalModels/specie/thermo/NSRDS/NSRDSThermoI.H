@@ -24,6 +24,7 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "NSRDSThermo.H"
+#include "thermodynamicConstants.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -134,6 +135,12 @@ const
     return hf_;
 }
 
+template <class EquationOfState>
+inline Foam::scalar Foam::NSRDSThermo<EquationOfState>::ideal_s(
+    const scalar p, const scalar T) const
+{
+    return CpCoeffs_.byX().integral(T) - sRef_;
+}
 
 template<class EquationOfState>
 inline Foam::scalar Foam::NSRDSThermo<EquationOfState>::s
@@ -142,7 +149,7 @@ inline Foam::scalar Foam::NSRDSThermo<EquationOfState>::s
     const scalar T
 ) const
 {
-    return CpCoeffs_.byX().integral(T) - sRef_ + EquationOfState::sp(p, T);
+    return ideal_s(p, T) + EquationOfState::sp(p, T);
 }
 
 
@@ -152,9 +159,8 @@ inline Foam::scalar Foam::NSRDSThermo<EquationOfState>::gStd
     const scalar T
 ) const
 {
-    return
-        CpCoeffs_.integral(T) - hsRef_ + hf()
-      - (CpCoeffs_.byX().integral(T) - sRef_)*T;
+    using namespace constant::thermodynamic;
+    return ha(pStd, T) - T * s(pStd, T);
 }
 
 
@@ -165,7 +171,7 @@ inline Foam::scalar Foam::NSRDSThermo<EquationOfState>::dCpdT
     const scalar T
 ) const
 {
-    return CpCoeffs_.derivative(T);
+    return CpCoeffs_.derivative(T) + EquationOfState::dCpdT(p, T);
 }
 
 

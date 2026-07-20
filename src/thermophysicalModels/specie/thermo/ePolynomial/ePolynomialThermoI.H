@@ -164,10 +164,7 @@ inline Foam::scalar Foam::ePolynomialThermo<EquationOfState, PolySize>::gStd
 {
     using namespace constant::thermodynamic;
 
-    return
-        CvCoeffs_.integral(T) - esRef_ + hf()
-      + pStd/EquationOfState::rho(pStd, T)
-      - s(pStd, T)*T;
+    return ea(pStd, T) - s(pStd, T)*T;
 }
 
 

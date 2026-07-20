@@ -117,6 +117,13 @@ const
     return hf_;
 }
 
+template <class EquationOfState>
+inline Foam::scalar Foam::NSRDS14Thermo<EquationOfState>::ideal_s(
+    const scalar p, const scalar T) const
+{
+    NotImplemented;
+    return NaN;
+}
 
 template<class EquationOfState>
 inline Foam::scalar Foam::NSRDS14Thermo<EquationOfState>::s
@@ -148,7 +155,8 @@ inline Foam::scalar Foam::NSRDS14Thermo<EquationOfState>::dCpdT
     const scalar T
 ) const
 {
-    return - p_.derivative(max(1 - T/Tc_, small))/Tc_;
+    return -p_.derivative(max(1 - T / Tc_, small)) / Tc_ +
+        EquationOfState::dCpdT(p, T);
 }
 
 

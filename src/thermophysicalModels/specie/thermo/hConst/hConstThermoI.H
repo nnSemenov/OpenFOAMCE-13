@@ -173,7 +173,8 @@ inline Foam::scalar Foam::hConstThermo<EquationOfState>::gStd
 {
     using namespace constant::thermodynamic;
 
-    return Cp_*(T - Tref_) + hsRef_ + hf() - Cp_*T*log(T/Tstd);
+    return ha(pStd, T) - s(pStd, T) * T;
+    //    return Cp_*(T - Tref_) + hsRef_ + hf() - Cp_*T*log(T/Tstd);
 }
 
 

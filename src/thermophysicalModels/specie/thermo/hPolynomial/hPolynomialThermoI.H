@@ -98,7 +98,7 @@ inline Foam::scalar Foam::hPolynomialThermo<EquationOfState, PolySize>::ideal_hs
     const scalar p,
     const scalar T
 ) const {
-    return ideal_ha(p, T) - hf();
+    return CpCoeffs_.integral(T) - hsRef_;
 }
 
 template<class EquationOfState, int PolySize>
@@ -108,7 +108,7 @@ inline Foam::scalar Foam::hPolynomialThermo<EquationOfState, PolySize>::hs
     const scalar T
 ) const
 {
-    return CpCoeffs_.integral(T) - hsRef_ + EquationOfState::h(p, T);
+    return ideal_hs(p, T) + EquationOfState::h(p, T);
 }
 
 template<class EquationOfState, int PolySize>
@@ -116,7 +116,7 @@ inline Foam::scalar Foam::hPolynomialThermo<EquationOfState, PolySize>::ideal_ha
     const scalar p,
     const scalar T
 ) const {
-    return hCoeffs_.value(T);
+    return ideal_hs(p, T) + hf();
 }
 
 template<class EquationOfState, int PolySize>
@@ -164,9 +164,7 @@ inline Foam::scalar Foam::hPolynomialThermo<EquationOfState, PolySize>::gStd
 {
     using namespace constant::thermodynamic;
 
-    return
-        CpCoeffs_.integral(T) - hsRef_ + hf()
-      - s(pStd, T)*T;
+    return ha(pStd, T) - s(pStd, T) * T;
 }
 
 

@@ -209,7 +209,7 @@ inline Foam::scalar Foam::hTabulatedThermo<EquationOfState>::dCpdT
     const scalar T
 ) const
 {
-    return Cp_.dfdT(p, T);
+    return Cp_.dfdT(p, T) + EquationOfState::dCpdT(p, T);
 }
 
 

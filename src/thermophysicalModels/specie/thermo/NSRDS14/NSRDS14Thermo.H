@@ -150,36 +150,33 @@ public:
 
         // Fundamental properties
         inline scalar ideal_Cp(const scalar p, const scalar T) const;
-
         inline scalar ideal_hs(const scalar p, const scalar T) const;
         inline scalar ideal_ha(const scalar p, const scalar T) const;
-
+        inline scalar ideal_s(const scalar p, const scalar T) const;
         //- Heat capacity at constant pressure [J/kg/K]
-            inline scalar Cp(const scalar p, const scalar T) const;
+        inline scalar Cp(const scalar p, const scalar T) const;
 
-            //- Absolute enthalpy [J/kg]
-            inline scalar ha(const scalar p, const scalar T) const;
+        //- Absolute enthalpy [J/kg]
+        inline scalar ha(const scalar p, const scalar T) const;
 
-            //- Sensible enthalpy [J/kg]
-            inline scalar hs(const scalar p, const scalar T) const;
+        //- Sensible enthalpy [J/kg]
+        inline scalar hs(const scalar p, const scalar T) const;
 
-            //- Enthalpy of formation [J/kg]
-            inline scalar hf() const;
+        //- Enthalpy of formation [J/kg]
+        inline scalar hf() const;
 
-            //- Entropy [J/kg/K]
-            inline scalar s(const scalar p, const scalar T) const;
+        //- Entropy [J/kg/K]
+        inline scalar s(const scalar p, const scalar T) const;
 
-            //- Gibbs free energy of the mixture in the standard state [J/kg]
-            inline scalar gStd(const scalar T) const;
+        //- Gibbs free energy of the mixture in the standard state [J/kg]
+        inline scalar gStd(const scalar T) const;
 
-            #include "HtoEthermo.H"
-
+#include "HtoEthermo.H"
 
         // Derivative term used for Jacobian
 
-            //- Temperature derivative of heat capacity at constant pressure
-            inline scalar dCpdT(const scalar p, const scalar T) const;
-
+        //- Temperature derivative of heat capacity at constant pressure
+        inline scalar dCpdT(const scalar p, const scalar T) const;
 
         // I-O
 

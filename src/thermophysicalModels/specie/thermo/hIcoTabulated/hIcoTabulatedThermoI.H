@@ -24,6 +24,7 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "hIcoTabulatedThermo.H"
+#include "thermodynamicConstants.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -149,7 +150,9 @@ inline Foam::scalar Foam::hIcoTabulatedThermo<EquationOfState>::gStd
     const scalar T
 ) const
 {
-    return Cp_.intfdT(T) + hf_ - (Cp_.intfByTdT(T) + sf_)*T;
+    using namespace constant::thermodynamic;
+    return ha(pStd, T) - s(pStd, T) * T;
+    //    return Cp_.intfdT(T) + hf_ - (Cp_.intfByTdT(T) + sf_)*T;
 }
 
 
@@ -160,7 +163,7 @@ inline Foam::scalar Foam::hIcoTabulatedThermo<EquationOfState>::dCpdT
     const scalar T
 ) const
 {
-    return Cp_.derivative(T);
+    return Cp_.derivative(T) + EquationOfState::dCpdT(p, T);
 }
 
 
