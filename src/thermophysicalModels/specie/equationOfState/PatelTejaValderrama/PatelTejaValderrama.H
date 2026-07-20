@@ -268,7 +268,11 @@ class PatelTejaValderrama : public Specie
         //- Return compressibility [s^2/m^2]
         inline scalar psi(scalar p, scalar T, scalar W) const
         {
-            return 1 / (this->Z(p, T) * this->R(W) * T);
+            const scalar Z = this->Z(this->dimlessCoeff(p, T));
+
+            const scalar V = Z * RR * T / p;
+            const scalar result = -W / sqr(V) * dVdp_T(p, T, Z);
+            return result;
         }
 
         //- Return (Cp - Cv) [J/(kg K]

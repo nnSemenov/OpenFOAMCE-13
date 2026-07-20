@@ -59,9 +59,6 @@ thermo
 
 equationOfState
 (
-    PengRobinson
-    RedlichKwong
-    PatelTejaValderrama
     perfectGas
 );
 
