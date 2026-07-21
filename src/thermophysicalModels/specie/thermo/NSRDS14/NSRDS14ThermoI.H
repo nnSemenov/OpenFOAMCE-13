@@ -42,8 +42,9 @@ inline Foam::NSRDS14Thermo<EquationOfState>::NSRDS14Thermo
     b_(ns.b_),
     c_(ns.c_),
     d_(ns.d_),
-    p_({a_*a_, b_, -2*a_*c_, -a_*d_, -c_*c_/3, -0.5*c_*d_, -0.2*d_*d_}),
-    hsRef_(ns.hsRef_)
+      p_({a_ * a_, b_, -2 * a_ * c_, -a_ * d_, -c_ * c_ / 3,
+          -scalar{0.5} * c_ * d_, -scalar{0.2} * d_ * d_}),
+      hsRef_(ns.hsRef_)
 {}
 
 
