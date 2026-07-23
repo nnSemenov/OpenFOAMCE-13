@@ -2,27 +2,10 @@ lnInclude(${CMAKE_CURRENT_SOURCE_DIR})
 
 set(target_name decompositionMethods)
 
+wmake_parse_files(${CMAKE_CURRENT_SOURCE_DIR}/Make/files sources_from_wmake)
+
 add_library(${target_name} SHARED
-    decompositionMethod/decompositionMethod.C
-    geometric/geometric.C
-    simple/simple.C
-    hierarchical/hierarchical.C
-    manual/manual.C
-    multiLevel/multiLevel.C
-    structured/structured.C
-    random/random.C
-    none/none.C
-)
-
-set(decompositionConstraints decompositionConstraints)
-target_sources(${target_name} PRIVATE
-    ${decompositionConstraints}/decompositionConstraint/decompositionConstraint.C
-    ${decompositionConstraints}/preserveBaffles/preserveBafflesConstraint.C
-    ${decompositionConstraints}/preserveFaceZones/preserveFaceZonesConstraint.C
-    ${decompositionConstraints}/preservePatches/preservePatchesConstraint.C
-    ${decompositionConstraints}/singleProcessorFaceSets/singleProcessorFaceSetsConstraint.C
-    ${decompositionConstraints}/refinementHistory/refinementHistoryConstraint.C
-
+    ${sources_from_wmake}
 )
 
 target_include_directories(${target_name} PUBLIC
