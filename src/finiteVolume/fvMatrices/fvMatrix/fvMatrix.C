@@ -135,7 +135,7 @@ void Foam::fvMatrix<Type>::addCmptAvBoundaryDiag(scalarField& diag) const
         addToInternalField
         (
             lduAddr().patchAddr(patchi),
-            cmptAv(internalCoeffs_[patchi]),
+            eval(cmptAv(internalCoeffs_[patchi])),
             diag
         );
     }
@@ -304,24 +304,16 @@ Foam::fvMatrix<Type>::fvMatrix
     // Initialise coupling coefficients
     forAll(psi.mesh().boundary(), patchi)
     {
-        internalCoeffs_.set
+        internalCoeffs_[patchi].setSize
         (
-            patchi,
-            new Field<Type>
-            (
-                psi.mesh().boundary()[patchi].size(),
-                Zero
-            )
+            psi.mesh().boundary()[patchi].size(),
+            Zero
         );
 
-        boundaryCoeffs_.set
+        boundaryCoeffs_[patchi].setSize
         (
-            patchi,
-            new Field<Type>
-            (
-                psi.mesh().boundary()[patchi].size(),
-                Zero
-            )
+            psi.mesh().boundary()[patchi].size(),
+            Zero
         );
     }
 
@@ -817,7 +809,7 @@ Foam::tmp<Foam::volScalarField> Foam::fvMatrix<Type>::A() const
         )
     );
 
-    tAphi.ref().primitiveFieldRef() = D()/psi_.mesh().V();
+    tAphi.ref().primitiveFieldRef() = D()/psi_.mesh().V().primitiveField();
     tAphi.ref().correctBoundaryConditions();
 
     return tAphi;
@@ -834,7 +826,7 @@ Foam::tmp<Foam::VolInternalField<Type>> Foam::fvMatrix<Type>::Su() const
             "Su(" +psi_.name() + ')',
             psi_.mesh(),
             dimensions_/dimensions::volume,
-            -source()/psi_.mesh().V()
+            eval(-source()/psi_.mesh().V().primitiveField())
         )
     );
 
@@ -853,7 +845,7 @@ Foam::tmp<Foam::volScalarField::Internal> Foam::fvMatrix<Type>::Sp() const
             psi_.mesh(),
             dimensions_/psi_.dimensions()/dimensions::volume,
             hasDiag()
-          ? diag()/psi_.mesh().V()
+          ? diag()/psi_.mesh().V().primitiveField()
           : tmp<scalarField>(new scalarField(lduAddr().size(), scalar(0)))
         )
     );
@@ -894,7 +886,7 @@ Foam::fvMatrix<Type>::H() const
     Hphi.primitiveFieldRef() += lduMatrix::H(psi_.primitiveField()) + source_;
     addBoundarySource(Hphi.primitiveFieldRef());
 
-    Hphi.primitiveFieldRef() /= psi_.mesh().V();
+    Hphi.primitiveFieldRef() /= psi_.mesh().V().primitiveField();
     Hphi.correctBoundaryConditions();
 
     typename Type::labelType validComponents
@@ -950,7 +942,7 @@ Foam::tmp<Foam::volScalarField> Foam::fvMatrix<Type>::H1() const
         }
     }
 
-    H1_.primitiveFieldRef() /= psi_.mesh().V();
+    H1_.primitiveFieldRef() /= psi_.mesh().V().primitiveField();
     H1_.correctBoundaryConditions();
 
     return tH1;
@@ -993,7 +985,7 @@ flux() const
         );
     }
 
-    FieldField<Field, Type> InternalContrib = internalCoeffs_;
+    Field<Field<Type>> InternalContrib = internalCoeffs_;
 
     forAll(InternalContrib, patchi)
     {
@@ -1005,7 +997,7 @@ flux() const
             );
     }
 
-    FieldField<Field, Type> NeighbourContrib = boundaryCoeffs_;
+    Field<Field<Type>> NeighbourContrib = boundaryCoeffs_;
 
     forAll(NeighbourContrib, patchi)
     {
@@ -1171,7 +1163,7 @@ void Foam::fvMatrix<Type>::operator+=
 )
 {
     checkMethod(*this, su, "+=");
-    source() -= su.mesh().V()*su.primitiveField();
+    source() -= su.mesh().V().primitiveField()*su.primitiveField();
 }
 
 
@@ -1204,7 +1196,7 @@ void Foam::fvMatrix<Type>::operator-=
 )
 {
     checkMethod(*this, su, "-=");
-    source() += su.mesh().V()*su.primitiveField();
+    source() += su.mesh().V().primitiveField()*su.primitiveField();
 }
 
 
@@ -1588,7 +1580,7 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator==
 {
     checkMethod(A, su, "==");
     tmp<fvMatrix<Type>> tC(new fvMatrix<Type>(A));
-    tC.ref().source() += su.mesh().V()*su.primitiveField();
+    tC.ref().source() += su.mesh().V().primitiveField()*su.primitiveField();
     return tC;
 }
 
@@ -1601,7 +1593,8 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator==
 {
     checkMethod(A, tsu(), "==");
     tmp<fvMatrix<Type>> tC(new fvMatrix<Type>(A));
-    tC.ref().source() += tsu().mesh().V()*tsu().primitiveField();
+    tC.ref().source() +=
+        tsu().mesh().V().primitiveField()*tsu().primitiveField();
     tsu.clear();
     return tC;
 }
@@ -1615,7 +1608,8 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator==
 {
     checkMethod(A, tsu(), "==");
     tmp<fvMatrix<Type>> tC(new fvMatrix<Type>(A));
-    tC.ref().source() += tsu().mesh().V()*tsu().primitiveField();
+    tC.ref().source() +=
+        tsu().mesh().V().primitiveField()*tsu().primitiveField();
     tsu.clear();
     return tC;
 }
@@ -1629,7 +1623,7 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator==
 {
     checkMethod(tA(), su, "==");
     tmp<fvMatrix<Type>> tC(tA.ptr());
-    tC.ref().source() += su.mesh().V()*su.primitiveField();
+    tC.ref().source() += su.mesh().V().primitiveField()*su.primitiveField();
     return tC;
 }
 
@@ -1642,7 +1636,8 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator==
 {
     checkMethod(tA(), tsu(), "==");
     tmp<fvMatrix<Type>> tC(tA.ptr());
-    tC.ref().source() += tsu().mesh().V()*tsu().primitiveField();
+    tC.ref().source() +=
+        tsu().mesh().V().primitiveField()*tsu().primitiveField();
     tsu.clear();
     return tC;
 }
@@ -1656,7 +1651,8 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator==
 {
     checkMethod(tA(), tsu(), "==");
     tmp<fvMatrix<Type>> tC(tA.ptr());
-    tC.ref().source() += tsu().mesh().V()*tsu().primitiveField();
+    tC.ref().source() +=
+        tsu().mesh().V().primitiveField()*tsu().primitiveField();
     tsu.clear();
     return tC;
 }
@@ -1670,7 +1666,7 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator==
 {
     checkMethod(A, su, "==");
     tmp<fvMatrix<Type>> tC(new fvMatrix<Type>(A));
-    tC.ref().source() += A.psi().mesh().V()*su.value();
+    tC.ref().source() += A.psi().mesh().V().primitiveField()*su.value();
     return tC;
 }
 
@@ -1683,7 +1679,7 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator==
 {
     checkMethod(tA(), su, "==");
     tmp<fvMatrix<Type>> tC(tA.ptr());
-    tC.ref().source() += tC().psi().mesh().V()*su.value();
+    tC.ref().source() += tC().psi().mesh().V().primitiveField()*su.value();
     return tC;
 }
 
@@ -1794,7 +1790,7 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator+
 {
     checkMethod(A, su, "+");
     tmp<fvMatrix<Type>> tC(new fvMatrix<Type>(A));
-    tC.ref().source() -= su.mesh().V()*su.primitiveField();
+    tC.ref().source() -= su.mesh().V().primitiveField()*su.primitiveField();
     return tC;
 }
 
@@ -1807,7 +1803,8 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator+
 {
     checkMethod(A, tsu(), "+");
     tmp<fvMatrix<Type>> tC(new fvMatrix<Type>(A));
-    tC.ref().source() -= tsu().mesh().V()*tsu().primitiveField();
+    tC.ref().source() -=
+        tsu().mesh().V().primitiveField()*tsu().primitiveField();
     tsu.clear();
     return tC;
 }
@@ -1821,7 +1818,8 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator+
 {
     checkMethod(A, tsu(), "+");
     tmp<fvMatrix<Type>> tC(new fvMatrix<Type>(A));
-    tC.ref().source() -= tsu().mesh().V()*tsu().primitiveField();
+    tC.ref().source() -=
+        tsu().mesh().V().primitiveField()*tsu().primitiveField();
     tsu.clear();
     return tC;
 }
@@ -1835,7 +1833,7 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator+
 {
     checkMethod(tA(), su, "+");
     tmp<fvMatrix<Type>> tC(tA.ptr());
-    tC.ref().source() -= su.mesh().V()*su.primitiveField();
+    tC.ref().source() -= su.mesh().V().primitiveField()*su.primitiveField();
     return tC;
 }
 
@@ -1848,7 +1846,8 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator+
 {
     checkMethod(tA(), tsu(), "+");
     tmp<fvMatrix<Type>> tC(tA.ptr());
-    tC.ref().source() -= tsu().mesh().V()*tsu().primitiveField();
+    tC.ref().source() -=
+        tsu().mesh().V().primitiveField()*tsu().primitiveField();
     tsu.clear();
     return tC;
 }
@@ -1862,7 +1861,8 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator+
 {
     checkMethod(tA(), tsu(), "+");
     tmp<fvMatrix<Type>> tC(tA.ptr());
-    tC.ref().source() -= tsu().mesh().V()*tsu().primitiveField();
+    tC.ref().source() -=
+        tsu().mesh().V().primitiveField()*tsu().primitiveField();
     tsu.clear();
     return tC;
 }
@@ -1876,7 +1876,7 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator+
 {
     checkMethod(A, su, "+");
     tmp<fvMatrix<Type>> tC(new fvMatrix<Type>(A));
-    tC.ref().source() -= su.mesh().V()*su.primitiveField();
+    tC.ref().source() -= su.mesh().V().primitiveField()*su.primitiveField();
     return tC;
 }
 
@@ -1889,7 +1889,8 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator+
 {
     checkMethod(A, tsu(), "+");
     tmp<fvMatrix<Type>> tC(new fvMatrix<Type>(A));
-    tC.ref().source() -= tsu().mesh().V()*tsu().primitiveField();
+    tC.ref().source() -=
+        tsu().mesh().V().primitiveField()*tsu().primitiveField();
     tsu.clear();
     return tC;
 }
@@ -1903,7 +1904,8 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator+
 {
     checkMethod(A, tsu(), "+");
     tmp<fvMatrix<Type>> tC(new fvMatrix<Type>(A));
-    tC.ref().source() -= tsu().mesh().V()*tsu().primitiveField();
+    tC.ref().source() -=
+        tsu().mesh().V().primitiveField()*tsu().primitiveField();
     tsu.clear();
     return tC;
 }
@@ -1917,7 +1919,7 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator+
 {
     checkMethod(tA(), su, "+");
     tmp<fvMatrix<Type>> tC(tA.ptr());
-    tC.ref().source() -= su.mesh().V()*su.primitiveField();
+    tC.ref().source() -= su.mesh().V().primitiveField()*su.primitiveField();
     return tC;
 }
 
@@ -1930,7 +1932,8 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator+
 {
     checkMethod(tA(), tsu(), "+");
     tmp<fvMatrix<Type>> tC(tA.ptr());
-    tC.ref().source() -= tsu().mesh().V()*tsu().primitiveField();
+    tC.ref().source() -=
+        tsu().mesh().V().primitiveField()*tsu().primitiveField();
     tsu.clear();
     return tC;
 }
@@ -1944,7 +1947,8 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator+
 {
     checkMethod(tA(), tsu(), "+");
     tmp<fvMatrix<Type>> tC(tA.ptr());
-    tC.ref().source() -= tsu().mesh().V()*tsu().primitiveField();
+    tC.ref().source() -=
+        tsu().mesh().V().primitiveField()*tsu().primitiveField();
     tsu.clear();
     return tC;
 }
@@ -2013,7 +2017,7 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator-
 {
     checkMethod(A, su, "-");
     tmp<fvMatrix<Type>> tC(new fvMatrix<Type>(A));
-    tC.ref().source() += su.mesh().V()*su.primitiveField();
+    tC.ref().source() += su.mesh().V().primitiveField()*su.primitiveField();
     return tC;
 }
 
@@ -2026,7 +2030,8 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator-
 {
     checkMethod(A, tsu(), "-");
     tmp<fvMatrix<Type>> tC(new fvMatrix<Type>(A));
-    tC.ref().source() += tsu().mesh().V()*tsu().primitiveField();
+    tC.ref().source() +=
+        tsu().mesh().V().primitiveField()*tsu().primitiveField();
     tsu.clear();
     return tC;
 }
@@ -2040,7 +2045,8 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator-
 {
     checkMethod(A, tsu(), "-");
     tmp<fvMatrix<Type>> tC(new fvMatrix<Type>(A));
-    tC.ref().source() += tsu().mesh().V()*tsu().primitiveField();
+    tC.ref().source() +=
+        tsu().mesh().V().primitiveField()*tsu().primitiveField();
     tsu.clear();
     return tC;
 }
@@ -2054,7 +2060,7 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator-
 {
     checkMethod(tA(), su, "-");
     tmp<fvMatrix<Type>> tC(tA.ptr());
-    tC.ref().source() += su.mesh().V()*su.primitiveField();
+    tC.ref().source() += su.mesh().V().primitiveField()*su.primitiveField();
     return tC;
 }
 
@@ -2067,7 +2073,8 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator-
 {
     checkMethod(tA(), tsu(), "-");
     tmp<fvMatrix<Type>> tC(tA.ptr());
-    tC.ref().source() += tsu().mesh().V()*tsu().primitiveField();
+    tC.ref().source() +=
+        tsu().mesh().V().primitiveField()*tsu().primitiveField();
     tsu.clear();
     return tC;
 }
@@ -2081,7 +2088,8 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator-
 {
     checkMethod(tA(), tsu(), "-");
     tmp<fvMatrix<Type>> tC(tA.ptr());
-    tC.ref().source() += tsu().mesh().V()*tsu().primitiveField();
+    tC.ref().source() +=
+        tsu().mesh().V().primitiveField()*tsu().primitiveField();
     tsu.clear();
     return tC;
 }
@@ -2096,7 +2104,7 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator-
     checkMethod(A, su, "-");
     tmp<fvMatrix<Type>> tC(new fvMatrix<Type>(A));
     tC.ref().negate();
-    tC.ref().source() -= su.mesh().V()*su.primitiveField();
+    tC.ref().source() -= su.mesh().V().primitiveField()*su.primitiveField();
     return tC;
 }
 
@@ -2110,7 +2118,8 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator-
     checkMethod(A, tsu(), "-");
     tmp<fvMatrix<Type>> tC(new fvMatrix<Type>(A));
     tC.ref().negate();
-    tC.ref().source() -= tsu().mesh().V()*tsu().primitiveField();
+    tC.ref().source() -=
+        tsu().mesh().V().primitiveField()*tsu().primitiveField();
     tsu.clear();
     return tC;
 }
@@ -2125,7 +2134,8 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator-
     checkMethod(A, tsu(), "-");
     tmp<fvMatrix<Type>> tC(new fvMatrix<Type>(A));
     tC.ref().negate();
-    tC.ref().source() -= tsu().mesh().V()*tsu().primitiveField();
+    tC.ref().source() -=
+        tsu().mesh().V().primitiveField()*tsu().primitiveField();
     tsu.clear();
     return tC;
 }
@@ -2140,7 +2150,7 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator-
     checkMethod(tA(), su, "-");
     tmp<fvMatrix<Type>> tC(tA.ptr());
     tC.ref().negate();
-    tC.ref().source() -= su.mesh().V()*su.primitiveField();
+    tC.ref().source() -= su.mesh().V().primitiveField()*su.primitiveField();
     return tC;
 }
 
@@ -2154,7 +2164,8 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator-
     checkMethod(tA(), tsu(), "-");
     tmp<fvMatrix<Type>> tC(tA.ptr());
     tC.ref().negate();
-    tC.ref().source() -= tsu().mesh().V()*tsu().primitiveField();
+    tC.ref().source() -=
+        tsu().mesh().V().primitiveField()*tsu().primitiveField();
     tsu.clear();
     return tC;
 }
@@ -2169,7 +2180,8 @@ Foam::tmp<Foam::fvMatrix<Type>> Foam::operator-
     checkMethod(tA(), tsu(), "-");
     tmp<fvMatrix<Type>> tC(tA.ptr());
     tC.ref().negate();
-    tC.ref().source() -= tsu().mesh().V()*tsu().primitiveField();
+    tC.ref().source() -=
+        tsu().mesh().V().primitiveField()*tsu().primitiveField();
     tsu.clear();
     return tC;
 }

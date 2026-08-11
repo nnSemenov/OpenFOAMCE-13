@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2021 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -37,7 +37,7 @@ SourceFiles
 
 #include "scalarMatrices.H"
 #include "labelList.H"
-#include "FieldField.H"
+#include "Field.H"
 #include "lduInterfaceFieldPtrsList.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -74,7 +74,7 @@ class LUscalarMatrix
         void convert
         (
             const lduMatrix& ldum,
-            const FieldField<Field, scalar>& interfaceCoeffs,
+            const Field<Field<scalar>>& interfaceCoeffs,
             const lduInterfaceFieldPtrsList& interfaces
         );
 
@@ -109,7 +109,7 @@ public:
         LUscalarMatrix
         (
             const lduMatrix&,
-            const FieldField<Field, scalar>& interfaceCoeffs,
+            const Field<Field<scalar>>& interfaceCoeffs,
             const lduInterfaceFieldPtrsList& interfaces
         );
 

@@ -45,6 +45,7 @@ SourceFiles
 #include "VectorSpace.H"
 #include "scalarList.H"
 #include "labelList.H"
+#include "expressionExpressionable.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -72,6 +73,25 @@ Ostream& operator<<(Ostream&, const tmp<Field<Type>>&);
 class unitSet;
 class dictionary;
 
+//- Field type traits
+template<class Type>
+struct FieldTraits
+{
+    using pType = Type;
+    using cmptType = typename pTraits<Type>::cmptType;
+    using pCmptType = cmptType;
+};
+
+//- Field<Field> type traits
+template<class Type>
+struct FieldTraits<Field<Type>>
+{
+    using pType = Type;
+    using cmptType = Field<typename pTraits<Type>::cmptType>;
+    using pCmptType = typename pTraits<Type>::cmptType;
+};
+
+
 /*---------------------------------------------------------------------------*\
                             Class Field Declaration
 \*---------------------------------------------------------------------------*/
@@ -95,11 +115,20 @@ class Field
 
 public:
 
-    //- Component type
-    typedef typename pTraits<Type>::cmptType cmptType;
+    //- Declare primitive type
+    using pType = typename FieldTraits<Type>::pType;
 
-    //- Declare type of subField
-    typedef SubField<Type> subField;
+    //- Declare component type
+    using cmptType = typename FieldTraits<Type>::cmptType;
+
+    //- Declare component primitive type
+    using pCmptType = typename FieldTraits<Type>::pCmptType;
+
+    //- Declare type of subField type
+    using subField = SubField<Type>;
+
+    //- Declare component Field type
+    using cmptField = Field<cmptType>;
 
 
     // Static Data Members
@@ -197,6 +226,10 @@ public:
             const dictionary&,
             const label size
         );
+
+        //- Construct from an expression
+        template<class Expression, class = EnableIfExpressionable<Expression>>
+        Field(const Expression& e);
 
         //- Clone
         tmp<Field<Type>> clone() const;
@@ -301,6 +334,19 @@ public:
         //- Return the field transpose (only defined for second rank tensors)
         tmp<Field<Type>> T() const;
 
+        //- Append an element at the end of the Field
+        void append(const Type& t);
+
+        //- Append a Field at the end of the Field
+        void append(const Field<Type>& f);
+
+        //- Append a Field at the end of the Field
+        void append(const tmp<Field<Type>>& tf);
+
+        //- Append a Field evaluated from an expression at the end of this Field
+        template<class Expression, class = EnableIfExpressionable<Expression>>
+        void append(const Expression& e);
+
 
     // Member Operators
 
@@ -309,29 +355,31 @@ public:
         void operator=(const UList<Type>&);
         void operator=(List<Type>&&);
         void operator=(const tmp<Field<Type>>&);
-        void operator=(const Type&);
+        void operator=(const pType&);
         void operator=(const zero);
 
         template<class Form, class Cmpt, direction nCmpt>
         void operator=(const VectorSpace<Form,Cmpt,nCmpt>&);
 
+        //- Assign to an expression
+        template<class Expression, class = EnableIfExpressionable<Expression>>
+        void operator=(const Expression& e);
+
         void operator+=(const UList<Type>&);
         void operator+=(const tmp<Field<Type>>&);
+        void operator+=(const pType&);
 
         void operator-=(const UList<Type>&);
         void operator-=(const tmp<Field<Type>>&);
+        void operator-=(const pType&);
 
-        void operator*=(const UList<scalar>&);
-        void operator*=(const tmp<Field<scalar>>&);
+        void operator*=(const UList<cmptType>&);
+        void operator*=(const tmp<Field<cmptType>>&);
+        void operator*=(const pCmptType&);
 
-        void operator/=(const UList<scalar>&);
-        void operator/=(const tmp<Field<scalar>>&);
-
-        void operator+=(const Type&);
-        void operator-=(const Type&);
-
-        void operator*=(const scalar&);
-        void operator/=(const scalar&);
+        void operator/=(const UList<cmptType>&);
+        void operator/=(const tmp<Field<cmptType>>&);
+        void operator/=(const pCmptType&);
 
 
     // IOstream Operators
@@ -352,6 +400,7 @@ public:
 
 #include "FieldFunctions.H"
 #include "FieldReductionFunctions.H"
+#include "FieldExpression.H"
 #include "scalarField.H"
 
 #ifdef NoRepository

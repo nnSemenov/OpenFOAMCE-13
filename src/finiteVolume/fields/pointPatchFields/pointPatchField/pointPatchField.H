@@ -94,9 +94,28 @@ class pointPatchField
 
 public:
 
-    typedef Type value_type;
-    typedef pointPatch Patch;
-    typedef calculatedPointPatchField<Type> Calculated;
+    // Public Types
+
+        //- Declare primitive type
+        using pType = typename FieldTraits<Type>::pType;
+
+        //- Declare component type
+        using cmptType = typename FieldTraits<Type>::cmptType;
+
+        //- Declare component primitive type
+        using pCmptType = typename FieldTraits<Type>::pCmptType;
+
+        //- Declare patch type
+        using Patch = pointPatch;
+
+        //- Declare element type
+        using value_type = Type;
+
+        //- Declare calculated patch field type
+        using Calculated = calculatedPointPatchField<Type>;
+
+        //- Declare component Field type
+        using cmptField = pointPatchField<cmptType>;
 
 
     //- Runtime type information
@@ -446,9 +465,17 @@ public:
     // Member Operators
 
         virtual void operator=(const UList<Type>&) {}
-
+        virtual void operator=(const Field<Type>&) {}
         virtual void operator=(const pointPatchField<Type>&) {}
         virtual void operator=(pointPatchField<Type>&&) {}
+
+        //- Assign to an expression
+        template<class Expression, class = EnableIfExpressionable<Expression>>
+        pointPatchField<Type>& operator=(const Expression& e)
+        {
+            return *this;
+        }
+
         virtual void operator+=(const pointPatchField<Type>&) {}
         virtual void operator-=(const pointPatchField<Type>&) {}
         virtual void operator*=(const pointPatchField<scalar>&) {}
@@ -473,6 +500,13 @@ public:
         virtual void operator==(const pointPatchField<Type>&) {}
         virtual void operator==(const Field<Type>&) {}
         virtual void operator==(const Type&) {}
+
+        //- Assign to an expression
+        template<class Expression, class = EnableIfExpressionable<Expression>>
+        pointPatchField<Type>& operator==(const Expression& e)
+        {
+            return *this;
+        }
 
 
     // Ostream operator
@@ -505,6 +539,7 @@ const pointPatchField<Type>& operator+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 #include "pointPatchFieldFunctions.H"
+#include "pointPatchFieldExpression.H"
 
 #ifdef NoRepository
     #include "pointPatchField.C"

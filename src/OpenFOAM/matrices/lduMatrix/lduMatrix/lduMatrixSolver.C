@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -41,8 +41,8 @@ Foam::autoPtr<Foam::lduMatrix::solver> Foam::lduMatrix::solver::New
 (
     const word& fieldName,
     const lduMatrix& matrix,
-    const FieldField<Field, scalar>& interfaceBouCoeffs,
-    const FieldField<Field, scalar>& interfaceIntCoeffs,
+    const Field<Field<scalar>>& interfaceBouCoeffs,
+    const Field<Field<scalar>>& interfaceIntCoeffs,
     const lduInterfaceFieldPtrsList& interfaces,
     const dictionary& solverControls
 )
@@ -136,8 +136,8 @@ Foam::lduMatrix::solver::solver
 (
     const word& fieldName,
     const lduMatrix& matrix,
-    const FieldField<Field, scalar>& interfaceBouCoeffs,
-    const FieldField<Field, scalar>& interfaceIntCoeffs,
+    const Field<Field<scalar>>& interfaceBouCoeffs,
+    const Field<Field<scalar>>& interfaceIntCoeffs,
     const lduInterfaceFieldPtrsList& interfaces,
     const dictionary& solverControls
 )
@@ -187,7 +187,7 @@ Foam::scalar Foam::lduMatrix::solver::normFactor
     return
         gSum
         (
-            (mag(Apsi - tmpField) + mag(source - tmpField))(),
+            (mag(Apsi - tmpField) + mag(source - tmpField)),
             matrix_.lduMesh_.comm()
         )
       + solverPerformance::small_;

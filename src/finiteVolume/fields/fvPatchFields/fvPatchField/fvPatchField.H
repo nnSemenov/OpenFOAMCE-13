@@ -50,6 +50,8 @@ SourceFiles
 #include "fileNameList.H"
 #include "fieldTypes.H"
 
+#include "expressionAssignment.H"
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
@@ -111,16 +113,28 @@ class fvPatchField
 
 public:
 
-    // Public Typedefs
+    // Public Types
 
-        //- The patch type
-        typedef fvPatch Patch;
+        //- Declare primitive type
+        using pType = typename FieldTraits<Type>::pType;
 
-        //- The calculated patch field type
-        typedef calculatedFvPatchField<Type> Calculated;
+        //- Declare component type
+        using cmptType = typename FieldTraits<Type>::cmptType;
 
-        //- The sliced patch field type
-        typedef slicedFvPatchField<Type> Sliced;
+        //- Declare component primitive type
+        using pCmptType = typename FieldTraits<Type>::pCmptType;
+
+        //- Declare patch type
+        using Patch = fvPatch;
+
+        //- Declare calculated patch field type
+        using Calculated = calculatedFvPatchField<Type>;
+
+        //- Declare sliced patch field type
+        using Sliced = slicedFvPatchField<Type>;
+
+        //- Declare component Field type
+        using cmptField = fvPatchField<cmptType>;
 
 
     //- Runtime type information
@@ -373,6 +387,12 @@ public:
                 return patch_;
             }
 
+            //- Return reference to the base patch field
+            const Field<Type>& field() const
+            {
+                return *this;
+            }
+
             //- Return dimensioned internal field reference
             const DimensionedField<Type, fvMesh>& internalField() const
             {
@@ -552,7 +572,17 @@ public:
 
         virtual void operator=(const UList<Type>&);
 
+        virtual void operator=(const Field<Type>&);
+
         virtual void operator=(const fvPatchField<Type>&);
+
+        //- Virtual assign to an expression
+        virtual void operator=(const expression::Assignment<Field<Type>>& a);
+
+        //- Templated assign to an expression
+        template<class Expression, class = EnableIfExpressionable<Expression>>
+        void operator=(const Expression& e);
+
         virtual void operator+=(const fvPatchField<Type>&);
         virtual void operator-=(const fvPatchField<Type>&);
         virtual void operator*=(const fvPatchField<scalar>&);
@@ -577,6 +607,16 @@ public:
         virtual void operator==(const Field<Type>&);
         virtual void operator==(const Type&);
 
+        //- Virtual force-assign to an expression
+        virtual void operator==
+        (
+            const expression::Assignment<Field<Type>>& a
+        );
+
+        //- Templated force-assign
+        template<class Expression, class = EnableIfExpressionable<Expression>>
+        void operator==(const Expression& e);
+
 
     // Ostream operator
 
@@ -589,6 +629,8 @@ public:
 } // End namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#include "fvPatchFieldExpression.H"
 
 #ifdef NoRepository
     #include "fvPatchField.C"

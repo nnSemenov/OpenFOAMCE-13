@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2024 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -52,7 +52,6 @@ SourceFiles
 
 #include "lduMesh.H"
 #include "Field.H"
-#include "FieldField.H"
 #include "LduInterfaceFieldPtrsList.H"
 #include "SolverPerformance.H"
 #include "typeInfo.H"
@@ -102,7 +101,7 @@ class LduMatrix
         LduInterfaceFieldPtrsList<Type> interfaces_;
 
         //- Off-diagonal coefficients for interfaces
-        FieldField<Field, LUType> interfacesUpper_, interfacesLower_;
+        Field<Field<LUType>> interfacesUpper_, interfacesLower_;
 
 
 public:
@@ -527,12 +526,12 @@ public:
             Field<LUType>& lower();
             Field<Type>& source();
 
-            FieldField<Field, LUType>& interfacesUpper()
+            Field<Field<LUType>>& interfacesUpper()
             {
                 return interfacesUpper_;
             }
 
-            FieldField<Field, LUType>& interfacesLower()
+            Field<Field<LUType>>& interfacesLower()
             {
                 return interfacesLower_;
             }
@@ -543,12 +542,12 @@ public:
             const Field<LUType>& lower() const;
             const Field<Type>& source() const;
 
-            const FieldField<Field, LUType>& interfacesUpper() const
+            const Field<Field<LUType>>& interfacesUpper() const
             {
                 return interfacesUpper_;
             }
 
-            const FieldField<Field, LUType>& interfacesLower() const
+            const Field<Field<LUType>>& interfacesLower() const
             {
                 return interfacesLower_;
             }
@@ -644,7 +643,7 @@ public:
             //  for matrix operations
             void initMatrixInterfaces
             (
-                const FieldField<Field, LUType>& interfaceCoeffs,
+                const Field<Field<LUType>>& interfaceCoeffs,
                 const Field<Type>& psiif,
                 Field<Type>& result
             ) const;
@@ -652,7 +651,7 @@ public:
             //- Update interfaced interfaces for matrix operations
             void updateMatrixInterfaces
             (
-                const FieldField<Field, LUType>& interfaceCoeffs,
+                const Field<Field<LUType>>& interfaceCoeffs,
                 const Field<Type>& psiif,
                 Field<Type>& result
             ) const;
