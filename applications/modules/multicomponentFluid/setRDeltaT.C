@@ -126,7 +126,7 @@ void Foam::solvers::multicomponentFluid::setRDeltaT()
                             reaction->R(Yi)().source()
                            /(
                                (Yrefi*alphaY)
-                              *(rho.primitiveField()*mesh.V().primitiveField())
+                              *(rho().primitiveField()*mesh.V().primitiveField())
                             )
                         ),
                         rDeltaTY.primitiveField()
