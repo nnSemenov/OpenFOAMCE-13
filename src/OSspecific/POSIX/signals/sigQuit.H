@@ -57,7 +57,7 @@ class sigQuit
     // Private Data
 
         //- Saved old signal trapping setting
-        static struct sigaction oldAction_;
+        inline static struct sigaction oldAction_{};
 
 
     // Private Member Functions

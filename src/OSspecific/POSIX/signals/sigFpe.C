@@ -41,14 +41,14 @@ License
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
-struct sigaction Foam::sigFpe::oldAction_;
+// struct sigaction Foam::sigFpe::oldAction_;
 
 void Foam::sigFpe::fillNan(UList<scalar>& lst)
 {
     lst = std::numeric_limits<scalar>::signaling_NaN();
 }
 
-bool Foam::sigFpe::mallocNanActive_ = false;
+// bool Foam::sigFpe::mallocNanActive_ = false;
 
 
 #ifdef LINUX

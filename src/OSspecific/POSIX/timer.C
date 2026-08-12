@@ -33,12 +33,6 @@ License
 namespace Foam
 {
 defineTypeNameAndDebug(timer, 0);
-
-jmp_buf timer::envAlarm;
-
-struct sigaction timer::oldAction_;
-
-unsigned int timer::oldTimeOut_ = 0;
 }
 
 

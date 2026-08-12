@@ -49,6 +49,7 @@ SourceFiles
 #define sigStopAtWriteNow_H
 
 #include <signal.h>
+#include "debug.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -66,13 +67,13 @@ class sigStopAtWriteNow
     // Private Data
 
         //- Number of signal to use
-        static int signal_;
+        inline static int signal_{debug::optimisationSwitch("stopAtWriteNowSignal", -1)};
 
         //- Pointer to Time
-        static Time const* runTimePtr_;
+        inline static Time const* runTimePtr_{nullptr};
 
         //- Saved old signal trapping setting
-        static struct sigaction oldAction_;
+        inline static struct sigaction oldAction_{};
 
 
     // Private Member Functions

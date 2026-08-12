@@ -70,7 +70,7 @@ class sigFpe
     // Private Data
 
         //- Saved old signal trapping setting
-        static struct sigaction oldAction_;
+        inline static struct sigaction oldAction_;
 
 
     // Static Data Members
@@ -101,7 +101,7 @@ public:
         void set(const bool verbose);
 
         //- Flag to indicate mallocNan is enabled
-        static bool mallocNanActive_;
+        inline static bool mallocNanActive_{false};
 
         #ifdef LINUX
         //- Malloc function which initialises to NaN

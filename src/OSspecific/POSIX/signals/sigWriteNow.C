@@ -34,18 +34,7 @@ License
 namespace Foam
 {
 
-// Signal number to catch
-int sigWriteNow::signal_
-(
-    debug::optimisationSwitch("writeNowSignal", -1)
-);
-
 } // End namespace Foam
-
-
-Foam::Time* Foam::sigWriteNow::runTimePtr_ = nullptr;
-struct sigaction Foam::sigWriteNow::oldAction_;
-
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 

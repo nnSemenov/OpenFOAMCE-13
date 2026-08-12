@@ -30,11 +30,11 @@ License
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
-const Foam::wordList Foam::compileTemplate::codeKeys(wordList::null());
+const Foam::wordList Foam::compileTemplate::codeKeys{};
 
-const Foam::wordList Foam::compileTemplate::codeDictVars(wordList::null());
+const Foam::wordList Foam::compileTemplate::codeDictVars{};
 
-Foam::wordList Foam::compileTemplate::compileFiles_(wordList::null());
+Foam::wordList Foam::compileTemplate::compileFiles_{};
 
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //

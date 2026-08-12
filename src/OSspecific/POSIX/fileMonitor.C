@@ -45,13 +45,6 @@ License
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
-const Foam::NamedEnum<Foam::fileMonitor::fileState, 3>
-Foam::fileMonitor::fileStateNames_
-{
-    "unmodified",
-    "modified",
-    "deleted"
-};
 
 namespace Foam
 {

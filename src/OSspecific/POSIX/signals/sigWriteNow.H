@@ -50,6 +50,8 @@ SourceFiles
 
 #include <signal.h>
 
+#include "debug.H"
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
@@ -66,13 +68,13 @@ class sigWriteNow
     // Private Data
 
         //- Number of signal to use
-        static int signal_;
+        inline static int signal_{debug::optimisationSwitch("writeNowSignal", -1)};
 
         //- Pointer to Time
-        static Time* runTimePtr_;
+        inline static Time* runTimePtr_{nullptr};
 
         //- Saved old signal trapping setting
-        static struct sigaction oldAction_;
+        inline static struct sigaction oldAction_{};
 
 
     // Private Member Functions

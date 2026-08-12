@@ -84,10 +84,10 @@ class timer
     // Private Data
 
         //- Old signal masks
-        static struct sigaction oldAction_;
+        inline static struct sigaction oldAction_{};
 
         //- Old alarm() value
-        static unsigned int oldTimeOut_;
+        inline static unsigned int oldTimeOut_=0;
 
 
     // Private Member Functions
@@ -107,7 +107,7 @@ public:
         unsigned int newTimeOut_;
 
         //- State for setjmp. Needed by macro timedOut
-        static jmp_buf envAlarm;
+        inline static jmp_buf envAlarm{};
 
 
     // Constructors

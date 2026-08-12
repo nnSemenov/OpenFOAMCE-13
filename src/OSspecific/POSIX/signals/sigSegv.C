@@ -30,7 +30,7 @@ License
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
-struct sigaction Foam::sigSegv::oldAction_;
+// struct sigaction Foam::sigSegv::oldAction_;
 
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //

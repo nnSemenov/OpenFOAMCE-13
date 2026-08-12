@@ -74,7 +74,12 @@ public:
             DELETED = 2
         };
 
-        static const NamedEnum<fileState, 3> fileStateNames_;
+        inline static const NamedEnum<fileState, 3> fileStateNames_
+        {
+            "unmodified",
+            "modified",
+            "deleted"
+        };
 
 
 private:

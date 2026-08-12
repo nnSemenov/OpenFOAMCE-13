@@ -40,6 +40,8 @@ SourceFiles
 #ifndef fileStat_H
 #define fileStat_H
 
+#include <array>
+
 #include <sys/stat.h>
 #include <sys/types.h>
 
@@ -75,12 +77,12 @@ class fileStat
 public:
 
     // Public static data
+        //- Extensions of the file variants
+        inline static std::array<const char*,2> variantExts_{"gz", "orig"};
 
         //- Number of file variants
-        static const label nVariants_;
+        inline static const label nVariants_=variantExts_.size();
 
-        //- Extensions of the file variants
-        static const char* variantExts_[];
 
 
     // Constructors

@@ -33,10 +33,6 @@ License
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
-const Foam::label Foam::fileStat::nVariants_ = 2;
-
-const char* Foam::fileStat::variantExts_[] = {"gz", "orig"};
-
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 

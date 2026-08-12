@@ -30,8 +30,6 @@ License
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
-struct sigaction Foam::sigQuit::oldAction_;
-
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
