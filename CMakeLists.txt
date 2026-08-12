@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.28)
 project(Mikeno
-    VERSION 13
+    VERSION 14
     LANGUAGES CXX
     DESCRIPTION "Mikeno is a fork of OpenFOAM, Frankensteined for chemical engineering usage."
-    HOMEPAGE_URL "https://github.com/nnSemenov/Mikeno-13"
+    HOMEPAGE_URL "https://github.com/nnSemenov/Mikeno"
 )
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
