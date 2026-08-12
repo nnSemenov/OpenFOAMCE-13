@@ -24,11 +24,11 @@ License
 #include <map>
 #include <optional>
 
+#include <boost/config.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/undirected_graph.hpp>
 
 #include "effectiveHeatConductivity.H"
-
 #include "volFieldsFwd.H"
 #include "IOdictionary.H"
 #include "solidThermophysicalTransportModel.H"

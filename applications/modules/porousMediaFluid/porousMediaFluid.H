@@ -38,8 +38,8 @@ SourceFiles
 #ifndef porousMediaFluid_H
 #define porousMediaFluid_H
 
-#include "fluid.H"
 #include "porousPhaseInfo.H"
+#include "fluid.H"
 
 namespace Foam
 {
@@ -83,7 +83,7 @@ class porousMediaFluid : public fluid
     TypeName("porousMediaFluid");
 
     // Constructors
-    porousMediaFluid(fvMesh &mesh);
+    explicit porousMediaFluid(fvMesh &mesh);
 
     porousMediaFluid(const porousMediaFluid &) = delete;
 

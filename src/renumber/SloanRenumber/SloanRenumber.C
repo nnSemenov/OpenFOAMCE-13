@@ -25,12 +25,6 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "SloanRenumber.H"
-#include "addToRunTimeSelectionTable.H"
-#include "decompositionMethod.H"
-#include "processorPolyPatch.H"
-#include "syncTools.H"
-
 #include <boost/config.hpp>
 #include <vector>
 #include <iostream>
@@ -40,6 +34,13 @@ License
 #include <boost/graph/bandwidth.hpp>
 #include <boost/graph/profile.hpp>
 #include <boost/graph/wavefront.hpp>
+
+#include "SloanRenumber.H"
+#include "addToRunTimeSelectionTable.H"
+#include "decompositionMethod.H"
+#include "processorPolyPatch.H"
+#include "syncTools.H"
+
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

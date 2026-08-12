@@ -52,6 +52,8 @@ SourceFiles
 #ifndef collisionPhaseTransfer_H
 #define collisionPhaseTransfer_H
 
+#include "volFields.H"
+
 #include "cloudLagrangianModel.H"
 #include "LagrangianSource.H"
 #include "CarrierField.H"

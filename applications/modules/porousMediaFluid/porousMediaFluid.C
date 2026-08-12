@@ -19,8 +19,8 @@ License
 
 #include <cstdlib>
 
-#include "volFieldsFwd.H"
 #include "porousMediaFluid.H"
+#include "volFieldsFwd.H"
 #include "addToRunTimeSelectionTable.H"
 
 namespace Foam
