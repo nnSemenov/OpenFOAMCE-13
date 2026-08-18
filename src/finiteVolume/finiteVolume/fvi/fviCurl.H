@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2025 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -21,25 +21,55 @@ License
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
+InNamespace
+    Foam::fvi
+
 Description
-    Searches the current case directory for valid times
-    and sets the time list to these.
-    This is done if a times File does not exist.
+    Calculate the curl of the given volField by constructing the Hodge-dual of
+    the symmetric part of the gradient, returning a volInternalField
+
+SourceFiles
+    fviCurl.C
 
 \*---------------------------------------------------------------------------*/
 
-#include "Time.H"
+
+#ifndef fviCurl_H
+#define fviCurl_H
+
+#include "volFieldsFwd.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-Foam::instantList Foam::Time::findTimes
-(
-    const fileName& directory,
-    const word& constantName
-) const
+namespace Foam
 {
-    return fileHandler().findTimes(*this, directory, constantName);
+
+/*---------------------------------------------------------------------------*\
+                      Namespace fvi functions Declaration
+\*---------------------------------------------------------------------------*/
+
+namespace fvi
+{
+    template<class Type>
+    tmp<VolInternalField<Type>> curl(const VolField<Type>&);
+
+    template<class Type>
+    tmp<VolInternalField<Type>> curl(const tmp<VolField<Type>>&);
 }
 
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+} // End namespace Foam
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#ifdef NoRepository
+    #include "fviCurl.C"
+#endif
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#endif
 
 // ************************************************************************* //

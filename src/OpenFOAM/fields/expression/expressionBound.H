@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2022 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2026 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -21,65 +21,40 @@ License
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
+Class
+    Foam::expression::Bound
+
+Description
+    An empty structure the type of which is used to indicate access to a bound
+    (i.e., begin or end iterator) of a given container
+
 \*---------------------------------------------------------------------------*/
 
-#include "fvcMagSqrGradGrad.H"
-#include "fvcGrad.H"
-#include "fvMesh.H"
+#ifndef expressionBound_H
+#define expressionBound_H
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
 {
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
-namespace fvc
+namespace expression
 {
 
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+/*---------------------------------------------------------------------------*\
+                            Class Bound Declaration
+\*---------------------------------------------------------------------------*/
 
-template<class Type>
-tmp<volScalarField> magSqrGradGrad
-(
-    const VolField<Type>& vf
-)
-{
-    tmp<volScalarField> tMagSqrGradGrad
-    (
-        magSqr(fvc::grad(fvc::grad(vf.component(0))))
-    );
-
-    // Loop over other vector field components
-    for (direction cmpt = 1; cmpt < pTraits<Type>::nComponents; cmpt++)
-    {
-        tMagSqrGradGrad.ref() +=
-            magSqr(fvc::grad(fvc::grad(vf.component(cmpt))))();
-    }
-
-    return tMagSqrGradGrad;
-}
-
-
-template<class Type>
-tmp<volScalarField>
-magSqrGradGrad
-(
-    const tmp<VolField<Type>>& tvf
-)
-{
-    tmp<volScalarField> tMagSqrGradGrad(fvc::magSqrGradGrad(tvf()));
-    tvf.clear();
-    return tMagSqrGradGrad;
-}
-
+template<bool>
+struct Bound
+{};
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-} // End namespace fvc
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
+} // End namespace expression
 } // End namespace Foam
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#endif
 
 // ************************************************************************* //

@@ -22,7 +22,6 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Classes
-    Foam::expression::Bounds
     Foam::expression::IteratorBase
     Foam::expression::Iterator
     Foam::expression::IteratorNew
@@ -36,6 +35,7 @@ Description
 #define expressionIterator_H
 
 #include "expressionOperate.H"
+#include "expressionBound.H"
 #include "expressionSelect.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -44,14 +44,6 @@ namespace Foam
 {
 namespace expression
 {
-
-/*---------------------------------------------------------------------------*\
-                            Class Bound Declaration
-\*---------------------------------------------------------------------------*/
-
-template<bool>
-struct Bound
-{};
 
 /*---------------------------------------------------------------------------*\
                            Class IteratorBase Declaration
@@ -90,25 +82,25 @@ public:
 
     inline Iterator<Expression>& operator++()
     {
-        expression::advance(e_, ei_);
+        advance(e_, ei_);
         return static_cast<Iterator<Expression>&>(*this);
     }
 
     inline Iterator<Expression> operator++(int)
     {
         Iterator<Expression> ei0(e_, ei_);
-        expression::advance(e_, ei_);
+        advance(e_, ei_);
         return ei0;
     }
 
     inline bool operator==(const IteratorBase<Iterator, Expression>& iter) const
     {
-        return expression::compare(e_, ei_, iter.ei_);
+        return compare(e_, ei_, iter.ei_);
     }
 
     inline bool operator!=(const IteratorBase<Iterator, Expression>& iter) const
     {
-        return !expression::compare(e_, ei_, iter.ei_);
+        return !compare(e_, ei_, iter.ei_);
     }
 };
 
@@ -131,7 +123,7 @@ struct Iterator
 
     value_type operator*() const
     {
-        return expression::access(this->e_, this->ei_);
+        return access(this->e_, this->ei_);
     }
 };
 
@@ -166,11 +158,7 @@ struct IteratorNew
 
     typename Select<Type, Ptr>::type operator*() const
     {
-        return
-            expression::New<Type, Ptr>
-            (
-                expression::access(this->e_, this->ei_)
-            );
+        return New<Type, Ptr>(access(this->e_, this->ei_));
     }
 };
 

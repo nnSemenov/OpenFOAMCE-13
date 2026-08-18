@@ -55,6 +55,8 @@ namespace Foam
 
 template<class A, class B, class Op>
 struct BinaryExpression
+:
+    public expression::expression
 {
     A a;
 
@@ -69,6 +71,8 @@ struct BinaryExpression
 
 template<class A, class B, class Op>
 class BinaryExpression<A, const B&, Op>
+:
+    public expression::expression
 {
     const ConditionalIfBaseOf<refCount, B, tmp<B>, nil> tb_;
 
@@ -96,6 +100,8 @@ public:
 
 template<class A, class B, class Op>
 class BinaryExpression<const A&, B, Op>
+:
+    public expression::expression
 {
     const ConditionalIfBaseOf<refCount, A, tmp<A>, nil> ta_;
 
@@ -123,6 +129,8 @@ public:
 
 template<class A, class B, class Op>
 class BinaryExpression<const A&, const B&, Op>
+:
+    public expression::expression
 {
     const ConditionalIfBaseOf<refCount, A, tmp<A>, nil> ta_;
 
@@ -274,7 +282,7 @@ struct Expressionable<BinaryExpression<A, B, Op>>
             Expressionable<std::decay_t<A>>::value < 0
          || Expressionable<std::decay_t<B>>::value < 0
         ),
-        std::integral_constant<char, -1>,
+        notExpressionable,
         typename std::conditional
         <
             (
@@ -607,7 +615,7 @@ struct Operation<BinaryExpression<A, B, Op>>
 {
     using type = Op;
 
-    static const char precedence = Op::precedence;
+    static const signed char precedence = Op::precedence;
 };
 
 //- Specialise Name for the binary expression. Wraps the names of the

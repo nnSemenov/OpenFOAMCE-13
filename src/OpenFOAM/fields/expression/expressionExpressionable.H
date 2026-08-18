@@ -36,7 +36,8 @@ Description
 #ifndef expressionExpressionable_H
 #define expressionExpressionable_H
 
-#include <type_traits>
+#include <algorithm>
+#include "label.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -44,6 +45,16 @@ namespace Foam
 {
 namespace expression
 {
+
+/*---------------------------------------------------------------------------*\
+                          Class expression Declaration
+\*---------------------------------------------------------------------------*/
+
+//- Base class for all unary and binary expressions
+//  Used by EnableIfExpression
+struct expression
+{};
+
 
 /*---------------------------------------------------------------------------*\
                           Class Arguments Declaration
@@ -64,7 +75,7 @@ struct Expressionable;
 template<class Expression>
 struct Expressionable<Expression>
 :
-    public std::integral_constant<char, 0>
+    public std::integral_constant<signed char, 0>
 {};
 
 template<class Expression, class ... Args>
@@ -73,11 +84,83 @@ struct Expressionable<Expression, Arguments<Args ...>>
     public Expressionable<Expression>
 {};
 
+
+//- Not expressionable
+using notExpressionable = std::integral_constant<signed char, -1>;
+
+//- Not expressionable if the Expression is not expressionable
+template<class Expression>
+using NotExpressionable =
+    std::integral_constant
+    <
+        signed char,
+        std::min(static_cast<signed char>(0), Expressionable<Expression>::value)
+    >;
+
+
+/*---------------------------------------------------------------------------*\
+                     Class ExpressionableIterable Declaration
+\*---------------------------------------------------------------------------*/
+
+template<class Type, class = Arguments<>>
+struct ExpressionableIterable;
+
+//- Iterable containers are one more level expressionable than their type
+template<class Type>
+struct ExpressionableIterable<Type, Arguments<>>
+:
+    public std::integral_constant
+    <
+        signed char,
+        std::max
+        (
+            static_cast<signed char>(0),
+            Expressionable<typename Type::value_type>::value
+        )
+      + static_cast<signed char>(1)
+    >
+{};
+
+//- Access by index to an iterable container is expressionable if the type is
+template<class Type>
+struct ExpressionableIterable<Type, Arguments<label>>
+:
+    public Expressionable<typename Type::value_type>
+{};
+
+//- Access by iterator to an iterable container is expressionable if the type is
+template<class Type>
+struct ExpressionableIterable
+<
+    Type,
+    Arguments<typename Type::const_iterator>
+>
+:
+    public Expressionable<typename Type::value_type>
+{};
+
+//- Other arguments are as expressionable as the container itself
+template<class Type, class ... Args>
+struct ExpressionableIterable<Type, Arguments<Args ...>>
+:
+    public Expressionable<Type>
+{};
+
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 } // End namespace expression
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+//- Alias to enable instantiation if a type is a unary or binary expression
+template<class Expression>
+using EnableIfExpression =
+    std::enable_if_t
+    <
+        std::is_base_of<expression::expression, Expression>::value,
+        void
+    >;
 
 //- Alias to enable instantiation if a type (and arguments) is an expression
 template<class Expression, class ... Args>

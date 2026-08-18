@@ -76,7 +76,7 @@ namespace Foam
                                                                                \
 struct Func##Op                                                                \
 {                                                                              \
-    static const char precedence =                                             \
+    static const signed char precedence =                                      \
         expression::Operation<void>::precedence;                               \
                                                                                \
     static word name(const word& x)                                            \
@@ -85,6 +85,11 @@ struct Func##Op                                                                \
     }                                                                          \
                                                                                \
     static RetType value(const Type& x)                                        \
+    {                                                                          \
+        return Func(x);                                                        \
+    }                                                                          \
+                                                                               \
+    static dimensionSet value(const dimensionSet& x)                           \
     {                                                                          \
         return Func(x);                                                        \
     }                                                                          \
@@ -130,6 +135,17 @@ UnaryFunction(cmptMag)
     typename expression::Result                                                \
     <                                                                          \
         typename expression::AllContainers<Expression>::type                   \
+    >::template elementType<Expression> Func(const tmp<Expression>& te)        \
+    {                                                                          \
+        auto x = Func(te());                                                   \
+        te.clear();                                                            \
+        return x;                                                              \
+    }                                                                          \
+                                                                               \
+    template<class Expression, class = EnableIfExpressionable<Expression>>     \
+    typename expression::Result                                                \
+    <                                                                          \
+        typename expression::AllContainers<Expression>::type                   \
     >::template elementType<Expression> gFunc                                  \
     (                                                                          \
         const Expression& e,                                                   \
@@ -146,6 +162,17 @@ UnaryFunction(cmptMag)
         /* global reduction */                                                 \
         reduce(x, expression::Functor<Op>(), Pstream::msgType(), comm);        \
                                                                                \
+        return x;                                                              \
+    }                                                                          \
+                                                                               \
+    template<class Expression, class = EnableIfExpressionable<Expression>>     \
+    typename expression::Result                                                \
+    <                                                                          \
+        typename expression::AllContainers<Expression>::type                   \
+    >::template elementType<Expression> gFunc(const tmp<Expression>& te)       \
+    {                                                                          \
+        auto x = gFunc(te());                                                  \
+        te.clear();                                                            \
         return x;                                                              \
     }
 
@@ -211,11 +238,6 @@ BinaryOperator(&, inner);
 
 // Cross product operator
 BinaryOperator(^, cross);
-
-BinaryFunction(stabilise);
-BinaryFunction(pow);
-BinaryFunction(integerPow);
-BinaryFunction(integerRoot);
 
 // Maximum functions
 BinaryFunction(max);
