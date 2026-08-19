@@ -168,7 +168,7 @@ void* Foam::functionEntries::codeStream::compile
         codeDictVars,
         codeOptions,
         compileFiles,
-        wordList::null()
+        wordList{}
     );
 
     // Load library if not already loaded

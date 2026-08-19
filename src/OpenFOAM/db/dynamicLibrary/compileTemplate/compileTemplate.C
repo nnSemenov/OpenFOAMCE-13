@@ -126,7 +126,7 @@ Foam::compileTemplate::compileTemplate
         codeDictVars,
         word::null,
         compileFiles_,
-        wordList::null(),
+        wordList{},
         false
     ),
     substitutions_(substitutions),
@@ -140,7 +140,7 @@ Foam::compileTemplate::compileTemplate
     }
 
     // Make verbose if debugging
-    varSubstitutions().set("verbose", Foam::name(bool(debug)));
+    varSubstitutions().set("verbose", Foam::name(static_cast<bool>(debug)));
 
     this->updateLibrary(dict_);
 }
