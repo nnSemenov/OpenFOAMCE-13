@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2022-2026 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -21,47 +21,41 @@ License
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
+Namespace
+    Foam::fvc
+
+Description
+    Namespace of functions to calculate explicit derivatives.
+
 \*---------------------------------------------------------------------------*/
 
-#include "fluid.H"
-#include "fviDdt.H"
-#include "fvmDiv.H"
+#ifndef fvc_H
+#define fvc_H
 
-// * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
+#include "fv.H"
 
-void Foam::solvers::fluid::thermophysicalPredictor()
-{
-    volScalarField& he = this->thermoPtr_().he();
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-    fvScalarMatrix EEqn
-    (
-        fvm::ddt(rho_, he) + fvm::div(phi_, he)
-      + fvi::ddt(rho_, K) + fvi::div(phi_, K)
-      + pressureWork
-        (
-            he.name() == "e"
-          ? fvi::div(phi_, p_()/rho_)
-          : -dpdt
-        )
-      + thermophysicalTransport->divq(he)
-     ==
-        (
-            buoyancy.valid()
-          ? fvModels().source(rho_, he) + rho_*(U_ & buoyancy->g)
-          : fvModels().source(rho_, he)
-        )
-    );
+#include "surfaceInterpolate.H"
+#include "fvcVolumeIntegrate.H"
+#include "fvcSurfaceIntegrate.H"
+#include "fvcAverage.H"
+#include "fvcReconstruct.H"
+#include "fvcDdt.H"
+#include "fvcDDt.H"
+#include "fvcD2dt2.H"
+#include "fvcDiv.H"
+#include "fvcFlux.H"
+#include "fvcGrad.H"
+// #include "fvcMagSqrGradGrad.H"
+#include "fvcSnGrad.H"
+#include "fvcCurl.H"
+#include "fvcLaplacian.H"
+// #include "fvcSup.H"
+#include "fvcMeshPhi.H"
 
-    EEqn.relax();
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-    fvConstraints().constrain(EEqn);
-
-    EEqn.solve();
-
-    fvConstraints().constrain(he);
-
-    this->thermoPtr_().correct();
-}
-
+#endif
 
 // ************************************************************************* //
