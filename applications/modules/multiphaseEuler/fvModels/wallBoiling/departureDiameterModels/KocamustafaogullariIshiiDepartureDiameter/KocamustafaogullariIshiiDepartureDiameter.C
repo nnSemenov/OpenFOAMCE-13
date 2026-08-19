@@ -72,7 +72,7 @@ KocamustafaogullariIshiiDepartureDiameter::calculate
     auto phi = coefficient<ScalarFieldType>::value(phi_);
 
     return
-        0.0012*pow((rhoLiquid - rhoVapour)/rhoVapour, 0.9)*0.0208*phi
+        scalar{0.0012}*pow((rhoLiquid - rhoVapour)/rhoVapour, scalar{0.9})*scalar{0.0208}*phi
        *sqrt(sigma/(mag(g)*(rhoLiquid - rhoVapour)));
 }
 

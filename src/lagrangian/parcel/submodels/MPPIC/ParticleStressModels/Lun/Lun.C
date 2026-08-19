@@ -86,17 +86,17 @@ Foam::ParticleStressModels::Lun::tau
 {
     tmp<Field<scalar>> g0
     (
-        0.6
+        scalar{0.6}
       / max
         (
-            1.0 - pow(alpha/alphaPacked_,1.0/3.0),
-            max(eps_*(1.0 - alpha), small)
+            1 - pow(alpha/alphaPacked_,static_cast<scalar>(1.0 / 3.0)),
+            max(eps_*(1 - alpha), small)
         )
     );
 
-    tmp<Field<scalar>> gT(uSqr/3.0);
+    tmp<Field<scalar>> gT(uSqr/3);
 
-    return alpha*rho*(1.0 + alpha*(1.0 + e_)*g0)*gT;
+    return alpha*rho*(1 + alpha*(1 + e_)*g0)*gT;
 }
 
 

@@ -74,7 +74,7 @@ KocamustafaogullariIshiiNucleationSite::calculate
     // eq. (32)
     const ScalarFieldType f
     (
-        2.157e-7*pow(rhoM, -3.2)*pow(1 + 0.0049*rhoM, 4.13)
+        scalar{2.157e-7}*pow(rhoM, scalar{-3.2})*pow(1 + scalar{0.0049}*rhoM, scalar{4.13})
     );
 
     // eq. (17)
@@ -83,7 +83,7 @@ KocamustafaogullariIshiiNucleationSite::calculate
         dDep*max(Tw - Tsatw, zeroT)*rhoVapour*L/(4*sigma*Tsatw)
     );
 
-    return Cn/sqr(dDep)*pow(rRc, 4.4)*f;
+    return Cn/sqr(dDep)*pow(rRc, scalar{4.4})*f;
 }
 
 

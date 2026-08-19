@@ -292,10 +292,10 @@ Foam::Pair<Foam::scalarField> Foam::noiseFFT::Ldelta
     const scalarField& f = gLf.first();
     const scalarField& Lf = gLf.second();
 
-    scalarField ldelta(Lf.size(), 0.0);
+    scalarField ldelta(Lf.size(), 0);
     scalarField fm(ldelta.size());
 
-    scalar fratio = cbrt(2.0);
+    scalar fratio = cbrt(scalar{2.0});
     scalar deltaf = 1.0/(2*Lf.size()*deltat_);
 
     scalar fl = f1/sqrt(fratio);
@@ -321,7 +321,7 @@ Foam::Pair<Foam::scalarField> Foam::noiseFFT::Ldelta
             fu *= fratio;
         }
 
-        ldelta[j] += pow(10, Lf[i]/10.0);
+        ldelta[j] += pow(10, Lf[i]/10);
     }
 
     fm.setSize(j);
@@ -341,16 +341,16 @@ Foam::Pair<Foam::scalarField> Foam::noiseFFT::Pdelta
     const scalarField& f = gPf.first();
     const scalarField& Pf = gPf.second();
 
-    scalarField pdelta(Pf.size(), 0.0);
+    scalarField pdelta(Pf.size(), 0);
     scalarField fm(pdelta.size());
 
-    scalar fratio = cbrt(2.0);
-    scalar deltaf = 1.0/(2*Pf.size()*deltat_);
+    scalar fratio = cbrt(scalar{2});
+    scalar deltaf = 1/(2*Pf.size()*deltat_);
 
     scalar fl = f1/sqrt(fratio);
     scalar fu = fratio*fl;
 
-    label istart = label(fl/deltaf + 1.0 - small);
+    label istart = label(fl/deltaf + 1 - small);
     label j = 0;
 
     for (label i = istart; i<Pf.size(); i++)
@@ -362,7 +362,7 @@ Foam::Pair<Foam::scalarField> Foam::noiseFFT::Pdelta
         if (f[i] >= fu)
         {
             fm[j] = fmi;
-            pdelta[j] = sqrt((2.0/3.0)*pdelta[j]);
+            pdelta[j] = sqrt(scalar(2.0/3.0)*pdelta[j]);
 
             j++;
 
@@ -384,11 +384,11 @@ Foam::scalar Foam::noiseFFT::Lsum(const Pair<Foam::scalarField>& gLf) const
 {
     const scalarField& Lf = gLf.second();
 
-    scalar lsum = 0.0;
+    scalar lsum = 0;
 
     forAll(Lf, i)
     {
-        lsum += pow(10, Lf[i]/10.0);
+        lsum += pow(10, Lf[i]/10);
     }
 
     lsum = 10*log10(lsum);
@@ -399,7 +399,7 @@ Foam::scalar Foam::noiseFFT::Lsum(const Pair<Foam::scalarField>& gLf) const
 
 Foam::scalar Foam::noiseFFT::dbToPa(const scalar db) const
 {
-    return p0*pow(10.0, db/20.0);
+    return p0*pow(10, db/20);
 }
 
 
@@ -408,7 +408,7 @@ Foam::tmp<Foam::scalarField> Foam::noiseFFT::dbToPa
     const tmp<scalarField>& db
 ) const
 {
-    return p0*pow(10.0, db/20.0);
+    return p0*pow(10, db/20);
 }
 
 

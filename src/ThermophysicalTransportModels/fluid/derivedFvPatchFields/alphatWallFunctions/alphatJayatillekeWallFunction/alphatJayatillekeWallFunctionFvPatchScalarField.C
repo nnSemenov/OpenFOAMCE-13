@@ -100,7 +100,7 @@ tmp<scalarField> alphatJayatillekeWallFunctionFvPatchScalarField::P
     const scalarField& Prat
 )
 {
-    return 9.24*(pow(Prat, 0.75) - 1)*(1 + 0.28*exp(-0.007*Prat));
+    return scalar{9.24}*(pow(Prat, scalar{0.75}) - 1)*(1 + scalar{0.28}*exp(scalar{-0.007}*Prat));
 }
 
 

@@ -61,7 +61,7 @@ Foam::wallBoilingModels::nucleationSiteModels::LemmertChawla::calculate
     auto NRef = coefficient<ScalarFieldType>::value(NRef_);
     auto deltaTRef = coefficient<ScalarFieldType>::value(deltaTRef_);
 
-    return Cn*NRef*pow(max((Tw - Tsatw)/deltaTRef, scalar(0)), 1.805);
+    return Cn*NRef*pow(max((Tw - Tsatw)/deltaTRef, scalar{0}), scalar{1.805});
 }
 
 
@@ -74,8 +74,8 @@ Foam::wallBoilingModels::nucleationSiteModels::LemmertChawla::LemmertChawla
 :
     nucleationSiteModel(),
     Cn_("Cn", dimless, dict, 1),
-    NRef_("NRef", dimless/dimensions::area, dict, 9.922e5),
-    deltaTRef_("deltaTRef", dimensions::temperature, dict, 10)
+    NRef_("NRef", dimless/dimensions::area, dict, scalar{9.922e5}),
+    deltaTRef_("deltaTRef", dimensions::temperature, dict, scalar{10})
 {}
 
 

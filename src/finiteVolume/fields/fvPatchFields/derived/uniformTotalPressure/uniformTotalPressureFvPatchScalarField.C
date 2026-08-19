@@ -154,14 +154,14 @@ void Foam::uniformTotalPressureFvPatchScalarField::updateCoeffs
                     p0
                    /pow
                     (
-                        (1.0 + 0.5*psip*gM1ByG*neg(phip)*magSqr(Up)),
-                        1.0/gM1ByG
+                        (1 + scalar{0.5}*psip*gM1ByG*neg(phip)*magSqr(Up)),
+                        1/gM1ByG
                     )
                 );
             }
             else
             {
-                operator==(p0/(1.0 + 0.5*psip*neg(phip)*magSqr(Up)));
+                operator==(p0/(1 + scalar{0.5}*psip*neg(phip)*magSqr(Up)));
             }
         }
 
@@ -169,7 +169,7 @@ void Foam::uniformTotalPressureFvPatchScalarField::updateCoeffs
     else if (internalField().dimensions() == dimensions::kinematicPressure)
     {
         // Incompressible flow
-        operator==(p0 - 0.5*neg(phip)*magSqr(Up));
+        operator==(p0 - scalar{0.5}*neg(phip)*magSqr(Up));
     }
     else
     {

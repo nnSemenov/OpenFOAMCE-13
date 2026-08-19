@@ -13,7 +13,7 @@ inline tmp<scalarField> Ek
     const scalarField& k
 )
 {
-    tmp<scalarField> tEk = Ea*pow(k/k0, 4.0)*exp(-2.0*sqr(k/k0));
+    tmp<scalarField> tEk = Ea*pow(k/k0, 4)*exp(-2*sqr(k/k0));
 
     /*
     scalarField& Ekf = tEk();

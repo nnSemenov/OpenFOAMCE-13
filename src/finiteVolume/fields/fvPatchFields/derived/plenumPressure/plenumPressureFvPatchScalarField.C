@@ -225,20 +225,20 @@ void Foam::plenumPressureFvPatchScalarField::updateCoeffs()
     // Exit temperature to plenum temperature ratio
     const scalarField r
     (
-        1.0 - (gamma_ - 1.0)*U_e/(2.0*gamma_*R_*plenumTemperature_)
+        1 - (gamma_ - 1)*U_e/(2*gamma_*R_*plenumTemperature_)
     );
 
     // Quadratic coefficient (others not needed as b = +1.0 and c = -1.0)
     const scalarField a
     (
-        (1.0 - r)/(r*r*inletDischargeCoefficient_*inletDischargeCoefficient_)
+        (1 - r)/(r*r*inletDischargeCoefficient_*inletDischargeCoefficient_)
     );
 
     // Isentropic exit temperature to plenum temperature ratio
-    const scalarField s(2.0/(1.0 + sqrt(1.0 + 4.0*a)));
+    const scalarField s(2/(1 + sqrt(1 + 4*a)));
 
     // Exit pressure to plenum pressure ratio
-    const scalarField t(pow(s, gamma_/(gamma_ - 1.0)));
+    const scalarField t(pow(s, gamma_/(gamma_ - 1)));
 
     // Limit to prevent outflow
     const scalarField p_new
@@ -248,10 +248,10 @@ void Foam::plenumPressureFvPatchScalarField::updateCoeffs()
 
     // Relaxation fraction
     const scalar oneByFraction = timeScale_/dt;
-    const scalar fraction = oneByFraction < 1.0 ? 1.0 : 1.0/oneByFraction;
+    const scalar fraction = oneByFraction < 1 ? 1 : 1/oneByFraction;
 
     // Set the new value
-    operator==((1.0 - fraction)*p_old + fraction*p_new);
+    operator==((1 - fraction)*p_old + fraction*p_new);
     fixedValueFvPatchScalarField::updateCoeffs();
 }
 
