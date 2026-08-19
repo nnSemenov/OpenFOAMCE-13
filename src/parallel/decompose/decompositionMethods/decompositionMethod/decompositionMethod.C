@@ -355,7 +355,7 @@ Foam::labelList Foam::decompositionMethod::scaleWeights
         );
 
         // Hack for scotch which does not accept 64bit label range for weights
-        const scalar scale = INT32_MAX/(2*sumWeights);
+        const scalar scale = double{INT32_MAX}/(2*sumWeights);
         // const scalar scale = labelMax/(2*sumWeights);
 
 

@@ -842,7 +842,7 @@ Foam::fvMesh::readUpdateState Foam::fvMesh::readUpdate
     // Determine if this update moves forward in time. If so, searching back in
     // time for data files will only go back as far as the previous instance.
     const fileName instance0 = instance();
-    const bool forward = readUpdateIsForward();
+    const bool forward [[maybe_unused]] = readUpdateIsForward();
 
     // Update the polyMesh and the mesh instance
     const polyMesh::readUpdateState state = polyMesh::readUpdate();

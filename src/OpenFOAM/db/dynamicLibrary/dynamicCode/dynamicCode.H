@@ -84,7 +84,7 @@ class dynamicCode
         const wordList& codeDictVars_;
 
         //- Options file name
-        const word& optionsFileName_;
+        const word& optionsFileName_ [[maybe_unused]];
 
         //- Files to copy and filter and compile
         const wordList& compileFiles_;
