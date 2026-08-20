@@ -320,7 +320,7 @@ Foam::wordList Foam::fv::solidificationMelting::addSupFields() const
         }
     }
 
-    return wordList::null();
+    return wordList{};
 }
 
 

@@ -3317,7 +3317,7 @@ void Foam::snappyLayerDriver::addLayers
                 nPatchFaceLayers,   // layers per face
                 nPatchPointLayers,  // layers per point
                 finalDisp,          // thickness of layer nearest internal mesh
-                labelList::null(),
+                labelList{},
                 meshMod
             );
 
