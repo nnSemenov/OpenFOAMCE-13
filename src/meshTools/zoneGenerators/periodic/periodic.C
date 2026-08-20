@@ -141,7 +141,7 @@ Foam::zoneSet Foam::zoneGenerators::periodic::generate() const
               ? new pointZone
                 (
                     zoneName_,
-                    labelList::null(),
+                    labelList{},
                     mesh_.pointZones(),
                     moveUpdate_,
                     true
@@ -151,7 +151,7 @@ Foam::zoneSet Foam::zoneGenerators::periodic::generate() const
               ? new cellZone
                 (
                     zoneName_,
-                    labelList::null(),
+                    labelList{},
                     mesh_.cellZones(),
                     moveUpdate_,
                     true
@@ -161,8 +161,8 @@ Foam::zoneSet Foam::zoneGenerators::periodic::generate() const
               ? new faceZone
                 (
                     zoneName_,
-                    labelList::null(),
-                    boolList::null(),
+                    labelList{},
+                    boolList{},
                     mesh_.faceZones(),
                     moveUpdate_,
                     true
