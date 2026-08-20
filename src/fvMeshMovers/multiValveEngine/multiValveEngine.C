@@ -107,7 +107,7 @@ Foam::fvMeshMovers::multiValveEngine::multiValveEngine
     staticPatchSet_(findStaticPatchSet()),
     frozenPointZones_
     (
-        dict.lookupOrDefault("frozenZones", wordReList::null())
+        dict.lookupOrDefault("frozenZones", wordReList{})
     ),
     linerPatchSet(linerPatchSet_),
     slidingPatchSet(slidingPatchSet_),

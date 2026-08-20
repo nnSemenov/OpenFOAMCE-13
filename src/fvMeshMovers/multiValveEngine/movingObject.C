@@ -305,11 +305,11 @@ Foam::fvMeshMovers::multiValveEngine::movingObject::movingObject
     ),
     movingPointZones_
     (
-        dict.lookupOrDefault("movingZones", wordReList::null())
+        dict.lookupOrDefault("movingZones", wordReList{})
     ),
     frozenPointZones_
     (
-        dict.lookupOrDefault("frozenZones", wordReList::null())
+        dict.lookupOrDefault("frozenZones", wordReList{})
     ),
     scale_
     (
