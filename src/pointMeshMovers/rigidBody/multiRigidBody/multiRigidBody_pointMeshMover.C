@@ -120,9 +120,9 @@ Foam::pointMeshMovers::multiRigidBody::bodyMesh::bodyMesh
 :
     mesh_(mesh),
     name_(name),
-    patches_(dict.lookupOrDefault("patches", wordReList::null())),
+    patches_(dict.lookupOrDefault("patches", wordReList{})),
     patchSet_(mesh.boundary().patchSet(patches_)),
-    pointZones_(dict.lookupOrDefault("pointZones", wordReList::null())),
+    pointZones_(dict.lookupOrDefault("pointZones", wordReList{})),
     pointZoneSet_(mesh.pointZones().zoneSet(pointZones_)),
     di_(dict.lookupOrDefault<scalar>("innerDistance", 0.0)),
     do_(dict.lookup<scalar>("outerDistance")),
