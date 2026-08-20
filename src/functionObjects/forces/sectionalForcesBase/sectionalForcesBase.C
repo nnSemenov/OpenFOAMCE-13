@@ -229,7 +229,7 @@ Foam::functionObjects::sectionalForcesBase::devTau() const
             << "No valid model for viscous stress calculation"
             << exit(FatalError);
 
-        return surfaceVectorField::null();
+        return tmp<surfaceVectorField>{nullptr};
     }
 }
 
@@ -528,7 +528,7 @@ bool Foam::functionObjects::sectionalForcesBase::read(const dictionary& dict)
 
 Foam::wordList Foam::functionObjects::sectionalForcesBase::fields() const
 {
-    return wordList::null();
+    return wordList{};
 }
 
 

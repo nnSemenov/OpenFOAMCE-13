@@ -96,7 +96,7 @@ public:
         //- Return the list of fields required
         virtual wordList fields() const
         {
-            return wordList::null();
+            return wordList{};
         }
 
         //- Return true if the functionObject should be executed at the start

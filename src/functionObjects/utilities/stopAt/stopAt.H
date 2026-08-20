@@ -121,7 +121,7 @@ public:
         //- Return the list of fields required
         virtual wordList fields() const
         {
-            return wordList::null();
+            return wordList{};
         }
 
         //- Execute, check existence of stopAt file and take action

@@ -74,7 +74,7 @@ protected:
         void setResultName
         (
             const word& functionName,
-            const wordList& defaultFieldNames = wordList::null()
+            const wordList& defaultFieldNames = wordList{}
         );
 
         //- Operate on the fields and store the result. Supported overload.
@@ -155,7 +155,7 @@ public:
             const word& name,
             const Time& runTime,
             const dictionary& dict,
-            const wordList& fieldNames = wordList::null(),
+            const wordList& fieldNames = wordList{},
             const word& resultName = word::null
         );
 
