@@ -748,7 +748,7 @@ void Foam::BlendedInterfacialModel<ModelType>::postProcessBlendingCoefficients
     if (nPhases <= 2)
     {
         // Strip out the first field and shuffle everything else up
-        const autoPtr<scalarField> field0 = fields.set(0, nullptr);
+        autoPtr<scalarField> field0 = fields.set(0, nullptr);
         const word field0Name = fieldNames[0];
         for (label fieldi = 1; fieldi < fields.size(); ++ fieldi)
         {
@@ -767,7 +767,7 @@ void Foam::BlendedInterfacialModel<ModelType>::postProcessBlendingCoefficients
         (
             path,
             interface_.name(),
-            coordSet(true, field0Name, field0),
+            coordSet(true, field0Name, field0.ptr()),
             fieldNames,
             fields
         );

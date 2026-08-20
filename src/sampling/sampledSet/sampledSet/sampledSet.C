@@ -91,9 +91,9 @@ void Foam::sampledSet::setSamples() const
         (
             samplingSegments,
             word::null,
-            positions,
+            &positions,
             coordSet::axisTypeNames_[coordSet::axisType::DISTANCE],
-            ordered ? distances : NullObjectRef<scalarField>(),
+            ordered ? &distances : nullptr,
             coordSet::axisTypeNames_[axis_]
         )
     );

@@ -90,9 +90,9 @@ void Foam::gnuplotSetWriter::write
         (
             set.segments(),
             word::null,
-            pointField::null(),
+            nullptr,
             set.scalarName(),
-            set.scalarCoords()
+            set.scalarCoords().ptr()
         )
       : set,
         #define TypeValueSetsParameter(Type, nullArg) Type##ValueSets,

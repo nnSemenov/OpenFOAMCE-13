@@ -460,7 +460,7 @@ void Foam::meshCheck::mergeAndWrite
         (
             checkMeshOutputDir(mesh),
             set.name(),
-            coordSet(false, word::null, mergedPts),
+            coordSet(false, word::null, &mergedPts),
             "pointID",
             scalarField(scalarList(mergedIDs))
         );

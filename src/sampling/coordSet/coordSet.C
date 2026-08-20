@@ -57,27 +57,17 @@ Foam::coordSet::coordSet
 (
     const labelList& segments,
     const word& positionName,
-    const pointField& positions,
+    const pointField* positions,
     const word& distanceName,
-    const scalarField& distances,
+    const scalarField* distances,
     const word& axis
 )
 :
     segments_(segments),
     positionName_(positionName),
-    positions_
-    (
-        isNull<pointField>(positions)
-      ? nullptr
-      : new pointField(positions)
-    ),
+    positions_{positions?new pointField{*positions}:nullptr},
     distanceName_(distanceName),
-    distances_
-    (
-        isNull<scalarField>(distances)
-      ? nullptr
-      : new scalarField(distances)
-    ),
+    distances_{distances?new scalarField{*distances}:nullptr},
     axis_(axisTypeNames_[axis])
 {}
 
@@ -86,19 +76,19 @@ Foam::coordSet::coordSet
 (
     const bool contiguous,
     const word& positionName,
-    const pointField& positions,
+    const pointField* positions,
     const word& axis
 )
 :
     coordSet
     (
         contiguous
-      ? labelList(positions.size(), 0)
-      : identityMap(positions.size()),
+      ? labelList(positions?positions->size():0, 0)
+      : identityMap(positions?positions->size():0),
         positionName,
         positions,
         word::null,
-        scalarField::null(),
+        nullptr,
         axis
     )
 {}
@@ -108,17 +98,17 @@ Foam::coordSet::coordSet
 (
     const bool contiguous,
     const word& distanceName,
-    const scalarField& distances,
+    const scalarField* distances,
     const word& axis
 )
 :
     coordSet
     (
         contiguous
-      ? labelList(distances.size(), 0)
-      : identityMap(distances.size()),
+      ? labelList(distances->size(), 0)
+      : identityMap(distances->size()),
         word::null,
-        pointField::null(),
+        nullptr,
         distanceName,
         distances,
         axis
@@ -209,7 +199,7 @@ Foam::tmp<Foam::scalarField> Foam::coordSet::scalarCoords() const
             break;
     }
 
-    return scalarField::null();
+    return tmp<scalarField>{nullptr};
 }
 
 
@@ -294,7 +284,7 @@ Foam::tmp<Foam::pointField> Foam::coordSet::pointCoords() const
             break;
     }
 
-    return pointField::null();
+    return tmp<pointField>{nullptr};
 }
 
 

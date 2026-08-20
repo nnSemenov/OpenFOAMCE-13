@@ -209,12 +209,12 @@ int main(int argc, char *argv[])
 
         Info<< "\nWriting particle tracks in " << setFormat
             << " format to " << vtkPath << nl << endl;
-
+        const pointField points(allTrack);
         setWriter::New(setFormat, propsDict)->write
         (
             vtkPath,
             "tracks",
-            coordSet(allTrackIDs, word::null, pointField(allTrack))
+            coordSet(allTrackIDs, word::null, &points)
         );
     }
 

@@ -149,8 +149,13 @@ bool Foam::functionObjects::sectionalForceGraph::read(const dictionary& dict)
 bool Foam::functionObjects::sectionalForceGraph::write()
 {
     // Get the coordinates
-    tmp<scalarField> tdistances = this->distances();
-    const scalarField& distances = tdistances();
+    const auto distances = [&]()->scalarField {
+        auto t  =this->distances();
+        if (t.valid()) {
+            return scalarField{t};
+        }
+        return {};
+    }();
 
     // Construct result fields
     wordList fieldNames({"force", "moment"});
@@ -174,6 +179,7 @@ bool Foam::functionObjects::sectionalForceGraph::write()
     {
         mkDir(outputPath());
 
+        const pointField positions{origin() + distances*normal_};
         formatter_->write
         (
             outputPath(),
@@ -182,9 +188,9 @@ bool Foam::functionObjects::sectionalForceGraph::write()
             (
                 identityMap(distances.size()),
                 word::null,
-                origin() + distances*normal_,
+                &positions,
                 coordSet::axisTypeNames_[coordSet::axisType::DISTANCE],
-                distances,
+                &distances,
                 coordSet::axisTypeNames_[axis_]
             ),
             fieldNames

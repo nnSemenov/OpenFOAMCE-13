@@ -105,29 +105,56 @@ public:
         (
             const labelList& segments,
             const word& positionName = word::null,
-            const pointField& positions = pointField::null(),
+            const pointField* positions = nullptr,
             const word& distanceName = word::null,
-            const scalarField& distances = scalarField::null(),
+            const scalarField* distances = nullptr,
             const word& axis = axisTypeNames_[axisType::DEFAULT]
         );
+        //- Fallback interface for passing positions as reference
+        inline coordSet
+        (
+            const labelList& segments,
+            const word& positionName ,
+            const pointField& positions,
+            const word& distanceName ,
+            const scalarField& distances ,
+            const word& axis = axisTypeNames_[axisType::DEFAULT]
+        ): coordSet{segments,positionName,&positions,distanceName,&distances,axis} {}
 
         //- Construct from positions
         coordSet
         (
             const bool contiguous,
             const word& positionName,
-            const pointField& positions,
+            const pointField* positions,
             const word& axis = axisTypeNames_[axisType::DEFAULT]
         );
+        //- Fallback interface
+        coordSet
+        (
+            const bool contiguous,
+            const word& positionName,
+            const pointField& positions,
+            const word& axis = axisTypeNames_[axisType::DEFAULT]
+        ): coordSet{contiguous,positionName,&positions,axis} {}
 
         //- Construct from distances
         coordSet
         (
             const bool contiguous,
             const word& distanceName,
-            const scalarField& distances,
+            const scalarField* distances,
             const word& axis = axisTypeNames_[axisType::DEFAULT]
         );
+
+        //- Fallback interface
+        coordSet
+        (
+            const bool contiguous,
+            const word& distanceName,
+            const scalarField& distances,
+            const word& axis = axisTypeNames_[axisType::DEFAULT]
+        ): coordSet{contiguous,distanceName,&distances,axis} {}
 
 
     // Member Functions

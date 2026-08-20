@@ -535,11 +535,13 @@ bool Foam::functionObjects::streamlines::write()
             FOR_ALL_FIELD_TYPES(SetTypeValueSetPtr);
             #undef SetTypeValueSetPtr
         }
+
+        const pointField all_pos_points{allPositions};
         formatterPtr_->write
         (
             outputPath,
             "tracks",
-            coordSet(allTracks, word::null, allPositions),
+            coordSet(allTracks, word::null, &all_pos_points),
             valueSetNames
             #define TypeValueSetsParameter(Type, nullArg) , Type##ValueSets
             FOR_ALL_FIELD_TYPES(TypeValueSetsParameter)
