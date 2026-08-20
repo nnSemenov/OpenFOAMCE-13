@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
         args.optionLookupOrDefault<wordList>
         (
             "addMeshes",
-            wordList::null()
+            wordList{}
         )
     );
 
@@ -158,7 +158,7 @@ int main(int argc, char *argv[])
         args.optionLookupOrDefault<wordList>
         (
             "addRegions",
-            wordList::null()
+            wordList{}
         )
     );
 
@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
         args.optionLookupOrDefault<List<Tuple2<word, word>>>
         (
             "addMeshRegions",
-            List<Tuple2<word, word>>::null()
+            List<Tuple2<word, word>>{}
         )
     );
 
@@ -176,7 +176,7 @@ int main(int argc, char *argv[])
         args.optionLookupOrDefault<fileNameList>
         (
             "addCases",
-            fileNameList::null()
+            fileNameList{}
         )
     );
 
@@ -185,7 +185,7 @@ int main(int argc, char *argv[])
         args.optionLookupOrDefault<List<Tuple2<fileName, word>>>
         (
             "addCaseMeshes",
-            List<Tuple2<fileName, word>>::null()
+            List<Tuple2<fileName, word>>{}
         )
     );
 
@@ -194,7 +194,7 @@ int main(int argc, char *argv[])
         args.optionLookupOrDefault<List<Tuple2<fileName, word>>>
         (
             "addCaseRegions",
-            List<Tuple2<fileName, word>>::null()
+            List<Tuple2<fileName, word>>{}
         )
     );
 
@@ -203,7 +203,7 @@ int main(int argc, char *argv[])
         args.optionLookupOrDefault<List<Tuple3<fileName, word, word>>>
         (
             "addCaseMeshRegions",
-            List<Tuple3<fileName, word, word>>::null()
+            List<Tuple3<fileName, word, word>>{}
         )
     );
 

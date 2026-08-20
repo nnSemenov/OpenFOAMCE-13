@@ -345,7 +345,7 @@ int main(int argc, char *argv[])
             frontPatchName = sourcePatches[0];
         }
 
-        wordList zoneNames(dict.lookupOrDefault("zoneNames", wordList::null()));
+        wordList zoneNames(dict.lookupOrDefault("zoneNames", wordList{}));
         if (zoneNames.size() == 1)
         {
             if (zoneNames[0] == "patchNames")

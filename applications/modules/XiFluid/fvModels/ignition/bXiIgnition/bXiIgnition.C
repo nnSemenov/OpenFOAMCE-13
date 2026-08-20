@@ -61,7 +61,7 @@ Foam::wordList Foam::fv::bXiIgnition::addSupFields() const
     }
     else
     {
-        return wordList::null();
+        return wordList{};
     }
 }
 

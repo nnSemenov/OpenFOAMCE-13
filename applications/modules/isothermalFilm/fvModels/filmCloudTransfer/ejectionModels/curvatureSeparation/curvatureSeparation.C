@@ -176,7 +176,7 @@ curvatureSeparation::curvatureSeparation
 {
     const List<Tuple2<word, scalar>> prIn
     (
-        dict.lookupOrDefault("patchRadii", List<Tuple2<word, scalar>>::null())
+        dict.lookupOrDefault("patchRadii", List<Tuple2<word, scalar>>{})
     );
     const wordList& allPatchNames = film_.mesh.poly().boundary().names();
 

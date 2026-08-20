@@ -372,7 +372,8 @@ Foam::tmp<Foam::scalarField> Foam::constSolidThermo::The
 const Foam::volVectorField& Foam::constSolidThermo::Kappa() const
 {
     NotImplemented;
-    return volVectorField::null();
+    std::abort();
+    // return volVectorField::null();
 }
 
 

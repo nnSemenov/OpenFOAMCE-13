@@ -81,7 +81,7 @@ Foam::wordList Foam::fv::bXiTimedIgnition::addSupFields() const
     }
     else
     {
-        return wordList::null();
+        return wordList{};
     }
 }
 
