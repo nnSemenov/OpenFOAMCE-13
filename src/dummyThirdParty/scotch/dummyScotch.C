@@ -113,7 +113,7 @@ Foam::labelList Foam::decompositionMethods::scotch::decompose
     FatalErrorInFunction
         << notImplementedMessage << exit(FatalError);
 
-    return labelList::null();
+    return Foam::labelList{};
 }
 
 
@@ -128,7 +128,7 @@ Foam::labelList Foam::decompositionMethods::scotch::decompose
     FatalErrorInFunction
         << notImplementedMessage << exit(FatalError);
 
-    return labelList::null();
+    return Foam::labelList{};
 }
 
 
@@ -142,7 +142,7 @@ Foam::labelList Foam::decompositionMethods::scotch::decompose
     FatalErrorInFunction
         << notImplementedMessage << exit(FatalError);
 
-    return labelList::null();
+    return Foam::labelList{};
 }
 
 

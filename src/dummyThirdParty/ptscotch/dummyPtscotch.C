@@ -125,7 +125,7 @@ Foam::labelList Foam::decompositionMethods::ptscotch::decompose
     FatalErrorInFunction
         << notImplementedMessage << exit(FatalError);
 
-    return labelList::null();
+    return labelList{};
 }
 
 
@@ -140,7 +140,7 @@ Foam::labelList Foam::decompositionMethods::ptscotch::decompose
     FatalErrorInFunction
         << notImplementedMessage << exit(FatalError);
 
-    return labelList::null();
+    return labelList{};
 }
 
 
@@ -154,7 +154,7 @@ Foam::labelList Foam::decompositionMethods::ptscotch::decompose
     FatalErrorInFunction
         << notImplementedMessage << exit(FatalError);
 
-    return labelList::null();
+    return labelList{};
 }
 
 
