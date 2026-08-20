@@ -676,10 +676,11 @@ void Foam::domainDecomposition::reconstructPoints()
                 const labelList& faceZonei =
                     procMeshes_[proci].faceZones()[pzi];
 
+                const boolList empty{};
                 const boolList& flipMapi =
                     faceZones0[pzi].oriented()
                       ? procMeshes_[proci].faceZones()[pzi].flipMap()
-                      : boolList::null();
+                      : empty;
 
                 const labelList& owneri = procMeshes_[proci].owner();
 

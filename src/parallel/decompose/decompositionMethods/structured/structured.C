@@ -185,7 +185,7 @@ Foam::labelList Foam::decompositionMethods::structured::decompose
 {
     NotImplemented;
 
-    return labelList::null();
+    return labelList{};
 }
 
 

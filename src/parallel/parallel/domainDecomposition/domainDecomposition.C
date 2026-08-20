@@ -1010,12 +1010,16 @@ Foam::domainDecomposition::procFaceAddressingBf() const
             procFaceAddressingBf_.set
             (
                 proci,
-                new surfaceLabelField::Boundary
-                (
+                new surfaceLabelField::Boundary{
                     procMesh.boundary(),
-                    surfaceLabelField::null(),
+                    surfaceLabelField{
+                        IOobject{
+                            "null", procMesh.instance(), procMesh.db(), IOobject::NO_READ, IOobject::NO_WRITE, false
+                        },
+                        procMesh, dimless
+                    },
                     calculatedFvsPatchLabelField::typeName
-                )
+                }
             );
 
             forAll(procMesh.boundary(), procPatchi)
