@@ -97,7 +97,7 @@ protected:
         label matId_;
 
         //- pointField referenced
-        const pointField& points_;
+        const pointField*const points_;
 
 
     // Protected Classes
@@ -120,11 +120,12 @@ protected:
             {}
 
             //- Construct for mesh points
-            localPoints(const pointField& pts)
+            localPoints(const pointField* pts)
             :
                 nPoints(0),
-                list(pts.size(), -1)
+                list(pts?pts->size():0, -1)
             {}
+
         };
 
 
@@ -147,7 +148,7 @@ protected:
         (
             ensightFile& os,
             const List<scalar>& field,
-            const labelUList& idList
+            const labelUList* idList
         ) const;
 
         //- Track points used

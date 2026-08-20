@@ -54,7 +54,7 @@ const Foam::List<Foam::word> Foam::ensightPartCells::elemTypes_
 void Foam::ensightPartCells::classify
 (
     const polyMesh& mesh,
-    const labelUList& idList
+    const labelUList* idList
 )
 {
     // References to cell shape models
@@ -69,10 +69,10 @@ void Foam::ensightPartCells::classify
     size_ = mesh.nCells();
 
     bool limited = false;
-    if (notNull(idList))
+    if (idList)
     {
         limited = true;
-        size_ = idList.size();
+        size_ = idList->size();
     }
 
     // count the shapes
@@ -87,7 +87,7 @@ void Foam::ensightPartCells::classify
         label cellId = listI;
         if (limited)
         {
-            cellId = idList[listI];
+            cellId = (*idList)[listI];
         }
 
         const cellShape& cellShape = cellShapes[cellId];
@@ -135,7 +135,7 @@ void Foam::ensightPartCells::classify
         label cellId = listI;
         if (limited)
         {
-            cellId = idList[listI];
+            cellId = (*idList)[listI];
         }
 
         const cellShape& cellShape = cellShapes[cellId];
@@ -211,7 +211,7 @@ Foam::ensightPartCells::ensightPartCells
     ensightPart(partNumber, "cells", mesh.points()),
     mesh_(mesh)
 {
-    classify(mesh, idList);
+    classify(mesh, &idList);
 }
 
 
@@ -225,7 +225,7 @@ Foam::ensightPartCells::ensightPartCells
     ensightPart(partNumber, cZone.name(), mesh.points()),
     mesh_(mesh)
 {
-    classify(mesh, cZone);
+    classify(mesh, &cZone);
 }
 
 
@@ -403,7 +403,8 @@ void Foam::ensightPartCells::writeConnectivity
 
 void Foam::ensightPartCells::writeGeometry(ensightGeoFile& os) const
 {
-    ensightPart::writeGeometry(os, points_);
+    const pointField empty{};
+    ensightPart::writeGeometry(os, points_ ? *points_ : empty);
 }
 
 

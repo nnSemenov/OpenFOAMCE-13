@@ -73,7 +73,7 @@ Foam::ensightPart::ensightPart
     size_(0),
     isCellData_(true),
     matId_(0),
-    points_(pointField::null())
+    points_{nullptr}
 {}
 
 
@@ -90,7 +90,7 @@ Foam::ensightPart::ensightPart
     size_(0),
     isCellData_(true),
     matId_(0),
-    points_(pointField::null())
+    points_{nullptr}
 {}
 
 
@@ -108,7 +108,7 @@ Foam::ensightPart::ensightPart
     size_(0),
     isCellData_(true),
     matId_(0),
-    points_(points)
+    points_(&points)
 {}
 
 

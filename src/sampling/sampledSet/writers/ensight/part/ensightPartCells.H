@@ -57,7 +57,7 @@ class ensightPartCells
         void classify
         (
             const polyMesh&,
-            const labelUList& idLabels = labelUList::null()
+            const labelUList* idLabels=nullptr
         );
 
         //- Track points used

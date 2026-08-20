@@ -52,7 +52,7 @@ void Foam::ensightPart::writeField
                 ++cmpt
             )
             {
-                writeFieldList(os, field.component(cmpt), labelUList::null());
+                writeFieldList(os, field.component(cmpt), nullptr);
             }
         }
         else
@@ -72,7 +72,7 @@ void Foam::ensightPart::writeField
                         ++cmpt
                     )
                     {
-                        writeFieldList(os, field.component(cmpt), idList);
+                        writeFieldList(os, field.component(cmpt), &idList);
                     }
                 }
             }

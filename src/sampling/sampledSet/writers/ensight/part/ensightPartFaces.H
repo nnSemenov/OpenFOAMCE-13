@@ -84,7 +84,7 @@ protected:
     // Protected data
 
         //- Faces referenced
-        const faceList& faces_;
+        const faceList*const faces_;
 
         //- Can skip local point renumbering when points are contiguous
         const bool contiguousPoints_;

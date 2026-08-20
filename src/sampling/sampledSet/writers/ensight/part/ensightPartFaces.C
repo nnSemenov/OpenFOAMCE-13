@@ -124,7 +124,7 @@ Foam::ensightPartFaces::ensightPartFaces
 )
 :
     ensightPart(partNumber, partDescription),
-    faces_(faceList::null()),
+    faces_{nullptr},
     contiguousPoints_(false)
 {
     isCellData_ = false;
@@ -143,7 +143,7 @@ Foam::ensightPartFaces::ensightPartFaces
 )
 :
     ensightPart(partNumber, partDescription, points),
-    faces_(faces),
+    faces_{&faces},
     contiguousPoints_(contiguousPoints)
 {
     isCellData_ = false;
@@ -163,7 +163,7 @@ Foam::ensightPartFaces::ensightPartFaces
 )
 :
     ensightPart(partNumber, patch.name(), mesh.points()),
-    faces_(mesh.faces()),
+    faces_(&mesh.faces()),
     contiguousPoints_(false)
 {
     isCellData_ = false;
@@ -185,7 +185,7 @@ Foam::ensightPartFaces::ensightPartFaces(const ensightPartFaces& part)
 Foam::ensightPartFaces::ensightPartFaces(Istream& is)
 :
     ensightPart(),
-    faces_(faceList::null()),
+    faces_{nullptr},
     contiguousPoints_(false)
 {
     isCellData_ = false;
@@ -206,8 +206,9 @@ Foam::ensightPart::localPoints Foam::ensightPartFaces::calcLocalPoints() const
     if (contiguousPoints_)
     {
         localPoints ptList;
-        ptList.list = identityMap(points_.size());
-        ptList.nPoints = points_.size();
+        const label len=points_?points_->size():0;
+        ptList.list = identityMap(len);
+        ptList.nPoints = len;
         return ptList;
     }
 
@@ -223,7 +224,7 @@ Foam::ensightPart::localPoints Foam::ensightPartFaces::calcLocalPoints() const
         forAll(idList, i)
         {
             const label id = idList[i] + offset_;
-            const face& f = faces_[id];
+            const face& f = (*faces_)[id];
 
             forAll(f, fp)
             {
@@ -302,11 +303,12 @@ void Foam::ensightPartFaces::writeConnectivity
     const labelUList& pointMap
 ) const
 {
+    const faceList empty{};
     writeConnectivity
     (
         os,
         key,
-        faces_,
+        faces_?*faces_:empty,
         idList,
         pointMap
     );
@@ -315,7 +317,8 @@ void Foam::ensightPartFaces::writeConnectivity
 
 void Foam::ensightPartFaces::writeGeometry(ensightGeoFile& os) const
 {
-    ensightPart::writeGeometry(os, points_);
+    const pointField empty{};
+    ensightPart::writeGeometry(os, points_?*points_:empty);
 }
 
 

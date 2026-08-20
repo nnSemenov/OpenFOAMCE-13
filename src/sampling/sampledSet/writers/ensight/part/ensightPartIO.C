@@ -56,20 +56,20 @@ void Foam::ensightPart::writeFieldList
 (
     ensightFile& os,
     const List<scalar>& field,
-    const labelUList& idList
+    const labelUList* idList
 ) const
 {
-    if (notNull(idList))
+    if (idList not_eq nullptr)
     {
-        forAll(idList, i)
+        forAll(*idList, i)
         {
-            if (idList[i] >= field.size() || std::isnan(field[idList[i]]))
+            if ((*idList)[i] >= field.size() || std::isnan(field[(*idList)[i]]))
             {
                 os.writeUndef();
             }
             else
             {
-                os.write(field[idList[i]]);
+                os.write(field[(*idList)[i]]);
             }
 
             os.newline();
@@ -227,7 +227,7 @@ void Foam::ensightPart::writeScalarField
         if (perNode)
         {
             os.writeKeyword("coordinates");
-            writeFieldList(os, field, labelUList::null());
+            writeFieldList(os, field, nullptr);
         }
         else
         {
@@ -238,7 +238,7 @@ void Foam::ensightPart::writeScalarField
                 if (idList.size())
                 {
                     os.writeKeyword(elementTypes()[elemI]);
-                    writeFieldList(os, field, idList);
+                    writeFieldList(os, field, &idList);
                 }
             }
         }
@@ -262,9 +262,9 @@ void Foam::ensightPart::writeVectorField
         if (perNode)
         {
             os.writeKeyword("coordinates");
-            writeFieldList(os, field0, labelUList::null());
-            writeFieldList(os, field1, labelUList::null());
-            writeFieldList(os, field2, labelUList::null());
+            writeFieldList(os, field0, nullptr);
+            writeFieldList(os, field1, nullptr);
+            writeFieldList(os, field2, nullptr);
         }
         else
         {
@@ -275,9 +275,9 @@ void Foam::ensightPart::writeVectorField
                 if (idList.size())
                 {
                     os.writeKeyword(elementTypes()[elemI]);
-                    writeFieldList(os, field0, idList);
-                    writeFieldList(os, field1, idList);
-                    writeFieldList(os, field2, idList);
+                    writeFieldList(os, field0, &idList);
+                    writeFieldList(os, field1, &idList);
+                    writeFieldList(os, field2, &idList);
                 }
             }
         }
