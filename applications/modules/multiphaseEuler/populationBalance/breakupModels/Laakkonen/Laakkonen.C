@@ -85,15 +85,15 @@ Foam::populationBalance::breakupModels::Laakkonen::rate(const label i) const
                 C2_
                *sigma
                /(
-                   rhoc*pow(dSphi, 5.0/3.0)
-                  *pow(epsilonc, 2.0/3.0)
+                   rhoc*pow(dSphi, static_cast<scalar>(5.0/3.0))
+                  *pow(epsilonc, static_cast<scalar>(2.0/3.0))
                 )
               + C3_
                *muc
                /(
                     sqrt(rhoc*rhod)
                    *cbrt(epsilonc)
-                   *pow(dSphi, 4.0/3.0)
+                   *pow(dSphi, static_cast<scalar>(4.0/3.0))
                 )
             )
         );

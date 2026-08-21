@@ -88,19 +88,19 @@ Foam::populationBalance::breakupModels::LuoSvendsen::LuoSvendsen
         Tuple2<scalar, scalar> gamma2by11
             (
                 z,
-                incGammaRatio_Q(2.0/11.0, z)
+                incGammaRatio_Q(static_cast<scalar>(2.0/11.0), z)
             );
 
         Tuple2<scalar, scalar> gamma5by11
             (
                 z,
-                incGammaRatio_Q(5.0/11.0, z)
+                incGammaRatio_Q(static_cast<scalar>(5.0/11.0), z)
             );
 
         Tuple2<scalar, scalar> gamma8by11
             (
                 z,
-                incGammaRatio_Q(8.0/11.0, z)
+                incGammaRatio_Q(static_cast<scalar>(8.0/11.0), z)
             );
 
         gammaUpperReg2by11Table.append(gamma2by11);
@@ -177,13 +177,13 @@ Foam::populationBalance::breakupModels::LuoSvendsen::rate
 
     const dimensionedScalar cf
     (
-        pow(vi/vj, 2.0/3.0) + pow((1 - vi/vj), 2.0/3.0) - 1
+        pow(vi/vj, static_cast<scalar>(2.0/3.0)) + pow((1 - vi/vj), static_cast<scalar>(2.0/3.0)) - 1
     );
 
     const volInternalScalarField b
     (
         12*cf*sigma
-       /(beta_*rhoc*pow(dSphj, 5.0/3.0)*pow(epsilonc, 2.0/3.0))
+       /(beta_*rhoc*pow(dSphj, static_cast<scalar>(5.0/3.0))*pow(epsilonc, static_cast<scalar>(2.0/3.0)))
     );
 
     const volInternalScalarField xiMin
@@ -191,15 +191,15 @@ Foam::populationBalance::breakupModels::LuoSvendsen::rate
         minEddyRatio_*kolmogorovLengthScale_/dSphj
     );
 
-    const volInternalScalarField tMin(b/pow(xiMin, 11.0/3.0));
+    const volInternalScalarField tMin(b/pow(xiMin, static_cast<scalar>(11.0/3.0)));
 
-    volInternalScalarField integral(3/(11*pow(b, 8.0/11.0)));
+    volInternalScalarField integral(3/(11*pow(b, static_cast<scalar>(8.0/11.0))));
     forAll(integral, celli)
     {
         integral[celli] *=
             2
-           *pow(b[celli], 3.0/11.0)
-           *tgamma(5.0/11.0)
+           *pow(b[celli], static_cast<scalar>(3.0/11.0))
+           *tgamma(static_cast<scalar>(5.0/11.0))
            *(
                 gammaUpperReg5by11_->value(b[celli])
               - gammaUpperReg5by11_->value(tMin[celli])

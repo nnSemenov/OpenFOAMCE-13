@@ -139,8 +139,7 @@ tmp<volInternalScalarField> SpalartAllmarasDES<BasicMomentumTransportModel>::r
                 )
                *sqr(kappa_*dTilda)
             ),
-            scalar(10)
-        )
+            scalar{10})
     );
 }
 
@@ -159,12 +158,12 @@ SpalartAllmarasDES<BasicMomentumTransportModel>::fw
     return volInternalScalarField::New
     (
         typedName("fw"),
-        g*pow((1 + pow6(Cw3_))/(pow6(g) + pow6(Cw3_)), 1.0/6.0)
-    );
+        g *
+            pow((1 + pow6(Cw3_)) / (pow6(g) + pow6(Cw3_)),
+                static_cast<scalar>(1.0 / 6.0)));
 }
 
-
-template<class BasicMomentumTransportModel>
+template <class BasicMomentumTransportModel>
 tmp<volInternalScalarField>
 SpalartAllmarasDES<BasicMomentumTransportModel>::dTilda
 (

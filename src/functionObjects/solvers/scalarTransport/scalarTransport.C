@@ -519,13 +519,13 @@ void Foam::functionObjects::scalarTransport::solveMULES()
                     volScalarField::New
                     (
                         "cnBDCoeff",
-                        eval(max(cnCoeff, 1.0 - 1.0/max(Co, scalar(2)))),
-                        zeroGradientFvPatchField<scalar>::typeName
+                        eval(max(cnCoeff, 1 - 1 / max(Co, scalar{2}))),
+                    zeroGradientFvPatchField<scalar>::typeName
                     )
                 )
             );
 
-            const surfaceScalarField phiCN0((1.0 - cnBDCoeff)*phi.oldTime());
+            const surfaceScalarField phiCN0((1 - cnBDCoeff)*phi.oldTime());
 
             tsPhiCN0 = fv::gaussConvectionScheme<scalar>
             (
@@ -603,7 +603,7 @@ void Foam::functionObjects::scalarTransport::solveMULES()
             fvc::flux
             (
                 tphiCN(),
-                (cnCoeff*s_ + (1.0 - cnCoeff)*s_.oldTime())(),
+                (cnCoeff*s_ + (1 - cnCoeff)*s_.oldTime())(),
                 mesh_.schemes().div(divScheme)
             )
         );
@@ -631,8 +631,8 @@ void Foam::functionObjects::scalarTransport::solveMULES()
             }
             else
             {
-                s_ = 0.5*s_ + 0.5*s0;
-                sPhi += 0.5*tsPhiCorr();
+                s_ = scalar{0.5}*s_ + scalar{0.5}*s0;
+                sPhi += scalar{0.5}*tsPhiCorr();
             }
         }
         else

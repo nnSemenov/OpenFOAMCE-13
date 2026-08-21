@@ -170,13 +170,13 @@ void dynamicLagrangian<BasicMomentumTransportModel>::correct()
     const volInternalSymmTensorField L(dev(filter_[sqr(U)] - sqr(filter_[U])));
     const volInternalSymmTensorField M
     (
-        2.0*sqr(this->delta()())*(filter_[magS*S] - 4.0*magSf*Sf)
+        2*sqr(this->delta()())*(filter_[magS*S] - 4*magSf*Sf)
     );
 
     const volInternalScalarField invT
     (
         alpha()*rho()
-       *(1.0/(theta_.value()*this->delta()()))*pow(flm_()*fmm_(), 1.0/8.0)
+       *(1/(theta_.value()*this->delta()()))*pow(flm_()*fmm_(), static_cast<scalar>(1.0/8.0))
     );
 
     const volInternalScalarField LM(L && M);

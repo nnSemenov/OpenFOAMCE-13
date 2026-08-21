@@ -138,8 +138,9 @@ tmp<volInternalScalarField> SpalartAllmaras<BasicMomentumTransportModel>::fw
     return volInternalScalarField::New
     (
         typedName("fw"),
-        g*pow((1.0 + pow6(Cw3_))/(pow6(g) + pow6(Cw3_)), 1.0/6.0)
-    );
+        g *
+            pow((1 + pow6(Cw3_)) / (pow6(g) + pow6(Cw3_)),
+                static_cast<scalar>(1.0 / 6.0)));
 }
 
 

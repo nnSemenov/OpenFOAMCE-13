@@ -50,7 +50,7 @@ tmp<volScalarField> v2f<BasicMomentumTransportModel>::boundEpsilon()
 template<class BasicMomentumTransportModel>
 tmp<volScalarField> v2f<BasicMomentumTransportModel>::Ts() const
 {
-    return max(k_/epsilon_, 6.0*sqrt(this->nu()/epsilon_));
+    return max(k_/epsilon_, 6*sqrt(this->nu()/epsilon_));
 }
 
 
@@ -61,7 +61,7 @@ tmp<volInternalScalarField> v2f<BasicMomentumTransportModel>::Ls() const
         CL_
        *max
         (
-            pow(k_(), 1.5)/epsilon_(),
+            pow(k_(), scalar{1.5})/epsilon_(),
             Ceta_*pow025(pow3(this->nu()()())/epsilon_())
         );
 }
@@ -238,14 +238,15 @@ void v2f<BasicMomentumTransportModel>::correct()
     const volInternalScalarField v2fAlpha
     (
         typedName("alpha"),
-        1.0/Ts*((C1_ - N)*v2_() - 2.0/3.0*k_()*(C1_ - 1.0))
-    );
+        1 / Ts *
+            ((C1_ - N) * v2_() -
+             static_cast<scalar>(2.0 / 3.0) * k_() * (C1_ - 1)));
 
     const volInternalScalarField Ceps1
     (
         typedName("Ceps1"),
-        1.4*(1.0 + 0.05*min(sqrt(k_()/v2_()), scalar(100.0)))
-    );
+        scalar{1.4} *
+            (1 + scalar{0.05} * min(sqrt(k_() / v2_()), scalar{100.0})));
 
     // Update epsilon (and possibly G) at the wall
     epsilon_.boundaryFieldRef().updateCoeffs();
@@ -258,9 +259,11 @@ void v2f<BasicMomentumTransportModel>::correct()
       - fvm::laplacian(alpha*rho*DepsilonEff(), epsilon_)
      ==
         Ceps1*alpha()*rho()*G/Ts
-      - fvm::SuSp(((2.0/3.0)*Ceps1 + Ceps3_)*alpha()*rho()*divU, epsilon_)
-      - fvm::Sp(Ceps2_*alpha()*rho()/Ts, epsilon_)
-      + fvModels.source(alpha, rho, epsilon_)
+      -
+            fvm::SuSp((static_cast<scalar>(2.0 / 3.0) * Ceps1 + Ceps3_) *
+                          alpha() * rho() * divU,
+                      epsilon_) -
+            fvm::Sp(Ceps2_ * alpha() * rho() / Ts, epsilon_) + fvModels.source(alpha, rho, epsilon_)
     );
 
     epsEqn.ref().relax();
@@ -279,7 +282,7 @@ void v2f<BasicMomentumTransportModel>::correct()
       - fvm::laplacian(alpha*rho*DkEff(), k_)
      ==
         alpha()*rho()*G
-      - fvm::SuSp((2.0/3.0)*alpha()*rho()*divU, k_)
+      - fvm::SuSp(static_cast<scalar>(2.0/3.0)*alpha()*rho()*divU, k_)
       - fvm::Sp(alpha()*rho()*epsilon_()/k_(), k_)
       + fvModels.source(alpha, rho, k_)
     );
@@ -296,8 +299,8 @@ void v2f<BasicMomentumTransportModel>::correct()
     (
       - fvm::laplacian(f_)
      ==
-      - fvm::Sp(1.0/L2, f_)
-      - 1.0/L2/k_()*(v2fAlpha - C2_*G)
+      - fvm::Sp(scalar{1}/L2, f_)
+      - scalar{1}/L2/k_()*(v2fAlpha - C2_*G)
     );
 
     fEqn.ref().relax();

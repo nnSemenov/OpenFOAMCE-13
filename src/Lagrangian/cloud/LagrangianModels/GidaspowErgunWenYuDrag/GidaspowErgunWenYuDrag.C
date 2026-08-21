@@ -69,12 +69,12 @@ Foam::Lagrangian::GidaspowErgunWenYuDrag::calcD
     const LagrangianSubScalarField CdRe
     (
         // Use Wen-Yu at low particulate fractions (< 20%) ...
-        pos0(alphac - 0.8)
+        pos0(alphac - scalar{0.8})
        *SchillerNaumannDrag::CdRe(alphac*Re)
-       *pow(alphac, -2.65)
+       *pow(alphac, scalar{-2.65})
 
         // ... and Ergun at high particulate fractions (> 20%)
-      + neg(alphac - 0.8)*(4.0/3.0)*(150*alpha/alphac + 1.75*Re)
+      + neg(alphac - scalar{0.8})*static_cast<scalar>(4.0/3.0)*(150*alpha/alphac + scalar{1.75}*Re)
     );
 
     assertCloud

@@ -87,10 +87,10 @@ Foam::tmp<Foam::volScalarField> Foam::XiEqModels::basicSubGrid::XiEq() const
     volScalarField magU(mag(U));
     volVectorField Uhat
     (
-        U/(mag(U) + dimensionedScalar(U.dimensions(), 1e-4))
-    );
+        U / (mag(U) + dimensionedScalar(U.dimensions(), scalar{1e-4})));
 
-    const scalarField Cw = pow(mesh.V().primitiveField(), 2.0/3.0);
+    const scalarField Cw =
+        pow(mesh.V().primitiveField(), static_cast<scalar>(2.0 / 3.0));
 
     volScalarField N
     (

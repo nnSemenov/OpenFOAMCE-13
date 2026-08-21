@@ -49,7 +49,8 @@ void Foam::LESModels::cubeRootVolDelta::calcDelta()
     if (nD == 3)
     {
         delta_.primitiveFieldRef() =
-            deltaCoeff_*pow(mesh.V().primitiveField(), 1.0/3.0);
+            deltaCoeff_ *
+            pow(mesh.V().primitiveField(), static_cast<scalar>(1.0 / 3.0));
     }
     else if (nD == 2)
     {

@@ -144,7 +144,7 @@ SpalartAllmarasIDDES<BasicMomentumTransportModel>::dTilda
         volInternalScalarField::New
         (
             typedName("fHill"),
-            2*(pos0(alpha)*pow(expTerm, -11.09) + neg(alpha)*pow(expTerm, -9.0))
+            2*(pos0(alpha)*pow(expTerm, scalar{-11.09}) + neg(alpha)*pow(expTerm, scalar{-9.0}))
         )
     );
 
@@ -153,7 +153,7 @@ SpalartAllmarasIDDES<BasicMomentumTransportModel>::dTilda
         volInternalScalarField::New
         (
             typedName("fStep"),
-            min(2*pow(expTerm, -9.0), scalar(1))
+            min(2*pow(expTerm, scalar{-9.0}), scalar{1})
         )
     );
 
@@ -177,7 +177,7 @@ SpalartAllmarasIDDES<BasicMomentumTransportModel>::dTilda
         volInternalScalarField::New
         (
             typedName("fRestore"),
-            max(fHill - 1, scalar(0))*fAmp
+            max(fHill - 1, scalar{0})*fAmp
         )
     );
 
@@ -189,7 +189,7 @@ SpalartAllmarasIDDES<BasicMomentumTransportModel>::dTilda
         (
             min
             (
-                scalar(100),
+                scalar{100},
                 (
                     1
                   - this->Cb1_*this->fv2(chi, fv1)

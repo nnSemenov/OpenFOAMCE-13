@@ -78,7 +78,7 @@ Foam::populationBalance::breakupModels::LehrMilliesMewes::rate
 
     volInternalScalarField L
     (
-        pow(sigma/rhoc, 3.0/5.0)/pow(epsilonc, 2.0/5.0)
+        pow(sigma/rhoc, static_cast<scalar>(3.0/5.0))/pow(epsilonc, static_cast<scalar>(2.0/5.0))
     );
 
     // Reset of dimension to pure length to avoid problems in transcendental
@@ -87,15 +87,15 @@ Foam::populationBalance::breakupModels::LehrMilliesMewes::rate
 
     const volInternalScalarField T
     (
-        pow(sigma/rhoc, 2.0/5.0)/pow(epsilonc, 3.0/5.0)
+        pow(sigma/rhoc, static_cast<scalar>(2.0/5.0))/pow(epsilonc, static_cast<scalar>(3.0/5.0))
     );
 
     return
-        0.5*pow(dSphj/L, 5.0/3.0)
-       *exp(-sqrt(2.0)/pow3(dSphj/L))
-       *6/pow(pi, 1.5)/pow3(dSphi/L)
-       *exp(-9.0/4.0*sqr(log(pow(2.0, 0.4)*dSphi/L)))
-       /max(1 + erf(1.5*log(pow(2.0, 1.0/15.0)*dSphj/L)), small)
+        scalar{0.5}*pow(dSphj/L, static_cast<scalar>(5.0/3.0))
+       *exp(-sqrt(scalar{2.0})/pow3(dSphj/L))
+       *6/pow(pi, scalar{1.5})/pow3(dSphi/L)
+       *exp(-static_cast<scalar>(9.0/4.0)*sqr(log(pow(scalar{2}, scalar{0.4})*dSphi/L)))
+       /max(1 + erf(scalar{1.5}*log(pow(scalar{2.0}, static_cast<scalar>(1.0/15.0))*dSphj/L)), small)
        /(T*pow3(L));
 }
 

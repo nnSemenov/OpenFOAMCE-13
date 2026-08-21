@@ -72,7 +72,8 @@ Foam::tmp<Foam::volScalarField> Foam::XiGModels::basicSubGrid::G() const
     tmp<volScalarField> tGtot = XiGModel_->G();
     volScalarField& Gtot = tGtot.ref();
 
-    const scalarField Cw = pow(Su_.mesh().V().primitiveField(), 2.0/3.0);
+    const scalarField Cw =
+        pow(Su_.mesh().V().primitiveField(), static_cast<scalar>(2.0 / 3.0));
     scalarField N(Nv.primitiveField()*Cw);
 
     forAll(N, celli)
@@ -96,7 +97,9 @@ Foam::tmp<Foam::volScalarField> Foam::XiGModels::basicSubGrid::Db() const
     const volScalarField& Lobs = db.lookupObject<volScalarField>("Lobs");
 
     return XiGModel_->Db()
-        + rho*Su_*(Xi - 1.0)*mgb*(0.5*Lobs)*Lobs/(mgb*Lobs + 1.0);
+        +
+        rho * Su_ * (Xi - 1) * mgb * (scalar{0.5} * Lobs) * Lobs /
+        (mgb * Lobs + 1);
 }
 
 

@@ -92,8 +92,8 @@ Foam::Lagrangian::SchillerNaumannDrag::CdRe
 )
 {
     return
-        neg(Re - 1000)*24*(1 + 0.15*pow(Re, 0.687))
-      + pos0(Re - 1000)*0.44*Re;
+        neg(Re - 1000)*24*(1 + scalar{0.15}*pow(Re, scalar{0.687}))
+      + pos0(Re - 1000)*scalar{0.44}*Re;
 }
 
 
