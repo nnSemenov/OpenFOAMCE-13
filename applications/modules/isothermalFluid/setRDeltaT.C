@@ -52,7 +52,8 @@ void Foam::solvers::isothermalFluid::setRDeltaT()
 
     // Set the reciprocal time-step from the local Courant number
     rDeltaT.internalFieldRef() =
-        fvi::surfaceSum(mag(phi_))/((2*maxCo)*mesh.V()*rho_);
+        fvi::surfaceSum(mag(phi_)) /
+        ((2 * maxCo) * mesh.V() * rho_.internalField());
 
     // Set the reciprocal time-step from the local acoustic Courant number
     if (pimple.transonic())

@@ -465,10 +465,11 @@ void Foam::solvers::XiFluid::HuSolve
 
         // Pressure-work
       + fvi::ddt(b, rho(), K) + fvi::div(alphaPhiu_, K)
-      + (b + bStab)*rhoByRhou*pressureWork(-dpdt)
+      +
+            (b.internalField() + bStab) * rhoByRhou * pressureWork(-dpdt)
 
-        // Diffusive transport within the unburnt gas
-      + uThermophysicalTransport_->divq(hu)
+            // Diffusive transport within the unburnt gas
+            + uThermophysicalTransport_->divq(hu)
      ==
         // Combustion source
         fvm::Sp(bSource, hu)
@@ -509,7 +510,7 @@ void Foam::solvers::XiFluid::HbSolve
 
         // Pressure-work
       + fvi::ddt(c, rho(), K) + fvi::div(alphaPhib_, K)
-      + (c + cStab)*rhoByRhob*pressureWork(-dpdt)
+      + (c.internalField() + cStab)*rhoByRhob*pressureWork(-dpdt)
 
         // Diffusive transport within the burnt gas
       + bThermophysicalTransport_->divq(hb)

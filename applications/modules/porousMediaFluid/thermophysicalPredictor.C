@@ -110,9 +110,9 @@ fvScalarMatrix solvers::porousMediaFluid::TEqnCore(
         TEqn += fvm::div(phiCpv, T) - fvm::SuSp(fvc::div(phiCpv), T) +
             TEqnNonIdealityPressureTerm(dhedp_T);
         TEqn += alphaF * fvc::ddt(rho_, K) + fvc::div(phi_, K);
-        TEqn += alphaF *
-            pressureWork(internalEnergy ? fvc::div(phi_, p_() / rho_)()
-                                        : -dpdt);
+        TEqn += alphaF.internalField() *
+            pressureWork(internalEnergy ? fvi::div(phi_, p_() / rho_)
+                                        : eval(-dpdt));
 
         if (buoyancy.valid()) {
             TEqn -= rho_ * (U_ & buoyancy->g);

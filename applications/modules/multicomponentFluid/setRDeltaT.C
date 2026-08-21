@@ -46,7 +46,8 @@ void Foam::solvers::multicomponentFluid::setRDeltaT()
 
         // Set the reciprocal time-step from the local Courant number
         rDeltaT.internalFieldRef() =
-            fvi::surfaceSum(mag(phi_))/((2*maxCo)*mesh.V()*rho());
+            fvi::surfaceSum(mag(phi_)) /
+            ((2 * maxCo) * mesh.V() * rho().internalField());
 
         // Clip to user-defined maximum and minimum time-steps
         scalar minRDeltaT = gMin(rDeltaT.primitiveField());
