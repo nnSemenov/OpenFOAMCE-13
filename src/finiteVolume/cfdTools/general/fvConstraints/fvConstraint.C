@@ -144,7 +144,7 @@ Foam::fvConstraint::~fvConstraint()
 
 Foam::wordList Foam::fvConstraint::constrainedFields() const
 {
-    return wordList::null();
+    return {};
 }
 
 

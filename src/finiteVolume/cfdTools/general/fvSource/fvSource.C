@@ -97,7 +97,7 @@ Foam::fvSource::~fvSource()
 
 Foam::wordList Foam::fvSource::addSupFields() const
 {
-    return wordList::null();
+    return {};
 }
 
 

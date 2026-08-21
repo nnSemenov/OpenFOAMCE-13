@@ -35,8 +35,7 @@ Foam::fvFieldSource<Type>::fvFieldSource
     const DimensionedField<Type, fvMesh>& iF
 )
 :
-    libs_(fileNameList::null()),
-    internalField_(iF)
+    libs_(), internalField_(iF)
 {}
 
 
@@ -47,8 +46,7 @@ Foam::fvFieldSource<Type>::fvFieldSource
     const dictionary& dict
 )
 :
-    libs_(dict.lookupOrDefault("libs", fileNameList::null())),
-    internalField_(iF)
+    libs_(dict.lookupOrDefault("libs", fileNameList{})), internalField_(iF)
 {}
 
 

@@ -156,7 +156,7 @@ Foam::fvModel::~fvModel()
 
 Foam::wordList Foam::fvModel::addSupFields() const
 {
-    return wordList::null();
+    return {};
 }
 
 

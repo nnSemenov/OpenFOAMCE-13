@@ -115,7 +115,7 @@ public:
         //- Return the list of fields required
         virtual wordList fields() const
         {
-            return wordList::null();
+            return {};
         }
 
         //- Execute the fvModel
