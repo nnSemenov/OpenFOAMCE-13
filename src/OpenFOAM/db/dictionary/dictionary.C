@@ -67,112 +67,73 @@ const Foam::entry* Foam::dictionary::lookupScopedSubEntryPtr
             // Non-scoped lookup
             return lookupEntryPtr(keyword, recursive, patternMatch);
         }
-        else
-        {
-            // Extract the first word
-            word firstWord = keyword.substr(0, slashPos);
-            slashPos++;
 
-            if (firstWord == ".")
-            {
-                return lookupScopedSubEntryPtr
-                (
-                    keyword.substr(slashPos),
-                    false,
-                    patternMatch
-                );
-            }
-            else if (firstWord == "..")
-            {
-                // Go to parent
-                if (&parent_ == &dictionary::null)
-                {
-                    FatalIOErrorInFunction(*this)
-                        << "No parent of current dictionary"
-                        << " when searching for "
-                        << keyword.substr(slashPos, keyword.size() - slashPos)
-                        << exit(FatalIOError);
-                }
+        // Extract the first word
+        word firstWord = keyword.substr(0, slashPos);
+        slashPos++;
 
-                return parent_.lookupScopedSubEntryPtr
-                (
-                    keyword.substr(slashPos),
-                    false,
-                    patternMatch
-                );
-            }
-            else
-            {
-                const entry* entPtr = lookupScopedSubEntryPtr
-                (
-                    firstWord,
-                    recursive,
-                    patternMatch
-                );
-
-                if (entPtr && entPtr->isDict())
-                {
-                    return entPtr->dict().lookupScopedSubEntryPtr
-                    (
-                        keyword.substr(slashPos, keyword.size() - slashPos),
-                        false,
-                        patternMatch
-                    );
-                }
-                else
-                {
-                    return nullptr;
-                }
-            }
+        if (firstWord == ".") {
+            return lookupScopedSubEntryPtr(keyword.substr(slashPos), false,
+                                           patternMatch);
         }
+        if (firstWord == "..") {
+            // Go to parent
+            if (&parent_ == &dictionary::null) {
+                FatalIOErrorInFunction(*this)
+                    << "No parent of current dictionary"
+                    << " when searching for "
+                    << keyword.substr(slashPos, keyword.size() - slashPos)
+                    << exit(FatalIOError);
+            }
+
+            return parent_.lookupScopedSubEntryPtr(keyword.substr(slashPos),
+                                                   false, patternMatch);
+        }
+        const entry *entPtr =
+            lookupScopedSubEntryPtr(firstWord, recursive, patternMatch);
+
+        if (entPtr && entPtr->isDict()) {
+            return entPtr->dict().lookupScopedSubEntryPtr(
+                keyword.substr(slashPos, keyword.size() - slashPos), false,
+                patternMatch);
+        }
+        return nullptr;
     }
-    else
-    {
-        // Lookup in the dictionary specified by file name
-        // created from the part of the keyword before the '!'
 
-        fileName fName = keyword.substr(0, emarkPos);
+    // Lookup in the dictionary specified by file name
+    // created from the part of the keyword before the '!'
 
-        if (!fName.isAbsolute())
-        {
-            fName = topDict().name().path()/fName;
-        }
+    fileName fName = keyword.substr(0, emarkPos);
 
-        if (fName == topDict().name())
-        {
-            FatalIOErrorInFunction(*this)
-                << "Attempt to re-read current dictionary " << fName
-                << " for keyword "
-                << keyword
-                << exit(FatalIOError);
-        }
-
-        const word localKeyword = keyword.substr
-        (
-            emarkPos + 1,
-            keyword.size() - emarkPos - 1
-        );
-
-        includedDictionary dict(fName, *this);
-
-        const Foam::entry* entryPtr = dict.lookupScopedEntryPtr
-        (
-            localKeyword,
-            recursive,
-            patternMatch
-        );
-
-        if (!entryPtr)
-        {
-            FatalIOErrorInFunction(dict)
-                << "keyword " << localKeyword
-                << " is undefined in dictionary "
-                << dict.name()
-                << exit(FatalIOError);
-        }
-
-        return entryPtr->clone(*this).ptr();
+    if (!fName.isAbsolute()) {
+        fName = topDict().name().path() / fName;
     }
+
+    if (fName == topDict().name()) {
+        FatalIOErrorInFunction(*this)
+            << "Attempt to re-read current dictionary " << fName
+            << " for keyword " << keyword << exit(FatalIOError);
+    }
+
+    const word localKeyword =
+        keyword.substr(emarkPos + 1, keyword.size() - emarkPos - 1);
+
+    includedDictionary dict(fName, *this);
+
+    const Foam::entry *entryPtr =
+        dict.lookupScopedEntryPtr(localKeyword, recursive, patternMatch);
+
+    if (!entryPtr) {
+        FatalIOErrorInFunction(dict)
+            << "keyword " << localKeyword << " is undefined in dictionary "
+            << dict.name() << exit(FatalIOError);
+    }
+
+    std::unique_ptr<entry> clone{entryPtr->clone(*this).ptr()};
+    auto ret = clone.get();
+    this->cloneCache_.emplace_back(std::move(clone));
+
+    return ret;
 }
 
 
@@ -1361,6 +1322,7 @@ void Foam::dictionary::clear()
     hashedEntries_.clear();
     patternEntries_.clear();
     patternRegexps_.clear();
+    cloneCache_.clear();
 }
 
 
@@ -1374,6 +1336,8 @@ void Foam::dictionary::transfer(dictionary& dict)
     hashedEntries_.transfer(dict.hashedEntries_);
     patternEntries_.transfer(dict.patternEntries_);
     patternRegexps_.transfer(dict.patternRegexps_);
+
+    cloneCache_.splice(cloneCache_.end(), dict.cloneCache_);
 }
 
 

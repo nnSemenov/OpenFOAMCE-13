@@ -59,7 +59,8 @@ SourceFiles
 #include "fieldTypes.H"
 #include "Tuple3.H"
 #include <tuple>
-
+#include <memory>
+#include <list>
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
@@ -178,8 +179,11 @@ class dictionary
         //- Patterns as precompiled regular expressions
         DLList<autoPtr<regExp>> patternRegexps_;
 
+        //- Holds all cloned entries, destructs with dictionary. Prevent memory
+        // leaking
+        mutable std::list<std::unique_ptr<entry>> cloneCache_{};
 
-    // Private Member Functions
+        // Private Member Functions
 
         //- Construct the path name from the name of the parent dictionary
         //  and the given name.
