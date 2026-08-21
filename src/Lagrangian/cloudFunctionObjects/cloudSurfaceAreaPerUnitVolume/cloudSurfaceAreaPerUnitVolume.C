@@ -74,7 +74,7 @@ Foam::functionObjects::cloudSurfaceAreaPerUnitVolume::
 Foam::wordList
 Foam::functionObjects::cloudSurfaceAreaPerUnitVolume::fields() const
 {
-    return wordList::null();
+    return {};
 }
 
 

@@ -74,7 +74,7 @@ Foam::functionObjects::cloudLagrangianVolumeFraction::
 Foam::wordList
 Foam::functionObjects::cloudLagrangianVolumeFraction::fields() const
 {
-    return wordList::null();
+    return {};
 }
 
 

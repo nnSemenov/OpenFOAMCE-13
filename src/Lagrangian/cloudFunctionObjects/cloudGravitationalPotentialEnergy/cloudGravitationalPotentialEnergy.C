@@ -85,7 +85,7 @@ Foam::functionObjects::cloudGravitationalPotentialEnergy::
 Foam::wordList
 Foam::functionObjects::cloudGravitationalPotentialEnergy::fields() const
 {
-    return wordList::null();
+    return {};
 }
 
 

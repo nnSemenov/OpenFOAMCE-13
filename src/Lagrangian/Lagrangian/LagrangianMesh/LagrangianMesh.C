@@ -912,7 +912,7 @@ void Foam::LagrangianMesh::changer::constructBehind() const
                 mesh_.boundary().size(),
                 calculatedLagrangianPatchScalarField::typeName
             ),
-            wordList::null(),
+            wordList{},
             LagrangianModels::New(mesh_).modelTypeFieldSourceTypes
             <
                 LagrangianInjection,
@@ -942,7 +942,7 @@ void Foam::LagrangianMesh::changer::constructBehind() const
                 mesh_.boundary().size(),
                 calculatedLagrangianPatchLabelField::typeName
             ),
-            wordList::null(),
+            wordList{},
             LagrangianModels::New(mesh_).modelTypeFieldSourceTypes
             <
                 LagrangianInjection,

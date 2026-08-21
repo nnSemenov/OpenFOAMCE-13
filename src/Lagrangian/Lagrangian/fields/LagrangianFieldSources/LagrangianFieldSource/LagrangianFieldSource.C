@@ -41,7 +41,7 @@ Foam::LagrangianFieldSource<Type>::LagrangianFieldSource
 )
 :
     LagrangianFieldSourceBase(iIo),
-    libs_(fileNameList::null()),
+    libs_(fileNameList{}),
     internalField_
     (
         refCastNull<const LagrangianInternalDynamicField<Type>>(iIo)
@@ -61,7 +61,7 @@ Foam::LagrangianFieldSource<Type>::LagrangianFieldSource
 )
 :
     LagrangianFieldSourceBase(iIo),
-    libs_(dict.lookupOrDefault("libs", fileNameList::null())),
+    libs_(dict.lookupOrDefault("libs", fileNameList{})),
     internalField_
     (
         refCastNull<const LagrangianInternalDynamicField<Type>>(iIo)

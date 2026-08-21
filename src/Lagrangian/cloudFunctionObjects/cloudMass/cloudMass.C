@@ -64,7 +64,7 @@ Foam::functionObjects::cloudMass::~cloudMass()
 
 Foam::wordList Foam::functionObjects::cloudMass::fields() const
 {
-    return wordList::null();
+    return {};
 }
 
 
@@ -86,7 +86,7 @@ bool Foam::functionObjects::cloudMass::execute()
                 cloud().mesh().boundary().size(),
                 calculatedLagrangianPatchScalarField::typeName
             ),
-            wordList::null(),
+            wordList{},
             cloud().LagrangianModels().modelTypeFieldSourceTypes
             <
                 LagrangianInjection,

@@ -46,7 +46,7 @@ Foam::functionObjects::cloud::~cloud()
 
 Foam::wordList Foam::functionObjects::cloud::fields() const
 {
-    return wordList::null();
+    return {};
 }
 
 

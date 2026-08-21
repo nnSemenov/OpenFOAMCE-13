@@ -67,7 +67,7 @@ Foam::functionObjects::cloudPosition::cloudPosition
             mesh().boundary().size(),
             calculatedLagrangianPatchVectorField::typeName
         ),
-        wordList::null(),
+        wordList{},
         cloud().LagrangianModels().modelTypeFieldSourceTypes
         <
             LagrangianInjection,
@@ -89,7 +89,7 @@ Foam::functionObjects::cloudPosition::~cloudPosition()
 
 Foam::wordList Foam::functionObjects::cloudPosition::fields() const
 {
-    return wordList::null();
+    return {};
 }
 
 

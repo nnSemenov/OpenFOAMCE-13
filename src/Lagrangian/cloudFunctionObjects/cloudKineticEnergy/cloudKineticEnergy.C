@@ -66,7 +66,7 @@ Foam::functionObjects::cloudKineticEnergy::~cloudKineticEnergy()
 
 Foam::wordList Foam::functionObjects::cloudKineticEnergy::fields() const
 {
-    return wordList::null();
+    return {};
 }
 
 

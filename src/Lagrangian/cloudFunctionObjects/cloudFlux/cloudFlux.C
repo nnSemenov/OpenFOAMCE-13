@@ -120,7 +120,7 @@ Foam::functionObjects::cloudFlux::~cloudFlux()
 
 Foam::wordList Foam::functionObjects::cloudFlux::fields() const
 {
-    return wordList::null();
+    return {};
 }
 
 

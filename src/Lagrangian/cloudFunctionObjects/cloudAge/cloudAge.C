@@ -70,7 +70,7 @@ Foam::functionObjects::cloudAge::cloudAge
             mesh().boundary().size(),
             calculatedLagrangianPatchScalarField::typeName
         ),
-        wordList::null(),
+        wordList{},
         cloud().LagrangianModels().modelTypeFieldSourceTypes
         <
             LagrangianInjection,
@@ -92,7 +92,7 @@ Foam::functionObjects::cloudAge::~cloudAge()
 
 Foam::wordList Foam::functionObjects::cloudAge::fields() const
 {
-    return wordList::null();
+    return {};
 }
 
 

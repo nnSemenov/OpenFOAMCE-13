@@ -66,7 +66,7 @@ Foam::functionObjects::cloudVolumeFraction::~cloudVolumeFraction()
 
 Foam::wordList Foam::functionObjects::cloudVolumeFraction::fields() const
 {
-    return wordList::null();
+    return {};
 }
 
 

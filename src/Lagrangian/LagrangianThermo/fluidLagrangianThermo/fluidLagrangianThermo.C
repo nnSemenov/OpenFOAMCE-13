@@ -64,7 +64,7 @@ Foam::fluidLagrangianThermo::implementation::implementation
             mesh.boundary().size(),
             calculatedLagrangianPatchScalarField::typeName
         ),
-        wordList::null(),
+        wordList{},
         sourcesTypes<pressureLagrangianScalarFieldSource>(T),
         T.sources().errorLocation()
     ),
@@ -93,7 +93,7 @@ Foam::fluidLagrangianThermo::implementation::implementation
             mesh.boundary().size(),
             calculatedLagrangianPatchScalarField::typeName
         ),
-        wordList::null(),
+        wordList{},
         sourcesTypes<compressibilityLagrangianScalarFieldSource>(T),
         T.sources().errorLocation()
     ),
@@ -114,7 +114,7 @@ Foam::fluidLagrangianThermo::implementation::implementation
             mesh.boundary().size(),
             calculatedLagrangianPatchScalarField::typeName
         ),
-        wordList::null(),
+        wordList{},
         sourcesTypes<dynamicViscosityLagrangianScalarFieldSource>(T),
         T.sources().errorLocation()
     )

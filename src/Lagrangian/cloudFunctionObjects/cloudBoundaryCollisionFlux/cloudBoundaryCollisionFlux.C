@@ -77,7 +77,7 @@ Foam::functionObjects::cloudBoundaryCollisionFlux::~cloudBoundaryCollisionFlux()
 
 Foam::wordList Foam::functionObjects::cloudBoundaryCollisionFlux::fields() const
 {
-    return wordList::null();
+    return {};
 }
 
 

@@ -64,7 +64,7 @@ Foam::functionObjects::cloudVolume::~cloudVolume()
 
 Foam::wordList Foam::functionObjects::cloudVolume::fields() const
 {
-    return wordList::null();
+    return {};
 }
 
 
@@ -86,7 +86,7 @@ bool Foam::functionObjects::cloudVolume::execute()
                 cloud().mesh().boundary().size(),
                 calculatedLagrangianPatchScalarField::typeName
             ),
-            wordList::null(),
+            wordList{},
             cloud().LagrangianModels().modelTypeFieldSourceTypes
             <
                 LagrangianInjection,

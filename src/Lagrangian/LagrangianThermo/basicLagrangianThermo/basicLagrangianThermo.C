@@ -108,7 +108,7 @@ Foam::basicLagrangianThermo::implementation::implementation
             mesh.boundary().size(),
             calculatedLagrangianPatchScalarField::typeName
         ),
-        wordList::null(),
+        wordList{},
         sourcesTypes<densityLagrangianScalarFieldSource>(T_),
         T_.sources().errorLocation()
     ),
@@ -127,7 +127,7 @@ Foam::basicLagrangianThermo::implementation::implementation
             mesh.boundary().size(),
             calculatedLagrangianPatchScalarField::typeName
         ),
-        wordList::null(),
+        wordList{},
         sourcesTypes<specificHeatCapacityLagrangianScalarFieldSource>(T_),
         T_.sources().errorLocation()
     ),
@@ -146,7 +146,7 @@ Foam::basicLagrangianThermo::implementation::implementation
             mesh.boundary().size(),
             calculatedLagrangianPatchScalarField::typeName
         ),
-        wordList::null(),
+        wordList{},
         sourcesTypes<thermalConductivityLagrangianScalarFieldSource>(T_),
         T_.sources().errorLocation()
     )

@@ -294,7 +294,7 @@ bool Foam::cloud::storeStates()
                     mesh().boundary().size(),
                     calculatedLagrangianPatchLabelField::typeName
                 ),
-                wordList::null(),
+                wordList{},
                 LagrangianModels().modelTypeFieldSourceTypes
                 <
                     LagrangianInjection,

@@ -137,7 +137,7 @@ Foam::LagrangianModel::~LagrangianModel()
 
 Foam::wordList Foam::LagrangianModel::addSupFields() const
 {
-    return wordList::null();
+    return {};
 }
 
 

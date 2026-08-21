@@ -571,7 +571,7 @@ bool Foam::functionObjects::cloudSurfaceDistribution::read
 
 Foam::wordList Foam::functionObjects::cloudSurfaceDistribution::fields() const
 {
-    return wordList::null();
+    return {};
 }
 
 

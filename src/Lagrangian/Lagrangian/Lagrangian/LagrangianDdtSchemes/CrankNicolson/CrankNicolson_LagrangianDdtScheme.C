@@ -93,7 +93,7 @@ bool Foam::Lagrangian::ddtSchemes::CrankNicolson<Type>::LagrangianmInitDdt
                     mesh.boundary().size(),
                     calculatedLagrangianPatchField<Type>::typeName
                 ),
-                wordList::null(),
+                wordList{},
                 LagrangianModels::New(mesh).modelTypeFieldSourceTypes
                 <
                     LagrangianInjection,
@@ -131,7 +131,7 @@ bool Foam::Lagrangian::ddtSchemes::CrankNicolson<Type>::LagrangianmInitDdt
                     mesh.boundary().size(),
                     calculatedLagrangianPatchField<scalar>::typeName
                 ),
-                wordList::null(),
+                wordList{},
                 LagrangianModels::New(mesh).modelTypeFieldSourceTypes
                 <
                     LagrangianInjection,
