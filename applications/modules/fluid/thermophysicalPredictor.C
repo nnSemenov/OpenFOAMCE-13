@@ -41,7 +41,7 @@ void Foam::solvers::fluid::thermophysicalPredictor()
         (
             he.name() == "e"
           ? fvi::div(phi_, p_()/rho_)
-          : -dpdt
+          : eval(-dpdt)
         )
       + thermophysicalTransport->divq(he)
      ==

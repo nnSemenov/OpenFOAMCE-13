@@ -257,7 +257,7 @@ Foam::labelHashSet Foam::fvMeshStitchers::moving::ownerCoupledCellSet()
         mesh(),
         ncb.ownerOrigBoundaryEdgeMeshEdge(),
         ownerOrigBoundaryEdgeNSet,
-        plusEqOp(),
+        addEqOp(),
         label(0)
     );
 
@@ -464,8 +464,8 @@ void Foam::fvMeshStitchers::moving::unconformInternalFaceCorrectMeshPhi
     // synchronised faces
 
     // Map volumes to the sub mesh
-    const volScalarField::Internal subV(subsetter.interpolate(mesh().V()));
-    const volScalarField::Internal subV0(subsetter.interpolate(mesh().V0()));
+    const volInternalScalarField subV(subsetter.interpolate(mesh().V()));
+    const volInternalScalarField subV0(subsetter.interpolate(mesh().V0()));
 
     // Map mesh flux to the sub mesh, accumulating when a face is split into
     // multiple non-conformal parts
@@ -519,7 +519,7 @@ void Foam::fvMeshStitchers::moving::unconformInternalFaceCorrectMeshPhi
     }
 
     // Calculate the volume conservation error for the sub mesh
-    const volScalarField::Internal subVce
+    const volInternalScalarField subVce
     (
         fvi::surfaceIntegrate(subPhi*subMesh.time().deltaT())
       - (subV - subV0)/subV
@@ -652,7 +652,7 @@ void Foam::fvMeshStitchers::moving::unconformInternalFaceCorrectMeshPhi
     List<meshPhiCorrectInfo> subCellCi(subMesh.nCells());
 
     // Calculate the current error in the rate of change of volume
-    const volScalarField::Internal dVdtError
+    const volInternalScalarField dVdtError
     (
         (subV - subV0)/subMesh.time().deltaT()
       - fvi::surfaceIntegrate(subPhi + subDeltaPhi)*subV

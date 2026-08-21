@@ -416,7 +416,7 @@ public:
             //- Correct the continuity errors
             void correctContinuityError
             (
-                const PtrList<volScalarField::Internal>& dmdts
+                const PtrList<volInternalScalarField>& dmdts
             );
 
             //- Correct the kinematics

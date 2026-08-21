@@ -153,6 +153,15 @@ private:
         //- Get a non-const reference to the field
         FieldType& fieldRef();
 
+        //- Store the old-time fields. Inner recursion. Overload for when the
+        //  base class is not an old-time field.
+        void storeOldTimesInner(const nil&) const;
+
+        //- Store the old-time fields. Inner recursion. Overload for when the
+        //  base class is an old-time field.
+        template<class OldTimeBaseField>
+        void storeOldTimesInner(const OldTimeBaseField& otbf) const;
+
         //- Store the old-time fields. Inner recursion.
         void storeOldTimesInner() const;
 
@@ -161,15 +170,15 @@ private:
 
         //- Set the field reference in the base class. Overload for when the
         //  base class is not an old-time field.
-        void setBase(const nil&) const;
+        void setBase(const nil&, const bool clear) const;
 
         //- Set the field reference in the base class. Overload for when the
         //  base class is an old-time field.
         template<class OldTimeBaseField>
-        void setBase(const OldTimeBaseField& otbf) const;
+        void setBase(const OldTimeBaseField& otbf, const bool clear) const;
 
         //- Set the field reference in the base class
-        void setBase() const;
+        void setBase(const bool clear = true) const;
 
 
 protected:
@@ -228,8 +237,8 @@ public:
         //- Return the time index of the field
         inline label timeIndex() const;
 
-        //- Return a non-const reference to the time index of the field
-        inline label& timeIndex();
+        //- Set the time index of the field
+        inline void setTimeIndex(const label);
 
         //- Return whether or not this is an old-time field
         bool isOldTime() const;
@@ -325,6 +334,7 @@ struct OldTimeFieldCopy
     using OldTimeField<FieldType>::readOldTimeIfPresent;                       \
     using OldTimeField<FieldType>::copyOldTimes;                               \
     using OldTimeField<FieldType>::timeIndex;                                  \
+    using OldTimeField<FieldType>::setTimeIndex;                               \
     using OldTimeField<FieldType>::isOldTime;                                  \
     using OldTimeField<FieldType>::hasStoredOldTimes;                          \
     using OldTimeField<FieldType>::resetOldTime;                               \
