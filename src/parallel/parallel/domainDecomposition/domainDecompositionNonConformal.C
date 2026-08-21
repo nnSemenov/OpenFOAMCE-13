@@ -1213,12 +1213,7 @@ void Foam::domainDecomposition::unconformComplete()
 {
     surfaceLabelField::Boundary polyFacesBf
     (
-        surfaceLabelField{
-            IOobject{
-                "null", completeMesh().instance(), completeMesh().db(), IOobject::NO_READ, IOobject::NO_WRITE, false
-            },
-            completeMesh(), dimless
-        },
+        surfaceLabelField::null(),
         completeMesh().polyFacesBf()
     );
     surfaceVectorField Sf(completeMesh().Sf().cloneUnSliced());
@@ -1310,12 +1305,7 @@ void Foam::domainDecomposition::unconformProcs()
 
         surfaceLabelField::Boundary polyFacesBf
         (
-            surfaceLabelField{
-                IOobject{
-                    "null", procMesh.instance(), procMesh.db(), IOobject::NO_READ, IOobject::NO_WRITE, false
-                },
-                procMesh, dimless
-            },
+            surfaceLabelField::null(),
             procMesh.polyFacesBf()
         );
         surfaceVectorField Sf(procMesh.Sf().cloneUnSliced());
