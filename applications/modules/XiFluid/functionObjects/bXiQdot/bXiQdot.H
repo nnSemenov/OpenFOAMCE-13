@@ -110,7 +110,7 @@ public:
         //- Return the list of fields required
         virtual wordList fields() const
         {
-            return wordList::null();
+            return {};
         }
 
         //- Do not execute at the start of the run
