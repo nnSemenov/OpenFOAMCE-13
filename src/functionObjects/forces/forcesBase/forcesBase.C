@@ -687,7 +687,7 @@ Foam::functionObjects::forcesBase::devTau() const
             << "No valid model for viscous stress calculation"
             << exit(FatalError);
 
-        return tmp<surfaceVectorField>{nullptr};
+        return surfaceVectorField::null();
     }
 }
 
@@ -755,7 +755,7 @@ Foam::tmp<Foam::volScalarField> Foam::functionObjects::forcesBase::mu() const
             << "No valid model for dynamic viscosity calculation"
             << exit(FatalError);
 
-        return tmp<volScalarField>{nullptr};
+        return volScalarField::null();
     }
 }
 

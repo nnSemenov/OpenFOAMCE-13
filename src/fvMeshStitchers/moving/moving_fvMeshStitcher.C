@@ -388,15 +388,12 @@ void Foam::fvMeshStitchers::moving::unconformInternalFaceCorrectMeshPhi
     // to the neighbour value so that all the error is on the owner side.
     surfaceScalarField::Boundary syncPhiBf
     (
-        surfaceScalarField::Internal{
-            IOobject{"null", phi.instance(), phi.db(), IOobject::NO_READ, IOobject::NO_WRITE, false}, phi.mesh(),
-            dimless
-        },
+        surfaceScalarField::Internal::null(),
         fvMeshStitcherTools::synchronisedBoundaryField(phiBf, true, 0, 1)
     );
 
     // Determine the total mesh flux error and area magnitude for each region
-    scalarList regionPhiError(subNRegions, scalar{0});
+    scalarList regionPhiError(subNRegions, scalar(0));
     scalarList regionMagSf(subNRegions, vSmall);
     forAll(phiBf, nccPatchi)
     {
@@ -753,10 +750,7 @@ void Foam::fvMeshStitchers::moving::unconformInternalFaceCorrectMeshPhi
     surfaceScalarField::Boundary deltaPhiBf
     (
         mesh().boundary(),
-        surfaceScalarField::Internal{
-            IOobject{"null", phi.instance(), phi.db(), IOobject::NO_READ, IOobject::NO_WRITE, false}, phi.mesh(),
-            dimless
-        },
+        surfaceScalarField::Internal::null(),
         calculatedFvPatchField<scalar>::typeName
     );
     deltaPhiBf = 0;
@@ -880,10 +874,7 @@ void Foam::fvMeshStitchers::moving::unconformErrorFaceCorrectMeshPhi
             i,
             new surfaceScalarField::Boundary
             (
-                surfaceScalarField::Internal{
-                    IOobject{"null", phi.instance(), phi.db(), IOobject::NO_READ, IOobject::NO_WRITE, false}, phi.mesh(),
-                    dimless
-                },
+                surfaceScalarField::Internal::null(),
                 phi.oldTime(i).boundaryField()
             )
         );
@@ -980,10 +971,7 @@ void Foam::fvMeshStitchers::moving::unconformErrorFaceCorrectMeshPhi
         );
     surfaceScalarField::Boundary meshMagUfb
     (
-        surfaceScalarField::Internal{
-            IOobject{"null", phi.instance(), phi.db(), IOobject::NO_READ, IOobject::NO_WRITE, false}, phi.mesh(),
-            dimless
-        },
+        surfaceScalarField::Internal::null(),
         fvMeshStitcherTools::conformedNcBoundaryField(tnccMeshMagUfb)
     );
     tnccMeshMagUf.clear();
