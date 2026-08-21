@@ -448,10 +448,10 @@ int main(int argc, char *argv[])
 
     const fileName dictPath(args[1]);
 
-    Time* runTimePtr = nullptr;
-    localIOdictionary* localDictPtr = nullptr;
+    autoPtr<Time> runTimePtr{nullptr};
+    autoPtr<localIOdictionary> localDictPtr{ nullptr};
 
-    dictionary* dictPtr = nullptr;
+    autoPtr<dictionary>  dictPtr{nullptr};
     IOstream::streamFormat dictFormat = IOstream::ASCII;
 
     // When running in parallel read the dictionary as a case localIOdictionary
@@ -514,7 +514,7 @@ int main(int argc, char *argv[])
             );
     }
 
-    dictionary& dict = localDictPtr ? *localDictPtr : *dictPtr;
+    dictionary& dict = localDictPtr.valid() ? *localDictPtr : *dictPtr;
 
     bool changed = false;
 
@@ -772,11 +772,11 @@ int main(int argc, char *argv[])
 
     if (changed || args.optionFound("output"))
     {
-        if (localDictPtr)
+        if (localDictPtr.ptr())
         {
             localDictPtr->regIOobject::write();
         }
-        else if (dictPtr)
+        else if (dictPtr.ptr())
         {
             // Set output dict name, defaults to the name of the input dict
             const fileName outputDictPath
@@ -808,9 +808,9 @@ int main(int argc, char *argv[])
         }
     }
 
-    delete dictPtr;
-    delete localDictPtr;
-    delete runTimePtr;
+    // delete dictPtr;
+    // delete localDictPtr;
+    // delete runTimePtr;
 
     return 0;
 }
