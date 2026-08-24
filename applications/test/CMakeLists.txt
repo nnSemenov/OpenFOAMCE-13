@@ -92,7 +92,7 @@ FOAM_unit_test(SOURCES dimensionedType/Test-dimensionedType.C
 )
 
 FOAM_unit_test(SOURCES distribution/Test-distribution.C
-    LINK_LIBS sampling
+    LINK_LIBS sampling Pstream_best
     BUILD_ONLY
 )
 
