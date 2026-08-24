@@ -273,12 +273,12 @@ Foam::tmp<Foam::volInternalScalarField> Foam::fv::uniformGrowth::S
 
     forAll(popBal_.fs(), i)
     {
-        tmp<volInternalScalarField> tN =
-            popBal_.phases()[i]()*popBal_.f(i)/popBal_.v(i);
+        volInternalScalarField tN =
+            popBal_.phases()[i]*popBal_.f(i)/popBal_.v(i);
 
         if (&popBal_.phases()[i] == &phase)
         {
-            tSumNPhase.ref() += tN();
+            tSumNPhase.ref() += tN;
         }
 
         tSumN.ref() += tN;
