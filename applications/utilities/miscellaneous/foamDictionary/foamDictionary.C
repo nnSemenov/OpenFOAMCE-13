@@ -167,6 +167,8 @@ Usage
 
 \*---------------------------------------------------------------------------*/
 
+#include <memory>
+
 #include "argList.H"
 #include "Time.H"
 #include "localIOdictionary.H"
@@ -448,10 +450,10 @@ int main(int argc, char *argv[])
 
     const fileName dictPath(args[1]);
 
-    autoPtr<Time> runTimePtr{nullptr};
-    autoPtr<localIOdictionary> localDictPtr{ nullptr};
+    std::unique_ptr<Time> runTimePtr{nullptr};
+    std::unique_ptr<localIOdictionary> localDictPtr{nullptr};
 
-    autoPtr<dictionary>  dictPtr{nullptr};
+    std::unique_ptr<dictionary> dictPtr{nullptr};
     IOstream::streamFormat dictFormat = IOstream::ASCII;
 
     // When running in parallel read the dictionary as a case localIOdictionary
@@ -463,7 +465,7 @@ int main(int argc, char *argv[])
             FatalError.exit();
         }
 
-        runTimePtr = new Time(Time::controlDictName, args);
+        runTimePtr.reset(new Time(Time::controlDictName, args));
 
         const wordList dictPathComponents(dictPath.components());
 
@@ -487,7 +489,7 @@ int main(int argc, char *argv[])
             runTimePtr->setTime(time, 0);
         }
 
-        localDictPtr = new localIOdictionary
+        localDictPtr.reset(new localIOdictionary
         (
             IOobject
             (
@@ -498,11 +500,11 @@ int main(int argc, char *argv[])
                 IOobject::NO_WRITE,
                 false
             )
-        );
+        )) ;
     }
     else
     {
-        dictPtr = new dictionary(dictPath);
+        dictPtr.reset(new dictionary(dictPath));
         dictFormat =
             readDict
             (
@@ -514,7 +516,7 @@ int main(int argc, char *argv[])
             );
     }
 
-    dictionary& dict = localDictPtr.valid() ? *localDictPtr : *dictPtr;
+    dictionary &dict = localDictPtr ? *localDictPtr : *dictPtr;
 
     bool changed = false;
 
@@ -772,11 +774,11 @@ int main(int argc, char *argv[])
 
     if (changed || args.optionFound("output"))
     {
-        if (localDictPtr.ptr())
+        if (localDictPtr)
         {
             localDictPtr->regIOobject::write();
         }
-        else if (dictPtr.ptr())
+        else if (dictPtr)
         {
             // Set output dict name, defaults to the name of the input dict
             const fileName outputDictPath
