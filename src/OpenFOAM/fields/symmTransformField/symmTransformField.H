@@ -52,46 +52,6 @@ void transform(Field<Type>&, const symmTensorField&, const Field<Type>&);
 template<class Type>
 void transform(Field<Type>&, const symmTensor&, const Field<Type>&);
 
-
-template<>
-tmp<Field<sphericalTensor>> transformFieldMask<sphericalTensor>
-(
-    const symmTensorField&
-);
-
-template<>
-tmp<Field<sphericalTensor>> transformFieldMask<sphericalTensor>
-(
-    const tmp<symmTensorField>&
-);
-
-
-template<>
-tmp<Field<symmTensor>> transformFieldMask<symmTensor>
-(
-    const symmTensorField&
-);
-
-template<>
-tmp<Field<symmTensor>> transformFieldMask<symmTensor>
-(
-    const tmp<symmTensorField>&
-);
-
-
-template<>
-tmp<Field<tensor>> transformFieldMask<tensor>
-(
-    const symmTensorField&
-);
-
-template<>
-tmp<Field<tensor>> transformFieldMask<tensor>
-(
-    const tmp<symmTensorField>&
-);
-
-
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 } // End namespace Foam
