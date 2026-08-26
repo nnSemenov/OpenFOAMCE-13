@@ -184,13 +184,8 @@ struct Reduce<DimensionedField<Type, GeoMesh, PrimitiveField>>
             (
                 "average(" + name(e) + ')',
                 access(e, NullObjectRef<dimensionSet>()),
-                Reduce<PrimitiveField<Type>>::template average
-                (
-                    access(e, Value(), Base()),
-                    globalReduce,
-                    comm
-                )
-            );
+                Reduce<PrimitiveField<Type>>::average(
+                        access(e, Value(), Base()), globalReduce, comm));
     }
 
     template<class Expression, class WeightExpression>
@@ -213,14 +208,9 @@ struct Reduce<DimensionedField<Type, GeoMesh, PrimitiveField>>
             (
                 "weightedAverage(" + name(e) + ',' + name(we) + ')',
                 access(e, NullObjectRef<dimensionSet>()),
-                Reduce<PrimitiveField<Type>>::template weightedAverage
-                (
-                    access(e, Value(), Base()),
-                    access(we, Value(), Base()),
-                    globalReduce,
-                    comm
-                )
-            );
+                    Reduce<PrimitiveField<Type>>::weightedAverage(
+                        access(e, Value(), Base()), access(we, Value(), Base()),
+                        globalReduce, comm));
     }
 };
 

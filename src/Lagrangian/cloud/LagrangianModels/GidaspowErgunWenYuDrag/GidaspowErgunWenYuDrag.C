@@ -74,7 +74,7 @@ Foam::Lagrangian::GidaspowErgunWenYuDrag::calcD
 
         // ... and Ergun at high particulate fractions (> 20%)
       + neg(alphac - scalar{0.8})*static_cast<scalar>(4.0/3.0)*(150*alpha/alphac + scalar{1.75}*Re)
-    );
+    ;
 
     auto DbyMu = CdRe*(constant::mathematical::pi/8)*d;
 
