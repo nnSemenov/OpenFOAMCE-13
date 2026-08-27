@@ -96,7 +96,7 @@ void Foam::RhoFluidThermo<BaseThermo>::calculate()
     volScalarField::BoundaryField& heBf =
         this->he().boundaryFieldRef();
         
-    volScalarField::Boundary& dhedp_TBf =
+    volScalarField::BoundaryField& dhedp_TBf =
         this->kappa_.boundaryFieldRef();
 
     volScalarField::BoundaryField& muBf =

@@ -63,7 +63,7 @@ template <class vF>
 class volFieldDelegate : public fieldDelegate<vF>
 {
   public:
-    using Patch = fieldDelegate<typename vF::Patch>;
+    using Patch = fieldDelegate<typename vF::PatchField>;
 
   protected:
     std::vector<Patch> boundary;
