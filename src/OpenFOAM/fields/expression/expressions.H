@@ -107,10 +107,6 @@ UnaryOperator(-, negate)
 UnaryFunction(sqr)
 UnaryFunction(mag)
 UnaryFunction(magSqr)
-UnaryFunction(cmptMax)
-UnaryFunction(cmptMin)
-UnaryFunction(cmptAv)
-UnaryFunction(cmptMag)
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 // Define unary reduction functions
@@ -175,8 +171,7 @@ ElementType<Expression> average
     const label comm = UPstream::worldComm
 )
 {
-    return ReduceType<Expression>::template average<Expression>(e, globalReduce,
-                                                                comm);
+    return ReduceType<Expression>::average(e, globalReduce, comm);
 }
 
 template<class Expression, class = EnableIfExpressionable<Expression>>
@@ -227,8 +222,8 @@ ElementType<Expression> weightedAverage
     const label comm = UPstream::worldComm
 )
 {
-    return ReduceType<Expression>::template weightedAverage<Expression,
-                                                            WeightExpression>(
+    return ReduceType<Expression>::weightedAverage
+    (
         e,
         we,
         globalReduce,
@@ -348,35 +343,6 @@ BinaryFunction(max);
 
 // Minimum function
 BinaryFunction(min);
-
-BinaryFunction(cmptMultiply);
-BinaryFunction(cmptDivide);
-
-/*---------------------------------------------------------------------------*\
-                         Class componentOp Declaration
-\*---------------------------------------------------------------------------*/
-
-struct componentOp
-{
-    static const signed char precedence =
-        expression::Operation<void>::precedence;
-
-    static const bool associative = false;
-
-    static word name(const word& vs, const word& d)
-    {
-        return "component(" + vs + ',' + d + ')';
-    }
-
-    template<class VSType, class Dtype>
-    static auto value(const VSType& vs, const Dtype& d)
-    {
-        return component(vs, d);
-    }
-};
-
-// VectorSpace Component
-BinaryFunction(component);
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

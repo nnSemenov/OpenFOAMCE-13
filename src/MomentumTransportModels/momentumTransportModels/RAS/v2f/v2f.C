@@ -249,7 +249,7 @@ void v2f<BasicMomentumTransportModel>::correct()
             (1 + scalar{0.05} * min(sqrt(k_() / v2_()), scalar{100.0})));
 
     // Update epsilon (and possibly G) at the wall
-    epsilon_.boundaryFieldRef().updateCoeffs();
+    epsilon_.boundaryRef().updateCoeffs();
 
     // Dissipation equation
     tmp<fvScalarMatrix> epsEqn
@@ -268,7 +268,7 @@ void v2f<BasicMomentumTransportModel>::correct()
 
     epsEqn.ref().relax();
     fvConstraints.constrain(epsEqn.ref());
-    epsEqn.ref().boundaryManipulate(epsilon_.boundaryFieldRef());
+    epsEqn.ref().boundaryManipulate(epsilon_.boundaryRef());
     solve(epsEqn);
     fvConstraints.constrain(epsilon_);
     boundEpsilon();

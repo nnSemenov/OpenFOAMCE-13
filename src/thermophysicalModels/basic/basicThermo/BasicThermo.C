@@ -65,7 +65,7 @@ Foam::BasicThermo<MixtureType, BasicThermoType>::volScalarFieldProperty
             ((this->*mixture)(composition).*psiMethod)(args[celli] ...);
     }
 
-    volScalarField::Boundary& psiBf = psi.boundaryFieldRef();
+    volScalarField::BoundaryField& psiBf = psi.boundaryFieldRef();
 
     forAll(psiBf, patchi)
     {
@@ -117,7 +117,7 @@ Foam::BasicThermo<MixtureType, BasicThermoType>::volScalarFieldMixtureProperty
         psi[celli] = (this->*mixtureMethod)(composition, args ...);
     }
 
-    volScalarField::Boundary& psiBf = psi.boundaryFieldRef();
+    volScalarField::BoundaryField& psiBf = psi.boundaryFieldRef();
 
     forAll(psiBf, patchi)
     {
@@ -338,7 +338,7 @@ void Foam::BasicThermo<MixtureType, BasicThermoType>::heBoundaryCorrection
     volScalarField& h
 )
 {
-    volScalarField::Boundary& hBf = h.boundaryFieldRef();
+    volScalarField::BoundaryField& hBf = h.boundaryFieldRef();
 
     forAll(hBf, patchi)
     {
